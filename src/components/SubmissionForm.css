@@ -1,0 +1,22 @@
+.upload-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px dashed rgba(216, 180, 99, 0.4);
+  color: var(--text-tertiary);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.upload-box:hover {
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.upload-box.has-error {
+  border-color: #e5876f;
+}
+
