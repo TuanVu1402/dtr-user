@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { categories, pointBreakdown } from '../data/dtrData'
 import { CURRENT_USER_NAME } from '../data/currentUser'
 import { ArrowRightIcon, BookingIcon, CheckinIcon, ClipIcon, CrownIcon, OfficeIcon, TrainingIcon } from '../components/icons'
@@ -34,6 +33,18 @@ const breakdownAccents: Record<Category['icon'], { fg: string; bg: string; borde
 const totalPoints = 128
 const nextTierAt = 160
 const tierName = 'Hạng Kim Cương'
+// Bục top 3 đã chiếm 3 vị trí đầu — thêm 3 người nữa trong danh sách bên dưới
+// để tổng cộng hiển thị đúng 6 người lúc mới vào trang (3 + 3 = 6).
+const INITIAL_RANK_COUNT = 3
+
+function getInitials(name: string) {
+  return name
+    .split(' ')
+    .slice(-2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+}
 
 type CheckinNotice = {
   title: string
@@ -44,13 +55,8 @@ export default function UserHomePage() {
   const { submissions, users, addSubmission } = useSubmissions()
   const [openCategory, setOpenCategory] = useState<Category | null>(null)
   const [checkinNotice, setCheckinNotice] = useState<CheckinNotice | null>(null)
+  const [visibleRankCount, setVisibleRankCount] = useState(INITIAL_RANK_COUNT)
   const { findSession } = useTrainingSessions()
-
-  const myEntries = useMemo(
-    () => submissions.filter((s) => s.userName === CURRENT_USER_NAME),
-    [submissions],
-  )
-  const recentEntries = myEntries.slice(0, 4)
 
   const fullRanking = useMemo(() => {
     const totals = new Map<string, number>()
@@ -60,7 +66,7 @@ export default function UserHomePage() {
     }
     return users
       .filter((u) => u.role === 'user')
-      .map((u) => ({ name: u.name, points: totals.get(u.name) ?? 0 }))
+      .map((u) => ({ name: u.name, points: totals.get(u.name) ?? 0, avatarUrl: u.avatarUrl }))
       .sort((a, b) => b.points - a.points)
   }, [submissions, users])
 
@@ -105,20 +111,32 @@ export default function UserHomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function handleSubmit(data: { optionLabel: string; points: number; description: string; date: string; link?: string }) {
+  function handleSubmit(data: {
+    optionLabel: string
+    points: number
+    description: string
+    date: string
+    link?: string
+    imageDataUrl?: string
+  }) {
     if (!openCategory) return
     const formattedDate = data.date
       ? new Date(data.date).toLocaleDateString('vi-VN')
       : new Date().toLocaleDateString('vi-VN')
 
+    const fullCategoryTitle = openCategory.locationLabels?.length
+      ? `${openCategory.title} ${openCategory.locationLabels.join(', ')}`
+      : openCategory.title
+
     addSubmission({
       userName: CURRENT_USER_NAME,
-      categoryLabel: data.optionLabel === 'Điểm' ? openCategory.title : data.optionLabel,
+      categoryLabel: data.optionLabel === 'Điểm' ? fullCategoryTitle : data.optionLabel,
       description: data.description || '—',
       date: formattedDate,
       points: data.points,
       status: 'pending',
       link: data.link || undefined,
+      imageDataUrl: data.imageDataUrl,
     })
     setOpenCategory(null)
   }
@@ -151,6 +169,165 @@ export default function UserHomePage() {
       )}
 
       <UserNavbar active="home" />
+
+      <section className="section-head">
+        <div className="pill">XẾP HẠNG</div>
+        <p className="section-caption">
+          Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
+        </p>
+      </section>
+
+      <section className="leaderboard-section">
+        {fullRanking.length === 0 ? (
+          <p className="section-caption">Chưa có dữ liệu xếp hạng.</p>
+        ) : (
+          <>
+            {podium.length > 0 && (
+              <div className="podium-row">
+                {podiumDisplayOrder.map((entry, slotIndex) => {
+                  if (!entry) return <div className="podium-slot podium-empty" key={`empty-${slotIndex}`} />
+                  const rank = podium.indexOf(entry) + 1
+                  const isMe = entry.name === CURRENT_USER_NAME
+                  return (
+                    <div className={`podium-slot rank-${rank}${isMe ? ' me' : ''}`} key={entry.name}>
+                      <div className="podium-crown">
+                        <CrownIcon
+                          size={rank === 1 ? 18 : 15}
+                          color={rank === 1 ? '#7a5518' : rank === 2 ? '#42506b' : '#5c3417'}
+                        />
+                      </div>
+                      <div className="podium-avatar-wrap">
+                        <div className="podium-avatar">
+                          {entry.avatarUrl ? (
+                            <img src={entry.avatarUrl} alt={entry.name} />
+                          ) : (
+                            getInitials(entry.name)
+                          )}
+                        </div>
+                        <div className="podium-rank-num">{rank}</div>
+                      </div>
+                      <div className="podium-name">
+                        {entry.name}
+                        {isMe && <span className="leaderboard-me-tag">Bạn</span>}
+                      </div>
+                      <div className="podium-points">{formatPoints(entry.points)} điểm</div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {restRanking.length > 0 && (
+              <div className="leaderboard-list">
+                {restRanking.slice(0, visibleRankCount).map((entry, index) => {
+                  const rank = index + 4
+                  const isMe = entry.name === CURRENT_USER_NAME
+                  return (
+                    <div className={`leaderboard-row${isMe ? ' me' : ''}`} key={entry.name}>
+                      <div className="leaderboard-rank">{rank}</div>
+                      <div className="leaderboard-avatar">
+                        {entry.avatarUrl ? (
+                          <img src={entry.avatarUrl} alt={entry.name} />
+                        ) : (
+                          getInitials(entry.name)
+                        )}
+                      </div>
+                      <div className="leaderboard-name">
+                        {entry.name}
+                        {isMe && <span className="leaderboard-me-tag">Bạn</span>}
+                      </div>
+                      <div className="leaderboard-points">{formatPoints(entry.points)} điểm</div>
+                    </div>
+                  )
+                })}
+
+                <div className="leaderboard-toggle-row">
+                  {visibleRankCount < restRanking.length && (
+                    <button
+                      type="button"
+                      className="leaderboard-more-btn"
+                      onClick={() => setVisibleRankCount((v) => Math.min(v + 3, restRanking.length))}
+                    >
+                      Xem thêm <ArrowRightIcon size={11} />
+                    </button>
+                  )}
+                  {visibleRankCount > INITIAL_RANK_COUNT && (
+                    <button
+                      type="button"
+                      className="leaderboard-more-btn leaderboard-less-btn"
+                      onClick={() => setVisibleRankCount(INITIAL_RANK_COUNT)}
+                    >
+                      Thu gọn
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      <section className="section-head">
+        <div className="pill">CÁCH GHI ĐIỂM</div>
+        <h1 className="section-title">Nộp minh chứng nhận điểm DTR</h1>
+        <p className="section-caption">
+          Chọn một hạng mục bên dưới và nộp minh chứng để admin xét duyệt điểm.
+        </p>
+      </section>
+
+      <section className="cat-list">
+        {categories.map((category) => {
+          const Icon = categoryIcons[category.icon]
+          return (
+            <div className="cat-card" key={category.id}>
+              <div className="cat-main">
+                <div className="cat-top">
+                  <div className="cat-num">{category.number}</div>
+                  <div className="cat-icon">
+                    <Icon />
+                  </div>
+                  {category.audienceTag && <div className="audience-tag">{category.audienceTag}</div>}
+                </div>
+                <div className="cat-title">{category.title}</div>
+                {category.locationLabels && category.locationLabels.length > 0 && (
+                  <div className="cat-location-row">
+                    {category.locationLabels.map((location) => (
+                      <button
+                        type="button"
+                        className="cat-location-label"
+                        key={location}
+                        onClick={() => setOpenCategory(category)}
+                      >
+                        {location}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="cat-desc">{category.description}</div>
+              </div>
+
+              <div className="cat-action">
+                <div className="cat-points-row">
+                  {category.pointOptions.map((option) => (
+                    <span className="point-chip" key={option.label}>
+                      {option.label === 'Điểm'
+                        ? `${formatPoints(option.points)} điểm`
+                        : `${option.label} · ${formatPoints(option.points)} điểm`}
+                    </span>
+                  ))}
+                  {category.id === 'training-kickoff' && (
+                    <span className="point-chip qr-chip">Quét QR tự động</span>
+                  )}
+                </div>
+                <button className="cat-btn" type="button" onClick={() => setOpenCategory(category)}>
+                  {category.id === 'training-kickoff' ? 'Nộp thủ công' : 'Nộp minh chứng'}
+                  <ArrowRightIcon color="#ffffff" />
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </section>
 
       <section className="hero-section">
         <div className="hero-card">
@@ -206,177 +383,6 @@ export default function UserHomePage() {
               })}
             </div>
           </div>
-        </div>
-
-        <div className="coin-card">
-          <div className="coin">
-            <div className="coin-inner">
-              <div className="coin-text">DTR</div>
-              <div className="coin-sub">POINT</div>
-            </div>
-          </div>
-          <div className="coin-caption">
-            &ldquo;Mỗi hành động —<br />
-            <b className="gold-text">một bước tiến gần thành công</b>&rdquo;
-          </div>
-        </div>
-      </section>
-
-      <section className="section-head">
-        <div className="pill">XẾP HẠNG</div>
-        <h2 className="section-title">Bảng xếp hạng DTR Point</h2>
-        <p className="section-caption">
-          Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
-        </p>
-      </section>
-
-      <section className="leaderboard-section">
-        {fullRanking.length === 0 ? (
-          <p className="section-caption">Chưa có dữ liệu xếp hạng.</p>
-        ) : (
-          <>
-            {podium.length > 0 && (
-              <div className="podium-row">
-                {podiumDisplayOrder.map((entry, slotIndex) => {
-                  if (!entry) return <div className="podium-slot podium-empty" key={`empty-${slotIndex}`} />
-                  const rank = podium.indexOf(entry) + 1
-                  const isMe = entry.name === CURRENT_USER_NAME
-                  return (
-                    <div className={`podium-slot rank-${rank}${isMe ? ' me' : ''}`} key={entry.name}>
-                      <div className="podium-crown">
-                        <CrownIcon
-                          size={rank === 1 ? 18 : 15}
-                          color={rank === 1 ? '#7a5518' : rank === 2 ? '#42506b' : '#5c3417'}
-                        />
-                      </div>
-                      <div className="podium-avatar-wrap">
-                        <div className="podium-avatar">
-                          {entry.name
-                            .split(' ')
-                            .slice(-2)
-                            .map((w) => w[0])
-                            .join('')
-                            .toUpperCase()}
-                        </div>
-                        <div className="podium-rank-num">{rank}</div>
-                      </div>
-                      <div className="podium-name">
-                        {entry.name}
-                        {isMe && <span className="leaderboard-me-tag">Bạn</span>}
-                      </div>
-                      <div className="podium-points">{formatPoints(entry.points)} điểm</div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            {restRanking.length > 0 && (
-              <div className="leaderboard-list">
-                {restRanking.map((entry, index) => {
-                  const rank = index + 4
-                  const isMe = entry.name === CURRENT_USER_NAME
-                  return (
-                    <div className={`leaderboard-row${isMe ? ' me' : ''}`} key={entry.name}>
-                      <div className="leaderboard-rank">{rank}</div>
-                      <div className="leaderboard-avatar">
-                        {entry.name
-                          .split(' ')
-                          .slice(-2)
-                          .map((w) => w[0])
-                          .join('')
-                          .toUpperCase()}
-                      </div>
-                      <div className="leaderboard-name">
-                        {entry.name}
-                        {isMe && <span className="leaderboard-me-tag">Bạn</span>}
-                      </div>
-                      <div className="leaderboard-points">{formatPoints(entry.points)} điểm</div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </>
-        )}
-      </section>
-
-      <section className="section-head">
-        <div className="pill">CÁCH GHI ĐIỂM</div>
-        <h1 className="section-title">Nộp minh chứng nhận điểm DTR</h1>
-        <p className="section-caption">
-          Chọn một hạng mục bên dưới và nộp minh chứng để admin xét duyệt điểm.
-        </p>
-      </section>
-
-      <section className="cat-list">
-        {categories.map((category) => {
-          const Icon = categoryIcons[category.icon]
-          return (
-            <div className="cat-card" key={category.id}>
-              <div className="cat-main">
-                <div className="cat-top">
-                  <div className="cat-num">{category.number}</div>
-                  <div className="cat-icon">
-                    <Icon />
-                  </div>
-                  {category.audienceTag && <div className="audience-tag">{category.audienceTag}</div>}
-                </div>
-                <div className="cat-title">{category.title}</div>
-                <div className="cat-desc">{category.description}</div>
-              </div>
-
-              <div className="cat-action">
-                <div className="cat-points-row">
-                  {category.pointOptions.map((option) => (
-                    <span className="point-chip" key={option.label}>
-                      {option.label === 'Điểm'
-                        ? `${formatPoints(option.points)} điểm`
-                        : `${option.label} · ${formatPoints(option.points)} điểm`}
-                    </span>
-                  ))}
-                  {category.id === 'training-kickoff' && (
-                    <span className="point-chip qr-chip">Quét QR tự động</span>
-                  )}
-                </div>
-                <button className="cat-btn" type="button" onClick={() => setOpenCategory(category)}>
-                  {category.id === 'training-kickoff' ? 'Nộp thủ công' : 'Nộp minh chứng'}
-                  <ArrowRightIcon color="#ffffff" />
-                </button>
-              </div>
-            </div>
-          )
-        })}
-      </section>
-
-      <section className="history-section">
-        <div className="history-head">
-          <h2 className="history-title">Lịch sử nộp minh chứng</h2>
-          <Link to="/history" className="history-view-all">
-            Xem tất cả lịch sử <ArrowRightIcon size={12} />
-          </Link>
-        </div>
-
-        <div className="table-card">
-          <div className="t-row-compact t-head">
-            <div>Hạng mục</div>
-            <div>Ngày nộp</div>
-          </div>
-
-          {recentEntries.length === 0 && (
-            <p className="section-caption" style={{ padding: '20px 24px' }}>
-              Bạn chưa nộp minh chứng nào.
-            </p>
-          )}
-          {recentEntries.map((entry) => (
-            <div className="t-row-compact t-body" key={entry.id}>
-              <div className="t-cat">
-                <span className="t-dot" />
-                {entry.categoryLabel}
-              </div>
-              <div className="t-date">{entry.date}</div>
-            </div>
-          ))}
         </div>
       </section>
 

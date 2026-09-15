@@ -44,7 +44,7 @@ export default function Footer() {
               <span>Hướng dẫn ghi điểm</span>
             </li>
             <li>
-              <Link to="/history">Lịch sử nộp minh chứng</Link>
+              <span>Lịch sử nộp minh chứng</span>
             </li>
             <li>
               <span>Hạng mục &amp; mốc điểm</span>
@@ -107,10 +107,14 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <p>
-          © 2026 <b>DONG TAY LAND</b>. Nền tảng tích điểm DTR dành riêng cho môi giới — bảo lưu mọi
-          quyền.
+          © 2026. <b>CÔNG TY CỔ PHẦN CÔNG NGHỆ XHUB</b>. GPĐKKD: 0312312011, thành lập vào
+          xx/09/2026.
         </p>
-        <p>Liên hệ hỗ trợ: hotro@dtr.vn</p>
+        <p>
+          Địa chỉ: 192 Trần Não, Khu Phố 2, Phường An Khánh, Thành Phố Hồ Chí Minh, Việt Nam. Điện
+          thoại: 0939653777. Email: xhub@dongtayland.vn
+        </p>
+        <p>Người đại diện theo pháp luật: Ông Nguyễn Thái Bình – Chủ Tịch Hội Đồng Quản Trị.</p>
         <p>
           <a href="#" onClick={(e) => e.preventDefault()} className="footer-bottom-link">
             Xem chính sách sử dụng

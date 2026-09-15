@@ -5,13 +5,14 @@ import './UserMenu.css'
 type UserMenuProps = {
   name: string
   initials: string
+  avatarUrl?: string
   onLogout: () => void
   isProfileActive?: boolean
 }
 
 /** Chip avatar + tên ở navbar — bấm vào mở dropdown "Hồ sơ cá nhân" / "Đăng xuất" thay vì
  * hiện thẳng nút Đăng xuất ngay trong thanh navbar. */
-export default function UserMenu({ name, initials, onLogout, isProfileActive }: UserMenuProps) {
+export default function UserMenu({ name, initials, avatarUrl, onLogout, isProfileActive }: UserMenuProps) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -35,7 +36,7 @@ export default function UserMenu({ name, initials, onLogout, isProfileActive }: 
         aria-expanded={open}
         aria-label="Tài khoản"
       >
-        <span className="avatar">{initials}</span>
+        <span className="avatar">{avatarUrl ? <img src={avatarUrl} alt={name} /> : initials}</span>
         <span className="user-name">{name}</span>
       </button>
 

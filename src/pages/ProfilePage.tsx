@@ -16,7 +16,7 @@ const nextTierAt = 160
 const branchOptions = ['Chi nhánh Hà Nội', 'Chi nhánh Hồ Chí Minh', 'Chi nhánh Đà Nẵng']
 
 export default function ProfilePage() {
-  const { submissions } = useSubmissions()
+  const { submissions, users } = useSubmissions()
   const myEntries = useMemo(
     () => submissions.filter((s) => s.userName === CURRENT_USER_NAME),
     [submissions],
@@ -26,7 +26,8 @@ export default function ProfilePage() {
   const approvalRate = myEntries.length ? Math.round((approvedCount / myEntries.length) * 100) : 0
   const pointsToNextTier = Math.max(0, nextTierAt - totalPoints)
 
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const currentUser = users.find((u) => u.name === CURRENT_USER_NAME)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(currentUser?.avatarUrl ?? null)
   const [form, setForm] = useState({
     name: CURRENT_USER_NAME,
     email: 'an.nguyen@dtr.vn',

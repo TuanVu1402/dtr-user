@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
 import type { Category } from '../types/dtr'
 import { formatPoints } from '../utils/format'
 import '../styles/shared.css'
@@ -7,7 +7,14 @@ import './SubmissionForm.css'
 type SubmissionFormProps = {
   category: Category
   onCancel: () => void
-  onSubmit: (data: { optionLabel: string; points: number; description: string; date: string; link?: string }) => void
+  onSubmit: (data: {
+    optionLabel: string
+    points: number
+    description: string
+    date: string
+    link?: string
+    imageDataUrl?: string
+  }) => void
 }
 
 type FormErrors = {
@@ -23,6 +30,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
   const [date, setDate] = useState('')
   const [link, setLink] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined)
   const [errors, setErrors] = useState<FormErrors>({})
 
   const selectedOption = category.pointOptions.find((o) => o.label === optionLabel) ?? category.pointOptions[0]
@@ -53,7 +61,22 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
       description,
       date,
       link: isLinkEvidence ? link : undefined,
+      imageDataUrl,
     })
+  }
+
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const nextFile = e.target.files?.[0] ?? null
+    setFile(nextFile)
+    if (errors.file) setErrors((prev) => ({ ...prev, file: undefined }))
+
+    if (nextFile && nextFile.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onload = () => setImageDataUrl(reader.result as string)
+      reader.readAsDataURL(nextFile)
+    } else {
+      setImageDataUrl(undefined)
+    }
   }
 
   return (
@@ -150,14 +173,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
               Ảnh / tệp minh chứng <span className="required-mark">*</span>
             </label>
             <label className={`upload-box${errors.file ? ' has-error' : ''}`}>
-              <input
-                type="file"
-                hidden
-                onChange={(e) => {
-                  setFile(e.target.files?.[0] ?? null)
-                  if (errors.file) setErrors((prev) => ({ ...prev, file: undefined }))
-                }}
-              />
+              <input type="file" accept="image/*" hidden onChange={handleFileChange} />
               <span className="upload-text">{file ? file.name : 'Chọn ảnh hoặc tệp minh chứng'}</span>
             </label>
             {errors.file && <div className="field-error">{errors.file}</div>}

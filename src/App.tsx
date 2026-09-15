@@ -1,8 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import UserHomePage from './pages/UserHomePage'
-import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
-import GuidePage from './pages/GuidePage'
 import AuthPage from './pages/AuthPage'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
@@ -31,9 +29,7 @@ function AppShell() {
         <FeedbackProvider>
           <Routes>
             <Route path="/" element={<UserHomePage />} />
-            <Route path="/history" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/guide" element={<GuidePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <FloatingActions />

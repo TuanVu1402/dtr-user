@@ -31,14 +31,13 @@
 /* Hero */
 .hero-section {
   padding: 44px 44px 8px;
-  display: grid;
-  grid-template-columns: 1.55fr 1fr;
-  gap: 28px;
+  display: flex;
 }
 
 .hero-card {
   position: relative;
   overflow: hidden;
+  width: 100%;
   border-radius: 20px;
   padding: 36px 40px;
   background: var(--surface-1);
@@ -64,14 +63,6 @@
 /* Giao diện tối: phủ thêm lớp kính mờ ánh vàng lên nền trang thay vì trắng phẳng. */
 :root[data-theme='dark'] .hero-card {
   background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), color-mix(in srgb, var(--surface-1) 40%, transparent));
-}
-
-:root[data-theme='dark'] .coin-card {
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--surface-1) 55%, transparent),
-    color-mix(in srgb, var(--surface-2) 55%, transparent)
-  );
 }
 
 .hero-top {
@@ -193,7 +184,7 @@
 
 .breakdown-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 14px;
 }
 
@@ -257,93 +248,6 @@
   font-weight: 600;
   line-height: 1.3;
   word-break: break-word;
-}
-
-.coin-card {
-  border-radius: 20px;
-  border: 1px solid rgba(37, 99, 235, 0.28);
-  background: var(--surface-1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 30px;
-  box-shadow: 0 16px 36px var(--shadow);
-}
-
-.coin {
-  position: relative;
-  overflow: hidden;
-  width: 150px;
-  height: 150px;
-  border-radius: 999px;
-  background: conic-gradient(from 220deg, #fdf1cf, #d4af6a 30%, #93691f 50%, #d4af6a 70%, #fdf1cf 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 9px;
-  box-shadow:
-    0 20px 36px rgba(122, 85, 26, 0.32),
-    inset 0 2px 3px rgba(255, 255, 255, 0.7),
-    inset 0 -3px 6px rgba(87, 60, 15, 0.35);
-  transition: transform 0.3s ease;
-}
-
-.coin-card:hover .coin {
-  transform: scale(1.03) rotate(2deg);
-}
-
-.coin::before {
-  content: '';
-  position: absolute;
-  top: 8%;
-  left: 18%;
-  width: 46%;
-  height: 26%;
-  border-radius: 999px;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.65), transparent 72%);
-  filter: blur(1px);
-  pointer-events: none;
-}
-
-.coin-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(160deg, var(--surface-1), var(--surface-2));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  box-shadow:
-    inset 0 2px 8px rgba(15, 23, 42, 0.1),
-    inset 0 -2px 6px rgba(255, 255, 255, 0.5);
-}
-
-.coin-text {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: 2px;
-  color: var(--gold-bright);
-}
-
-.coin-sub {
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: var(--text-tertiary);
-  font-weight: 700;
-}
-
-.coin-caption {
-  font-size: 13px;
-  color: var(--text-secondary);
-  text-align: center;
-  font-weight: 600;
-  line-height: 1.5;
 }
 
 /* Category list — dạng Google Form: mỗi hạng mục là 1 "câu hỏi" xếp dọc từ trên xuống,
@@ -445,6 +349,33 @@
   line-height: 1.4;
 }
 
+/* Tên dự án/VPBH cụ thể — mỗi cái là 1 nhãn nhỏ riêng, bấm vào bất kỳ nhãn nào cũng mở luôn
+   form nộp minh chứng cho hạng mục đó, giống nút "Nộp minh chứng" ở cột hành động bên phải. */
+.cat-location-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: -2px;
+}
+
+.cat-location-label {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.cat-location-label:hover {
+  background: rgba(37, 99, 235, 0.18);
+  border-color: rgba(37, 99, 235, 0.5);
+}
+
 .cat-desc {
   font-size: 13.5px;
   color: var(--text-tertiary);
@@ -540,9 +471,6 @@
 
 /* Responsive */
 @media (max-width: 960px) {
-  .hero-section {
-    grid-template-columns: 1fr;
-  }
   .cat-card {
     flex-direction: column;
     align-items: stretch;
@@ -572,9 +500,6 @@
   .cat-list {
     padding-left: 20px;
     padding-right: 20px;
-  }
-  .breakdown-row {
-    grid-template-columns: repeat(2, 1fr);
   }
   .hero-points {
     font-size: 48px;
@@ -710,11 +635,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   font-family: 'Open Sans', sans-serif;
   font-weight: 800;
   font-size: 18px;
   border: 3px solid var(--surface-1);
   box-shadow: 0 6px 14px var(--shadow);
+}
+
+.podium-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .podium-slot.rank-1 .podium-avatar {
