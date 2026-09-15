@@ -42,25 +42,6 @@
   line-height: 1;
 }
 
-.brand-divider {
-  width: 1px;
-  height: 34px;
-  background: rgba(216, 180, 99, 0.35);
-}
-
-.brand-sub {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.brand-sub-line {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: var(--text-tertiary);
-  font-weight: 600;
-}
-
 .nav-links {
   display: flex;
   align-items: center;
@@ -168,72 +149,6 @@
   color: var(--negative);
 }
 
-.user-chip {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 14px 6px 6px;
-  border-radius: 999px;
-  background: rgba(216, 180, 99, 0.08);
-  border: 1px solid rgba(216, 180, 99, 0.22);
-}
-
-.user-chip.active {
-  border-color: var(--gold);
-}
-
-.user-chip-avatar-link {
-  display: flex;
-  line-height: 0;
-}
-
-.avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--on-gold);
-  flex-shrink: 0;
-}
-
-.user-name {
-  display: block;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.2;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.user-role {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  font-weight: 500;
-}
-
-.logout-link {
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-tertiary);
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
-}
-
-.logout-link:hover {
-  color: var(--gold-bright);
-}
-
 /* Pill / section heading */
 .pill {
   display: inline-flex;
@@ -337,21 +252,6 @@
 
   .nav-right {
     gap: 8px;
-  }
-
-  .brand-divider,
-  .brand-sub {
-    display: none;
-  }
-
-  .user-chip {
-    padding: 0;
-    background: none;
-    border: none;
-  }
-
-  .user-chip-info {
-    display: none;
   }
 }
 

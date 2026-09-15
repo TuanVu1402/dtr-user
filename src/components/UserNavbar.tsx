@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { CloseIcon, MenuIcon, MoonIcon, SunIcon } from './icons'
 import BrandLogo from './BrandLogo'
 import NotificationsMenu from './NotificationsMenu'
+import UserMenu from './UserMenu'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import '../styles/shared.css'
@@ -34,11 +35,6 @@ export default function UserNavbar({ active }: UserNavbarProps) {
     <header className="navbar">
       <div className="brand">
         <BrandLogo />
-        <div className="brand-divider" />
-        <div className="brand-sub">
-          <span className="brand-sub-line">YOUR TIME</span>
-          <span className="brand-sub-line">HAS COME</span>
-        </div>
       </div>
 
       <nav className="nav-links">
@@ -60,19 +56,7 @@ export default function UserNavbar({ active }: UserNavbarProps) {
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
         <NotificationsMenu />
-        <div className={`user-chip${active === 'profile' ? ' active' : ''}`}>
-          <Link to="/profile" className="user-chip-avatar-link" aria-label="Hồ sơ cá nhân">
-            <div className="avatar">NA</div>
-          </Link>
-          <div className="user-chip-info">
-            <Link to="/profile" className="user-name">
-              Nguyễn An
-            </Link>
-            <button type="button" className="logout-link" onClick={handleLogout}>
-              Đăng xuất
-            </button>
-          </div>
-        </div>
+        <UserMenu name="Nguyễn An" initials="NA" onLogout={handleLogout} isProfileActive={active === 'profile'} />
         <button
           className="icon-btn hamburger-btn"
           type="button"

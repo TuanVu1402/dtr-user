@@ -22,6 +22,16 @@ export default function FloatingActions() {
 
   return (
     <div className="floating-actions">
+      <a
+        className="floating-btn floating-zalo"
+        href="#"
+        onClick={(e) => e.preventDefault()}
+        aria-label="Chat với chúng tôi qua Zalo"
+        title="Chat qua Zalo"
+      >
+        <span className="floating-zalo-bubble">Zalo</span>
+      </a>
+
       {showTop && (
         <button
           type="button"
@@ -32,16 +42,6 @@ export default function FloatingActions() {
           <ArrowUpIcon color="#0d1f3d" />
         </button>
       )}
-
-      <a
-        className="floating-btn floating-zalo"
-        href="#"
-        onClick={(e) => e.preventDefault()}
-        aria-label="Chat với chúng tôi qua Zalo"
-        title="Chat qua Zalo"
-      >
-        <span className="floating-zalo-bubble">Zalo</span>
-      </a>
     </div>
   )
 }
