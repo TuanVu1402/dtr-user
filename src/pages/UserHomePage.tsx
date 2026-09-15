@@ -23,6 +23,14 @@ const categoryIcons: Record<Category['icon'], typeof BookingIcon> = {
   office: OfficeIcon,
 }
 
+const breakdownAccents: Record<Category['icon'], { fg: string; bg: string; border: string }> = {
+  booking: { fg: '#2563eb', bg: 'rgba(37, 99, 235, 0.12)', border: 'rgba(37, 99, 235, 0.28)' },
+  training: { fg: '#7c3aed', bg: 'rgba(124, 58, 237, 0.12)', border: 'rgba(124, 58, 237, 0.28)' },
+  clip: { fg: '#db2777', bg: 'rgba(219, 39, 119, 0.12)', border: 'rgba(219, 39, 119, 0.28)' },
+  checkin: { fg: '#059669', bg: 'rgba(5, 150, 105, 0.12)', border: 'rgba(5, 150, 105, 0.28)' },
+  office: { fg: '#d97706', bg: 'rgba(217, 119, 6, 0.12)', border: 'rgba(217, 119, 6, 0.28)' },
+}
+
 const totalPoints = 128
 const nextTierAt = 160
 const tierName = 'Hạng Kim Cương'
@@ -155,7 +163,9 @@ export default function UserHomePage() {
               </div>
             </div>
             <div className="tier-badge">
-              <CrownIcon />
+              <span className="tier-badge-icon">
+                <CrownIcon size={13} color="#ffffff" />
+              </span>
               {tierName}
             </div>
           </div>
@@ -164,18 +174,37 @@ export default function UserHomePage() {
             <div className="progress-track">
               <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
             </div>
-            <div className="progress-note">
-              Còn <b className="gold-text">{pointsToNextTier} điểm</b> nữa để đạt Hạng Vương Miện
+            <div className="progress-meta">
+              <div className="progress-note">
+                Còn <b className="gold-text">{pointsToNextTier} điểm</b> nữa để đạt Hạng Vương Miện
+              </div>
+              <div className="progress-percent">{progressPercent}%</div>
             </div>
           </div>
 
-          <div className="breakdown-row">
-            {pointBreakdown.map((item) => (
-              <div className="breakdown-item" key={item.label}>
-                <div className="breakdown-num">{item.count}</div>
-                <div className="breakdown-label">{item.label}</div>
-              </div>
-            ))}
+          <div className="breakdown-block">
+            <div className="breakdown-heading">Chi tiết điểm đã ghi nhận</div>
+            <div className="breakdown-row">
+              {pointBreakdown.map((item, index) => {
+                const iconKey = categories[index]?.icon ?? 'office'
+                const Icon = categoryIcons[iconKey]
+                const accent = breakdownAccents[iconKey]
+                return (
+                  <div className={`breakdown-item${item.count === 0 ? ' is-empty' : ''}`} key={item.label}>
+                    <div
+                      className="breakdown-icon"
+                      style={{ background: accent.bg, borderColor: accent.border }}
+                    >
+                      <Icon size={16} color={accent.fg} />
+                    </div>
+                    <div className="breakdown-text">
+                      <div className="breakdown-num">{item.count}</div>
+                      <div className="breakdown-label">{item.label}</div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
 
@@ -214,24 +243,28 @@ export default function UserHomePage() {
                   const isMe = entry.name === CURRENT_USER_NAME
                   return (
                     <div className={`podium-slot rank-${rank}${isMe ? ' me' : ''}`} key={entry.name}>
-                      <CrownIcon
-                        size={20}
-                        color={rank === 1 ? '#f3d98b' : rank === 2 ? '#d7dce6' : '#d99a63'}
-                      />
-                      <div className="podium-avatar">
-                        {entry.name
-                          .split(' ')
-                          .slice(-2)
-                          .map((w) => w[0])
-                          .join('')
-                          .toUpperCase()}
+                      <div className="podium-crown">
+                        <CrownIcon
+                          size={rank === 1 ? 18 : 15}
+                          color={rank === 1 ? '#7a5518' : rank === 2 ? '#42506b' : '#5c3417'}
+                        />
+                      </div>
+                      <div className="podium-avatar-wrap">
+                        <div className="podium-avatar">
+                          {entry.name
+                            .split(' ')
+                            .slice(-2)
+                            .map((w) => w[0])
+                            .join('')
+                            .toUpperCase()}
+                        </div>
+                        <div className="podium-rank-num">{rank}</div>
                       </div>
                       <div className="podium-name">
                         {entry.name}
                         {isMe && <span className="leaderboard-me-tag">Bạn</span>}
                       </div>
                       <div className="podium-points">{formatPoints(entry.points)} điểm</div>
-                      <div className="podium-rank-num">{rank}</div>
                     </div>
                   )
                 })}
@@ -308,7 +341,7 @@ export default function UserHomePage() {
                 </div>
                 <button className="cat-btn" type="button" onClick={() => setOpenCategory(category)}>
                   {category.id === 'training-kickoff' ? 'Nộp thủ công' : 'Nộp minh chứng'}
-                  <ArrowRightIcon color="#0d1f3d" />
+                  <ArrowRightIcon color="#ffffff" />
                 </button>
               </div>
             </div>

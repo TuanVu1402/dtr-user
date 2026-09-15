@@ -23,7 +23,7 @@
 
 .floating-top {
   border-radius: 999px;
-  background: linear-gradient(135deg, #f3d98b, #d4af6a);
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
 }
 
 .floating-zalo {
@@ -35,7 +35,7 @@
 
 .floating-zalo-bubble {
   color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 800;
   font-style: italic;
   font-size: 13px;

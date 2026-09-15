@@ -1,11 +1,11 @@
 .site-footer {
   margin-top: 32px;
   padding: 48px 44px 28px;
-  border-top: 1px solid rgba(216, 180, 99, 0.16);
+  border-top: 1px solid rgba(37, 99, 235, 0.16);
 }
 
 :root[data-theme='dark'] .site-footer {
-  background: linear-gradient(180deg, rgba(216, 180, 99, 0.04), transparent 40%);
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.04), transparent 40%);
 }
 
 .footer-grid {
@@ -89,7 +89,7 @@
   width: 110px;
   height: 76px;
   border-radius: 10px;
-  border: 1px solid rgba(216, 180, 99, 0.28);
+  border: 1px solid rgba(37, 99, 235, 0.28);
   background: var(--surface-1);
   display: flex;
   align-items: center;
@@ -132,7 +132,7 @@
 .footer-bottom {
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid rgba(216, 180, 99, 0.16);
+  border-top: 1px solid rgba(37, 99, 235, 0.16);
   display: flex;
   flex-direction: column;
   gap: 6px;

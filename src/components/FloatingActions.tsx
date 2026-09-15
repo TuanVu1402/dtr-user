@@ -39,7 +39,7 @@ export default function FloatingActions() {
           onClick={scrollToTop}
           aria-label="Lên đầu trang"
         >
-          <ArrowUpIcon color="#0d1f3d" />
+          <ArrowUpIcon color="#ffffff" />
         </button>
       )}
     </div>
