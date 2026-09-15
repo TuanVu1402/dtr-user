@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import BrandLogo from './BrandLogo'
-import { AppleIcon, FacebookIcon, PlayStoreIcon, TiktokIcon, YoutubeIcon, ZaloIcon } from './icons'
+import dongTayLandLogo from '../assets/dong-tay-land-logo.png'
+import { FacebookIcon, TiktokIcon, YoutubeIcon, ZaloIcon } from './icons'
 import './Footer.css'
 
 export default function Footer() {
@@ -13,24 +14,6 @@ export default function Footer() {
             Nền tảng tích điểm DTR dành riêng cho môi giới Dong Tay Land — theo dõi thành tích,
             nộp minh chứng và nhận thưởng theo thời gian thực.
           </p>
-
-          <div className="footer-app-title">TẢI ỨNG DỤNG</div>
-          <div className="footer-app-badges">
-            <div className="app-badge">
-              <AppleIcon />
-              <span>
-                <em>Download on the</em>
-                <b>App Store</b>
-              </span>
-            </div>
-            <div className="app-badge">
-              <PlayStoreIcon />
-              <span>
-                <em>GET IT ON</em>
-                <b>Google Play</b>
-              </span>
-            </div>
-          </div>
         </div>
 
         <div className="footer-col">
@@ -64,9 +47,6 @@ export default function Footer() {
               <Link to="/history">Lịch sử nộp minh chứng</Link>
             </li>
             <li>
-              <Link to="/leaderboard">Bảng xếp hạng</Link>
-            </li>
-            <li>
               <span>Hạng mục &amp; mốc điểm</span>
             </li>
             <li>
@@ -95,6 +75,15 @@ export default function Footer() {
 
         <div className="footer-col footer-social-col">
           <div className="footer-col-title">KẾT NỐI VỚI CHÚNG TÔI</div>
+
+          <div className="footer-org-logos">
+            <div className="footer-org-logo-box">
+              <img src={dongTayLandLogo} alt="Dong Tay Land" />
+            </div>
+          </div>
+
+          <div className="footer-social-divider" />
+
           <div className="footer-social-grid">
             <a className="social-chip" href="#" onClick={(e) => e.preventDefault()}>
               <FacebookIcon />
@@ -117,7 +106,16 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2026 DTR — Dong Tay Land. Your Time Has Come.</p>
+        <p>
+          © 2026 <b>DONG TAY LAND</b>. Nền tảng tích điểm DTR dành riêng cho môi giới — bảo lưu mọi
+          quyền.
+        </p>
+        <p>Liên hệ hỗ trợ: hotro@dtr.vn</p>
+        <p>
+          <a href="#" onClick={(e) => e.preventDefault()} className="footer-bottom-link">
+            Xem chính sách sử dụng
+          </a>
+        </p>
       </div>
     </footer>
   )

@@ -9,13 +9,12 @@ import { useTheme } from '../context/ThemeContext'
 import '../styles/shared.css'
 
 type UserNavbarProps = {
-  active: 'home' | 'history' | 'leaderboard' | 'guide' | 'profile'
+  active: 'home' | 'history' | 'guide' | 'profile'
 }
 
 const navItems: { to: string; label: string; key: UserNavbarProps['active'] }[] = [
   { to: '/', label: 'Trang chủ', key: 'home' },
   { to: '/history', label: 'Lịch sử nộp', key: 'history' },
-  { to: '/leaderboard', label: 'Bảng xếp hạng', key: 'leaderboard' },
   { to: '/guide', label: 'Hướng dẫn ghi điểm', key: 'guide' },
 ]
 

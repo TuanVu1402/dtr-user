@@ -2,10 +2,42 @@
   box-sizing: border-box;
 }
 
-/* Theme tokens — mặc định (tối), ghi đè bằng [data-theme='light'] khi bật giao diện sáng.
-   Các màu vàng viền/nhấn trang trí (rgba(216, 180, 99, *)) dùng chung cho cả 2 theme nên
-   không cần biến riêng — sắc vàng đọc tốt trên cả nền tối lẫn nền sáng kem. */
+/* Theme tokens — mặc định là SÁNG ngay từ :root (không cần chờ JS gắn data-theme mới
+   có màu đúng, tránh chớp tối lúc tải trang). Giao diện tối là phần ghi đè qua
+   [data-theme='dark'] khi người dùng bấm nút chuyển. Các màu vàng viền/nhấn trang trí
+   (rgba(216, 180, 99, *)) dùng chung cho cả 2 theme nên không cần biến riêng. */
 :root {
+  --bg-1: #ffffff;
+  --bg-2: #ffffff;
+  --bg-3: #ffffff;
+
+  --surface-1: #ffffff;
+  --surface-2: #ffffff;
+
+  --text-primary: #0e1626;
+  --text-secondary: #333c54;
+  --text-tertiary: #565f79;
+  --text-muted: #767e96;
+
+  --gold: #bb8f42;
+  --gold-bright: #6b4a0a;
+  --gold-deep: #a9822f;
+  --on-gold: #0d1f3d;
+
+  --surface-tint: #ffffff;
+  --hairline: rgba(15, 23, 42, 0.09);
+  --shadow: rgba(15, 23, 42, 0.08);
+  --shadow-strong: rgba(15, 23, 42, 0.14);
+  --scrim: rgba(15, 20, 30, 0.4);
+  --bg-glow: rgba(201, 154, 74, 0);
+  --positive: #146c3e;
+  --negative: #a92f21;
+
+  color-scheme: light;
+}
+
+/* Giao diện tối — bật khi người dùng chủ động chuyển bằng nút mặt trời/mặt trăng. */
+:root[data-theme='dark'] {
   --bg-1: #081428;
   --bg-2: #0d1f3d;
   --bg-3: #0a1830;
@@ -35,37 +67,6 @@
   color-scheme: dark;
 }
 
-/* Giao diện sáng — nền trắng/xám nhạt kiểu SaaS hiện đại, giữ vàng làm màu nhấn thay vì
-   phủ tông kem/vàng lên cả nền như bản nháp đầu (nhìn xỉn, không "sáng"). */
-:root[data-theme='light'] {
-  --bg-1: #fcfcfd;
-  --bg-2: #f7f4ec;
-  --bg-3: #fcfcfd;
-
-  --surface-1: #ffffff;
-  --surface-2: #ffffff;
-
-  --text-primary: #182338;
-  --text-secondary: #4a5268;
-  --text-tertiary: #6a7288;
-  --text-muted: #8b93a5;
-
-  --gold: #c79a4b;
-  --gold-bright: #7a560c;
-  --gold-deep: #a9822f;
-
-  --surface-tint: rgba(15, 23, 42, 0.028);
-  --hairline: rgba(15, 23, 42, 0.07);
-  --shadow: rgba(15, 23, 42, 0.07);
-  --shadow-strong: rgba(15, 23, 42, 0.12);
-  --scrim: rgba(15, 20, 30, 0.4);
-  --bg-glow: rgba(201, 154, 74, 0.04);
-  --positive: #1f7a4d;
-  --negative: #b83a2c;
-
-  color-scheme: light;
-}
-
 html,
 body {
   margin: 0;
@@ -73,7 +74,7 @@ body {
 }
 
 body {
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--bg-3);
 }
 

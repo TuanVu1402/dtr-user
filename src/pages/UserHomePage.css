@@ -39,11 +39,24 @@
 .hero-card {
   border-radius: 20px;
   padding: 36px 40px;
-  background: linear-gradient(135deg, rgba(216, 180, 99, 0.1), color-mix(in srgb, var(--surface-1) 40%, transparent));
+  background: var(--surface-1);
   border: 1px solid rgba(216, 180, 99, 0.28);
   display: flex;
   flex-direction: column;
   gap: 22px;
+}
+
+/* Giao diện tối: phủ thêm lớp kính mờ ánh vàng lên nền trang thay vì trắng phẳng. */
+:root[data-theme='dark'] .hero-card {
+  background: linear-gradient(135deg, rgba(216, 180, 99, 0.1), color-mix(in srgb, var(--surface-1) 40%, transparent));
+}
+
+:root[data-theme='dark'] .coin-card {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface-1) 55%, transparent),
+    color-mix(in srgb, var(--surface-2) 55%, transparent)
+  );
 }
 
 .hero-top {
@@ -63,7 +76,7 @@
 }
 
 .hero-points {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 64px;
   line-height: 1;
@@ -133,7 +146,7 @@
 }
 
 .breakdown-num {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 22px;
   color: var(--text-primary);
@@ -148,11 +161,7 @@
 .coin-card {
   border-radius: 20px;
   border: 1px solid rgba(216, 180, 99, 0.28);
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--surface-1) 55%, transparent),
-    color-mix(in srgb, var(--surface-2) 55%, transparent)
-  );
+  background: var(--surface-1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -188,7 +197,7 @@
 }
 
 .coin-text {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 1.5px;
@@ -256,7 +265,7 @@
 }
 
 .cat-num {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 13px;
   color: var(--on-gold);
@@ -295,7 +304,7 @@
 }
 
 .cat-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 17px;
   color: var(--text-primary);
@@ -360,7 +369,7 @@
   color: var(--on-gold);
   font-size: 13.5px;
   font-weight: 700;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
   min-height: 44px;
   white-space: nowrap;
@@ -430,5 +439,138 @@
   }
   .hero-points {
     font-size: 48px;
+  }
+}
+
+/* Bảng xếp hạng nhúng trong Trang chủ — bục top 3 + danh sách các hạng còn lại */
+.leaderboard-section {
+  padding: 26px 44px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.podium-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
+  gap: 16px;
+}
+
+.podium-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 26px 16px 20px;
+  border-radius: 16px;
+  background: var(--surface-1);
+  border: 1px solid rgba(216, 180, 99, 0.22);
+  text-align: center;
+}
+
+.podium-slot.rank-1 {
+  order: 2;
+  padding-top: 36px;
+  padding-bottom: 28px;
+  border-color: rgba(216, 180, 99, 0.5);
+  box-shadow: 0 16px 32px var(--shadow);
+}
+
+.podium-slot.rank-2 {
+  order: 1;
+}
+
+.podium-slot.rank-3 {
+  order: 3;
+}
+
+.podium-slot.me {
+  background: rgba(216, 180, 99, 0.08);
+}
+
+.podium-empty {
+  visibility: hidden;
+}
+
+.podium-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--on-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.podium-slot.rank-1 .podium-avatar {
+  width: 68px;
+  height: 68px;
+  font-size: 20px;
+}
+
+.podium-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.podium-points {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--gold-bright);
+}
+
+.podium-rank-num {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--on-gold);
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface-1);
+}
+
+@media (max-width: 640px) {
+  .leaderboard-section {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .podium-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .podium-slot.rank-1 {
+    order: 0;
+  }
+
+  .podium-slot.rank-2 {
+    order: 1;
+  }
+
+  .podium-slot.rank-3 {
+    order: 2;
   }
 }

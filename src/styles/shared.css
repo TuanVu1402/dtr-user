@@ -34,7 +34,7 @@
 }
 
 .brand-word {
-  font-family: 'Montserrat', 'Segoe UI', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 26px;
   letter-spacing: 2px;
@@ -156,7 +156,7 @@
   padding: 8px 20px;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--gold-deep), var(--gold));
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 1.6px;
@@ -164,7 +164,7 @@
 }
 
 .section-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 30px;
   letter-spacing: 0.5px;
@@ -234,6 +234,27 @@
   }
 }
 
+/* Tablet (ví dụ iPad Mini 768px) — bảng lịch sử trước đó bị min-width ép tràn ngang,
+   cắt mất chữ cột cuối. Bỏ min-width để bảng co theo khung, chữ tự xuống dòng. Chỉ áp dụng
+   từ 641px trở lên — điện thoại thật sự chật (≤640px) vẫn cuộn ngang như cũ vì 5 cột không
+   thể co đủ nhỏ mà vẫn đọc được ở khổ đó. */
+@media (max-width: 900px) {
+  .section-head,
+  .history-section {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .t-row {
+    min-width: 0;
+    grid-template-columns: 1fr 1.6fr 0.85fr 0.55fr 0.85fr;
+    padding: 14px 16px;
+    gap: 8px;
+  }
+}
+
 @media (max-width: 640px) {
   .navbar,
   .section-head,
@@ -274,7 +295,7 @@
   border: 1px solid rgba(216, 180, 99, 0.25);
   background: var(--surface-tint);
   color: var(--text-primary);
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   padding: 11px 14px;
 }
@@ -355,7 +376,7 @@
 }
 
 .history-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
   font-size: 22px;
   color: var(--text-primary);
@@ -423,7 +444,7 @@
   font-size: 14px;
   font-weight: 800;
   color: var(--gold-bright);
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Modal/overlay shell — dùng chung cho SubmissionForm và EvidenceModal */
@@ -455,7 +476,7 @@
 }
 
 .form-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 18px;
   color: var(--text-primary);
@@ -504,7 +525,7 @@
   border-radius: 10px;
   font-size: 13.5px;
   font-weight: 700;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
   min-height: 44px;
 }

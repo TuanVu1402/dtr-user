@@ -1,7 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import UserHomePage from './pages/UserHomePage'
 import HistoryPage from './pages/HistoryPage'
-import LeaderboardPage from './pages/LeaderboardPage'
 import ProfilePage from './pages/ProfilePage'
 import GuidePage from './pages/GuidePage'
 import AuthPage from './pages/AuthPage'
@@ -33,7 +32,6 @@ function AppShell() {
           <Routes>
             <Route path="/" element={<UserHomePage />} />
             <Route path="/history" element={<HistoryPage />} />
-            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/guide" element={<GuidePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

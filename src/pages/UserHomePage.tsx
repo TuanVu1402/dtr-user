@@ -13,6 +13,7 @@ import { formatPoints } from '../utils/format'
 import type { Category } from '../types/dtr'
 import '../styles/shared.css'
 import './UserHomePage.css'
+import './Leaderboard.css'
 
 const categoryIcons: Record<Category['icon'], typeof BookingIcon> = {
   booking: BookingIcon,
@@ -32,7 +33,7 @@ type CheckinNotice = {
 }
 
 export default function UserHomePage() {
-  const { submissions, addSubmission } = useSubmissions()
+  const { submissions, users, addSubmission } = useSubmissions()
   const [openCategory, setOpenCategory] = useState<Category | null>(null)
   const [checkinNotice, setCheckinNotice] = useState<CheckinNotice | null>(null)
   const { findSession } = useTrainingSessions()
@@ -42,6 +43,23 @@ export default function UserHomePage() {
     [submissions],
   )
   const recentEntries = myEntries.slice(0, 4)
+
+  const fullRanking = useMemo(() => {
+    const totals = new Map<string, number>()
+    for (const s of submissions) {
+      if (s.status !== 'approved') continue
+      totals.set(s.userName, (totals.get(s.userName) ?? 0) + s.points)
+    }
+    return users
+      .filter((u) => u.role === 'user')
+      .map((u) => ({ name: u.name, points: totals.get(u.name) ?? 0 }))
+      .sort((a, b) => b.points - a.points)
+  }, [submissions, users])
+
+  const podium = fullRanking.slice(0, 3)
+  const restRanking = fullRanking.slice(3)
+  // Thứ tự hiển thị bục xếp hạng: Hạng 2 — Hạng 1 (giữa, cao nhất) — Hạng 3.
+  const podiumDisplayOrder = [podium[1], podium[0], podium[2]]
 
   const progressPercent = Math.min(100, Math.round((totalPoints / nextTierAt) * 100))
   const pointsToNextTier = nextTierAt - totalPoints
@@ -173,6 +191,81 @@ export default function UserHomePage() {
             <b className="gold-text">một bước tiến gần thành công</b>&rdquo;
           </div>
         </div>
+      </section>
+
+      <section className="section-head">
+        <div className="pill">XẾP HẠNG</div>
+        <h2 className="section-title">Bảng xếp hạng DTR Point</h2>
+        <p className="section-caption">
+          Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
+        </p>
+      </section>
+
+      <section className="leaderboard-section">
+        {fullRanking.length === 0 ? (
+          <p className="section-caption">Chưa có dữ liệu xếp hạng.</p>
+        ) : (
+          <>
+            {podium.length > 0 && (
+              <div className="podium-row">
+                {podiumDisplayOrder.map((entry, slotIndex) => {
+                  if (!entry) return <div className="podium-slot podium-empty" key={`empty-${slotIndex}`} />
+                  const rank = podium.indexOf(entry) + 1
+                  const isMe = entry.name === CURRENT_USER_NAME
+                  return (
+                    <div className={`podium-slot rank-${rank}${isMe ? ' me' : ''}`} key={entry.name}>
+                      <CrownIcon
+                        size={20}
+                        color={rank === 1 ? '#f3d98b' : rank === 2 ? '#d7dce6' : '#d99a63'}
+                      />
+                      <div className="podium-avatar">
+                        {entry.name
+                          .split(' ')
+                          .slice(-2)
+                          .map((w) => w[0])
+                          .join('')
+                          .toUpperCase()}
+                      </div>
+                      <div className="podium-name">
+                        {entry.name}
+                        {isMe && <span className="leaderboard-me-tag">Bạn</span>}
+                      </div>
+                      <div className="podium-points">{formatPoints(entry.points)} điểm</div>
+                      <div className="podium-rank-num">{rank}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {restRanking.length > 0 && (
+              <div className="leaderboard-list">
+                {restRanking.map((entry, index) => {
+                  const rank = index + 4
+                  const isMe = entry.name === CURRENT_USER_NAME
+                  return (
+                    <div className={`leaderboard-row${isMe ? ' me' : ''}`} key={entry.name}>
+                      <div className="leaderboard-rank">{rank}</div>
+                      <div className="leaderboard-avatar">
+                        {entry.name
+                          .split(' ')
+                          .slice(-2)
+                          .map((w) => w[0])
+                          .join('')
+                          .toUpperCase()}
+                      </div>
+                      <div className="leaderboard-name">
+                        {entry.name}
+                        {isMe && <span className="leaderboard-me-tag">Bạn</span>}
+                      </div>
+                      <div className="leaderboard-points">{formatPoints(entry.points)} điểm</div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </>
+        )}
       </section>
 
       <section className="section-head">
