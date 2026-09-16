@@ -1,29 +1,57 @@
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import UserHomePage from './pages/UserHomePage'
-import ProfilePage from './pages/ProfilePage'
-import AuthPage from './pages/AuthPage'
-import { AuthProvider, useAuth } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'
-import { TrainingSessionsProvider } from './context/TrainingSessionsContext'
-import { FeedbackProvider } from './context/FeedbackContext'
-import { SubmissionsProvider } from './context/SubmissionsContext'
-import FloatingActions from './components/FloatingActions'
-import ScrollToTop from './components/ScrollToTop'
-import type { Role } from './types/dtr'
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
+import UserHomePage from "@/pages/UserHomePage";
+import ProfilePage from "@/pages/ProfilePage";
+import AuthPage from "@/pages/AuthPage";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { TrainingSessionsProvider } from "@/context/TrainingSessionsContext";
+import { FeedbackProvider } from "@/context/FeedbackContext";
+import { SubmissionsProvider } from "@/context/SubmissionsContext";
+import { FloatingActions, ScrollToTop } from "@/components";
+import type { Role } from "@/types/dtr";
 
-function AppShell() {
-  const { role, login } = useAuth()
-  const navigate = useNavigate()
+// Mock user for demo mode
+const MOCK_USERS: Record<Role, { id: string; email: string; name: string; role: Role }> = {
+  user: { id: 'u1', email: 'an.nguyen@dtr.vn', name: 'Lai Ngọc Tuyền', role: 'user' },
+};
 
-  function handleAuthenticated(nextRole: Role) {
-    login(nextRole)
-    navigate('/')
+// Auth route - accessible when NOT authenticated
+function AuthRoutes() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleAuthenticated(roleOrCredentials: Role | { email: string; password: string }) {
+    // Quick login (demo mode) - role only
+    if (typeof roleOrCredentials === 'string') {
+      const mockUser = MOCK_USERS[roleOrCredentials] || MOCK_USERS.user;
+      // Store mock token and user in localStorage
+      localStorage.setItem('dtr_token', `demo-token-${mockUser.id}`);
+      localStorage.setItem('dtr_mock_user', JSON.stringify(mockUser));
+      // Force auth check to pick up the mock user
+      window.location.reload();
+      return;
+    }
+
+    // Real login with credentials
+    try {
+      await login(roleOrCredentials);
+      navigate("/");
+    } catch {
+      // Login failed - stay on auth page
+    }
   }
 
-  if (!role) {
-    return <AuthPage onAuthenticated={handleAuthenticated} />
-  }
+  return <AuthPage onAuthenticated={handleAuthenticated} />;
+}
 
+// Protected routes - require authentication
+function ProtectedRoutes() {
   return (
     <SubmissionsProvider>
       <TrainingSessionsProvider>
@@ -37,7 +65,51 @@ function AppShell() {
         </FeedbackProvider>
       </TrainingSessionsProvider>
     </SubmissionsProvider>
-  )
+  );
+}
+
+function AppShell() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading spinner while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-1)]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-[var(--gold)] border-t-transparent rounded-full animate-spin" />
+          <span className="text-[var(--text-secondary)]">Đang tải...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Routes>
+      {/* Auth route - accessible when NOT authenticated */}
+      <Route
+        path="/auth"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/" replace />
+          ) : (
+            <AuthRoutes />
+          )
+        }
+      />
+
+      {/* Protected routes - require authentication */}
+      <Route
+        path="/*"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoutes />
+          ) : (
+            <Navigate to="/auth" replace />
+          )
+        }
+      />
+    </Routes>
+  );
 }
 
 export default function App() {
@@ -50,5 +122,5 @@ export default function App() {
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
-  )
+  );
 }

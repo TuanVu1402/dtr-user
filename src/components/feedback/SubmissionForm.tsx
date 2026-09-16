@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import type { Category } from '../types/dtr'
-import { formatPoints } from '../utils/format'
+import type { Category } from '@/types/dtr'
+import { formatPoints } from '@/utils/format'
 
 type SubmissionFormProps = {
   category: Category
@@ -21,12 +21,6 @@ type FormErrors = {
   link?: string
   file?: string
 }
-
-const fieldInputClass =
-  "w-full rounded-[10px] border border-[rgba(37,99,235,0.25)] bg-(--surface-tint) px-3.5 py-[11px] font-['Open_Sans',sans-serif] text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:border-(--gold) focus:outline-none"
-const fieldLabelClass = 'text-[12.5px] font-bold text-(--text-secondary)'
-const requiredMarkClass = 'font-bold text-[#e5876f]'
-const fieldErrorClass = 'text-[12.5px] text-[#e5876f]'
 
 export default function SubmissionForm({ category, onCancel, onSubmit }: SubmissionFormProps) {
   const [optionLabel, setOptionLabel] = useState(category.pointOptions[0].label)
@@ -85,24 +79,25 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-(--scrim) p-6 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] p-4"
       onClick={onCancel}
     >
       <form
-        className="flex w-full max-w-[480px] max-h-[90svh] flex-col gap-5 overflow-y-auto rounded-xl border border-[rgba(37,99,235,0.32)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-2))] p-7 shadow-[0_30px_60px_var(--shadow-strong)]"
+        className="flex w-full max-w-[400px] max-h-[85svh] flex-col gap-4 overflow-y-auto rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-5"
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
       >
+        {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-xs font-bold tracking-[1.4px] text-(--gold-bright) uppercase">Nộp minh chứng</div>
-            <div className="mt-1.5 font-['Open_Sans',sans-serif] text-lg leading-[1.35] font-bold text-(--text-primary)">
+            <div className="text-xs font-medium text-[var(--text-muted)] uppercase">Nộp minh chứng</div>
+            <div className="mt-1 text-base font-semibold text-[var(--text-primary)]">
               {category.title}
             </div>
           </div>
           <button
             type="button"
-            className="h-8 w-8 shrink-0 cursor-pointer rounded-full border border-[rgba(37,99,235,0.3)] bg-transparent text-xl leading-none text-(--gold-bright)"
+            className="h-8 w-8 shrink-0 cursor-pointer rounded-full border border-[var(--hairline)] bg-transparent text-xl leading-none text-[var(--text-secondary)]"
             onClick={onCancel}
             aria-label="Đóng"
           >
@@ -110,21 +105,22 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
           </button>
         </div>
 
+        {/* Point Options */}
         {hasMultipleOptions && (
           <div className="flex flex-col gap-2">
-            <label className={fieldLabelClass}>Loại</label>
-            <div className="flex flex-wrap gap-2.5">
+            <label className="text-xs font-medium text-[var(--text-secondary)]">Loại</label>
+            <div className="flex flex-wrap gap-2">
               {category.pointOptions.map((option) => (
                 <label
                   key={option.label}
-                  className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-2.5 text-[13px] font-bold ${
+                  className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium ${
                     option.label === optionLabel
-                      ? 'border-(--gold) bg-[rgba(37,99,235,0.14)] text-(--gold-bright)'
-                      : 'border-[rgba(37,99,235,0.3)] text-(--text-secondary)'
+                      ? 'border-[var(--gold)] bg-[var(--gold)]/[0.1] text-[var(--gold-bright)]'
+                      : 'border-[var(--hairline)] text-[var(--text-secondary)]'
                   }`}
                 >
                   <input
-                    className="accent-(--gold)"
+                    className="accent-[var(--gold)]"
                     type="radio"
                     name="pointOption"
                     value={option.label}
@@ -138,13 +134,16 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
           </div>
         )}
 
+        {/* Date */}
         <div className="flex flex-col gap-2">
-          <label className={fieldLabelClass} htmlFor="submission-date">
-            Ngày thực hiện <span className={requiredMarkClass}>*</span>
+          <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-date">
+            Ngày thực hiện <span className="text-[var(--negative)]">*</span>
           </label>
           <input
             id="submission-date"
-            className={`${fieldInputClass} ${errors.date ? 'border-[#e5876f]' : ''}`}
+            className={`rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none ${
+              errors.date ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
+            }`}
             type="date"
             value={date}
             onChange={(e) => {
@@ -152,74 +151,81 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
               if (errors.date) setErrors((prev) => ({ ...prev, date: undefined }))
             }}
           />
-          {errors.date && <div className={fieldErrorClass}>{errors.date}</div>}
+          {errors.date && <div className="text-xs text-[var(--negative)]">{errors.date}</div>}
         </div>
 
+        {/* Description */}
         <div className="flex flex-col gap-2">
-          <label className={fieldLabelClass} htmlFor="submission-desc">
-            Mô tả / thông tin minh chứng <span className={requiredMarkClass}>*</span>
+          <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-desc">
+            Mô tả minh chứng <span className="text-[var(--negative)]">*</span>
           </label>
           <textarea
             id="submission-desc"
-            className={`min-h-[88px] resize-y ${fieldInputClass} ${errors.description ? 'border-[#e5876f]' : ''}`}
-            placeholder="Ví dụ: Dự án, mã booking, tên sự kiện, nhóm khách hàng..."
+            className={`min-h-[72px] resize-y rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none ${
+              errors.description ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
+            }`}
+            placeholder="Ví dụ: Dự án, mã booking, tên sự kiện..."
             value={description}
             onChange={(e) => {
               setDescription(e.target.value)
               if (errors.description) setErrors((prev) => ({ ...prev, description: undefined }))
             }}
           />
-          {errors.description && <div className={fieldErrorClass}>{errors.description}</div>}
+          {errors.description && <div className="text-xs text-[var(--negative)]">{errors.description}</div>}
         </div>
 
+        {/* Evidence - Link */}
         {isLinkEvidence ? (
           <div className="flex flex-col gap-2">
-            <label className={fieldLabelClass} htmlFor="submission-link">
-              Link clip minh chứng <span className={requiredMarkClass}>*</span>
+            <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-link">
+              Link minh chứng <span className="text-[var(--negative)]">*</span>
             </label>
             <input
               id="submission-link"
-              className={`${fieldInputClass} ${errors.link ? 'border-[#e5876f]' : ''}`}
+              className={`rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none ${
+                errors.link ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
+              }`}
               type="url"
-              placeholder="Dán link clip (YouTube, TikTok, Drive, Facebook...)"
+              placeholder="Dán link (YouTube, TikTok, Drive...)"
               value={link}
               onChange={(e) => {
                 setLink(e.target.value)
                 if (errors.link) setErrors((prev) => ({ ...prev, link: undefined }))
               }}
             />
-            {errors.link && <div className={fieldErrorClass}>{errors.link}</div>}
+            {errors.link && <div className="text-xs text-[var(--negative)]">{errors.link}</div>}
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            <label className={fieldLabelClass}>
-              Ảnh / tệp minh chứng <span className={requiredMarkClass}>*</span>
+            <label className="text-xs font-medium text-[var(--text-secondary)]">
+              Ảnh minh chứng <span className="text-[var(--negative)]">*</span>
             </label>
             <label
-              className={`flex cursor-pointer items-center justify-center rounded-[10px] border border-dashed p-4.5 text-center text-[13px] text-(--text-tertiary) hover:border-(--gold) hover:text-(--gold-bright) ${
-                errors.file ? 'border-[#e5876f]' : 'border-[rgba(37,99,235,0.4)]'
+              className={`flex cursor-pointer items-center justify-center rounded-lg border border-dashed p-4 text-center text-sm text-[var(--text-muted)] hover:border-[var(--gold)] hover:text-[var(--gold-bright)] ${
+                errors.file ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
               }`}
             >
               <input type="file" accept="image/*" hidden onChange={handleFileChange} />
-              <span>{file ? file.name : 'Chọn ảnh hoặc tệp minh chứng'}</span>
+              <span>{file ? file.name : 'Chọn ảnh minh chứng'}</span>
             </label>
-            {errors.file && <div className={fieldErrorClass}>{errors.file}</div>}
+            {errors.file && <div className="text-xs text-[var(--negative)]">{errors.file}</div>}
           </div>
         )}
 
-        <div className="mt-1 flex justify-end gap-3">
+        {/* Actions */}
+        <div className="flex justify-end gap-2 pt-2">
           <button
             type="button"
-            className="min-h-11 cursor-pointer rounded-[10px] border border-[rgba(37,99,235,0.3)] bg-transparent px-5 py-[11px] font-['Open_Sans',sans-serif] text-[13.5px] font-bold text-(--text-secondary) transition-[transform,box-shadow,background,border-color] duration-150 hover:border-[rgba(169,127,47,0.5)] hover:bg-[rgba(169,127,47,0.08)]"
+            className="cursor-pointer rounded-lg border border-[var(--hairline)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--text-secondary)]"
             onClick={onCancel}
           >
             Hủy
           </button>
           <button
             type="submit"
-            className="min-h-11 cursor-pointer rounded-[10px] border-none bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-[11px] font-['Open_Sans',sans-serif] text-[13.5px] font-bold text-(--on-gold) shadow-[0_6px_16px_rgba(169,127,47,0.25)] transition-[transform,box-shadow,background,border-color] duration-150 hover:-translate-y-px hover:shadow-[0_10px_22px_rgba(169,127,47,0.35)]"
+            className="cursor-pointer rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-medium text-[var(--on-gold)]"
           >
-            Gửi yêu cầu chấm điểm
+            Gửi yêu cầu
           </button>
         </div>
       </form>

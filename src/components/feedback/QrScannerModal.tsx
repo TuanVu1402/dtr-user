@@ -6,8 +6,6 @@ type QrScannerModalProps = {
   onCancel: () => void
 }
 
-/** Mở camera thiết bị và quét mã QR liên tục bằng jsQR — dùng cho nút "Quét QR tự động"
- * ở hạng mục Training/Kick off, thay vì phải quét bằng app camera ngoài rồi mở lại link. */
 export default function QrScannerModal({ onDetected, onCancel }: QrScannerModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [error, setError] = useState<string | null>(null)
@@ -36,7 +34,7 @@ export default function QrScannerModal({ onDetected, onCancel }: QrScannerModalP
         tick()
       } catch {
         if (!cancelled) {
-          setError('Không thể mở camera. Hãy cấp quyền camera cho trình duyệt rồi thử lại.')
+          setError('Không thể mở camera. Hãy cấp quyền camera cho trình duyệt.')
         }
       }
     }
@@ -72,25 +70,22 @@ export default function QrScannerModal({ onDetected, onCancel }: QrScannerModalP
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-(--scrim) p-6 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] p-4"
       onClick={onCancel}
     >
       <div
-        className="flex w-full max-w-[420px] flex-col gap-4.5 rounded-xl border border-[rgba(37,99,235,0.32)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-2))] p-7 shadow-[0_30px_60px_var(--shadow-strong)]"
+        className="flex w-full max-w-[360px] flex-col gap-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-5"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-xs font-bold tracking-[1.4px] text-(--gold-bright) uppercase">
-              Điểm danh Training / Kick off
-            </div>
-            <div className="mt-1.5 font-['Open_Sans',sans-serif] text-lg leading-[1.35] font-bold text-(--text-primary)">
-              Quét mã QR tự động
-            </div>
+            <div className="text-xs font-medium text-[var(--text-muted)] uppercase">Điểm danh Training</div>
+            <div className="mt-1 text-base font-semibold text-[var(--text-primary)]">Quét mã QR</div>
           </div>
           <button
             type="button"
-            className="h-8 w-8 shrink-0 cursor-pointer rounded-full border border-[rgba(37,99,235,0.3)] bg-transparent text-xl leading-none text-(--gold-bright)"
+            className="h-8 w-8 shrink-0 cursor-pointer rounded-full border border-[var(--hairline)] bg-transparent text-xl leading-none text-[var(--text-secondary)]"
             onClick={onCancel}
             aria-label="Đóng"
           >
@@ -98,30 +93,30 @@ export default function QrScannerModal({ onDetected, onCancel }: QrScannerModalP
           </button>
         </div>
 
+        {/* Camera / Error */}
         {error ? (
-          <div className="rounded-lg border border-[rgba(217,122,108,0.4)] bg-[rgba(217,122,108,0.12)] p-6 text-center text-[13.5px] leading-[1.6] text-(--negative)">
+          <div className="rounded-lg border border-[var(--negative)]/[0.3] bg-[var(--negative)]/[0.1] p-4 text-center text-sm text-[var(--negative)]">
             {error}
           </div>
         ) : (
-          <div className="relative aspect-square w-full overflow-hidden rounded-[10px] bg-black">
+          <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-black">
             <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
-            <div className="pointer-events-none absolute inset-[14%] rounded-[10px] border-[3px] border-(--gold) shadow-[0_0_0_999px_rgba(0,0,0,0.35)]" />
+            <div className="pointer-events-none absolute inset-[14%] rounded-lg border-2 border-[var(--gold)] shadow-[0_0_0_9999px_rgba(0,0,0,0.4)]" />
           </div>
         )}
 
-        <p className="m-0 text-center text-[13px] text-(--text-tertiary)">
-          {error ? 'Bạn có thể đóng cửa sổ này và thử lại.' : 'Đưa mã QR của buổi Training vào giữa khung hình.'}
+        <p className="text-center text-xs text-[var(--text-muted)]">
+          {error ? 'Hãy đóng cửa sổ này và thử lại.' : 'Đưa mã QR vào giữa khung hình.'}
         </p>
 
-        <div className="mt-1 flex justify-end gap-3">
-          <button
-            type="button"
-            className="min-h-11 cursor-pointer rounded-[10px] border border-[rgba(37,99,235,0.3)] bg-transparent px-5 py-[11px] font-['Open_Sans',sans-serif] text-[13.5px] font-bold text-(--text-secondary) transition-[transform,box-shadow,background,border-color] duration-150 hover:border-[rgba(169,127,47,0.5)] hover:bg-[rgba(169,127,47,0.08)]"
-            onClick={onCancel}
-          >
-            Hủy
-          </button>
-        </div>
+        {/* Cancel Button */}
+        <button
+          type="button"
+          className="cursor-pointer rounded-lg border border-[var(--hairline)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--text-secondary)]"
+          onClick={onCancel}
+        >
+          Hủy
+        </button>
       </div>
     </div>
   )

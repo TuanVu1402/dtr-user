@@ -1,0 +1,5 @@
+export { default as UserHomePage } from './UserHomePage'
+export { default as HowToEarnSection } from './HowToEarnSection'
+export { default as CategoryCard } from './CategoryCard'
+export { default as PointsProgressSection } from './PointsProgressSection'
+export { LeaderboardPodium, LeaderboardList } from './LeaderboardSection'

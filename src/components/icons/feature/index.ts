@@ -1,0 +1,6 @@
+export { BookingIcon } from './BookingIcon'
+export { TrainingIcon } from './TrainingIcon'
+export { ClipIcon } from './ClipIcon'
+export { CheckinIcon } from './CheckinIcon'
+export { PersonIcon } from './PersonIcon'
+export { OfficeIcon } from './OfficeIcon'

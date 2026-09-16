@@ -1,72 +1,58 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-/* Cho phép dùng tiền tố dark: (Tailwind) ứng với [data-theme='dark'] thay vì
-   media prefers-color-scheme, vì theme ở đây do người dùng bấm nút chuyển. */
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
-
-/* Theme tokens — mặc định là SÁNG ngay từ :root (không cần chờ JS gắn data-theme mới
-   có màu đúng, tránh chớp tối lúc tải trang). Giao diện tối là phần ghi đè qua
-   [data-theme='dark'] khi người dùng bấm nút chuyển. Các màu xanh viền/nhấn trang trí
-   (rgba(37, 99, 235, *)) dùng chung cho cả 2 theme nên không cần biến riêng. */
+/* Theme tokens — đơn giản, dễ đọc */
 :root {
   --bg-1: #ffffff;
-  --bg-2: #ffffff;
-  --bg-3: #ffffff;
+  --bg-2: #f8fafc;
+  --bg-3: #f1f5f9;
 
   --surface-1: #ffffff;
-  --surface-2: #ffffff;
+  --surface-2: #f8fafc;
 
-  --text-primary: #0e1626;
-  --text-secondary: #333c54;
-  --text-tertiary: #565f79;
-  --text-muted: #767e96;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-muted: #94a3b8;
 
   --gold: #2563eb;
-  --gold-bright: #1d4ed8;
-  --gold-deep: #1e40af;
-  --on-gold: #ffffff;
-
-  --surface-tint: #ffffff;
-  --hairline: rgba(15, 23, 42, 0.09);
-  --shadow: rgba(15, 23, 42, 0.08);
-  --shadow-strong: rgba(15, 23, 42, 0.14);
-  --scrim: rgba(15, 20, 30, 0.4);
-  --bg-glow: rgba(37, 99, 235, 0);
-  --positive: #146c3e;
-  --negative: #a92f21;
-
-  color-scheme: light;
-}
-
-/* Giao diện tối — bật khi người dùng chủ động chuyển bằng nút mặt trời/mặt trăng. */
-:root[data-theme='dark'] {
-  --bg-1: #081428;
-  --bg-2: #0d1f3d;
-  --bg-3: #0a1830;
-
-  --surface-1: #14294f;
-  --surface-2: #0a1830;
-
-  --text-primary: #f4ecd8;
-  --text-secondary: #b7c3da;
-  --text-tertiary: #9fb0c9;
-  --text-muted: #6f7f9c;
-
-  --gold: #3b82f6;
-  --gold-bright: #93c5fd;
+  --gold-bright: #3b82f6;
   --gold-deep: #1d4ed8;
   --on-gold: #ffffff;
 
-  --surface-tint: rgba(255, 255, 255, 0.04);
-  --hairline: rgba(255, 255, 255, 0.06);
-  --shadow: rgba(0, 0, 0, 0.35);
-  --shadow-strong: rgba(0, 0, 0, 0.45);
-  --scrim: rgba(4, 10, 22, 0.72);
-  --bg-glow: rgba(37, 99, 235, 0.1);
-  --positive: #7fd8ac;
-  --negative: #ef9a8c;
+  --hairline: #e2e8f0;
+  --shadow: rgba(15, 23, 42, 0.06);
+  --shadow-strong: rgba(15, 23, 42, 0.1);
+  --scrim: rgba(15, 20, 30, 0.4);
+  --bg-glow: rgba(37, 99, 235, 0.05);
+  --positive: #16a34a;
+  --negative: #dc2626;
+}
 
-  color-scheme: dark;
+:root[data-theme="dark"] {
+  --bg-1: #0f172a;
+  --bg-2: #1e293b;
+  --bg-3: #0f172a;
+
+  --surface-1: #1e293b;
+  --surface-2: #0f172a;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-muted: #64748b;
+
+  --gold: #3b82f6;
+  --gold-bright: #60a5fa;
+  --gold-deep: #2563eb;
+  --on-gold: #ffffff;
+
+  --hairline: #334155;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-strong: rgba(0, 0, 0, 0.4);
+  --scrim: rgba(4, 10, 22, 0.72);
+  --bg-glow: rgba(37, 99, 235, 0.08);
+  --positive: #22c55e;
+  --negative: #ef4444;
 }
 
 html,
@@ -76,8 +62,14 @@ body {
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
-  background: var(--bg-3);
+  font-family:
+    "Open Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background: var(--bg-1);
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 #root {
@@ -86,6 +78,7 @@ body {
 
 a {
   color: inherit;
+  text-decoration: none;
 }
 
 /* Hiệu ứng nhấp nháy vòng sóng của nút Zalo nổi — Tailwind chỉ hỗ trợ animation qua
