@@ -1,11 +1,9 @@
-import { StarIcon } from '@/components'
 import { formatPoints } from '@/utils/format'
 import type { Category } from '@/types/dtr'
 
 type CategoryCardProps = {
   category: Category
   onOpen: (category: Category) => void
-  onOpenQrScanner: () => void
 }
 
 const categoryColors: Record<Category['icon'], { bg: string; text: string }> = {
@@ -64,7 +62,7 @@ const ArrowRightIcon = ({ size = 16, color = 'currentColor' }: { size?: number; 
   </svg>
 )
 
-export default function CategoryCard({ category, onOpen, onOpenQrScanner }: CategoryCardProps) {
+export default function CategoryCard({ category, onOpen }: CategoryCardProps) {
   const Icon = categoryIcons[category.icon]
   const colors = categoryColors[category.icon]
   const maxPoints = Math.max(...category.pointOptions.map((option) => option.points))
