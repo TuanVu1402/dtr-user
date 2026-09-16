@@ -92,6 +92,8 @@ a {
    theme (--animate-*) + @keyframes, không có utility class dựng sẵn cho hiệu ứng này. */
 @theme {
   --animate-zalo-pulse: floating-zalo-pulse 2.4s ease-out infinite;
+  --animate-medal-shine: medal-shine 3.6s ease-in-out infinite;
+  --animate-champion-glow: champion-glow 2.8s ease-in-out infinite;
 }
 
 @keyframes floating-zalo-pulse {
@@ -109,5 +111,27 @@ a {
     box-shadow:
       0 10px 24px rgba(0, 0, 0, 0.35),
       0 0 0 0 rgba(0, 104, 255, 0);
+  }
+}
+
+/* Vệt sáng quét ngang bục hạng 1. Quét nhanh rồi nghỉ, tránh gây rối mắt khi đọc bảng. */
+@keyframes medal-shine {
+  0% {
+    transform: translateX(-160%) skewX(-18deg);
+  }
+  45%,
+  100% {
+    transform: translateX(420%) skewX(-18deg);
+  }
+}
+
+/* Vầng sáng lan toả quanh avatar quán quân. */
+@keyframes champion-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(224, 169, 46, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(224, 169, 46, 0);
   }
 }

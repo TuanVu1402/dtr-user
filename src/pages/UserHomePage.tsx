@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { categories, pointBreakdown } from '../data/dtrData'
 import { CURRENT_USER_NAME } from '../data/currentUser'
 import {
+  ArrowDownIcon,
   ArrowRightIcon,
+  ArrowUpIcon,
   BookingIcon,
   CheckinIcon,
   ClipIcon,
@@ -44,6 +46,13 @@ const tierName = 'Hạng Kim Cương'
 // để tổng cộng hiển thị đúng 6 người lúc mới vào trang (3 + 3 = 6).
 const INITIAL_RANK_COUNT = 3
 
+// Ba bước tóm tắt quy trình ghi điểm, hiển thị ở đầu khối "Cách ghi điểm".
+const submitSteps = [
+  { title: 'Chọn hạng mục', detail: 'Tìm hoạt động bạn đã tham gia' },
+  { title: 'Tải minh chứng', detail: 'Ảnh, clip hoặc quét QR tại chỗ' },
+  { title: 'Chờ duyệt', detail: 'Admin xét duyệt và cộng điểm' },
+]
+
 const leaderboardMeTagClass =
   'rounded-full bg-(--gold) px-2.5 py-[3px] text-[11px] font-bold tracking-[0.4px] text-(--on-gold)'
 
@@ -51,16 +60,34 @@ const leaderboardMeTagClass =
 // hạng 1/2/3) + dải bục màu vàng/bạc/đồng bên dưới + danh sách hạng còn lại dạng hàng. Dùng
 // đúng 1 bộ thiết kế cho mọi kích thước màn hình thay vì tách riêng bản mobile/desktop.
 
-function medalGradient(rank: number) {
-  if (rank === 1) return 'linear-gradient(135deg,#f3d98b,#d4af6a)'
-  if (rank === 2) return 'linear-gradient(135deg,#eef1f5,#b9c2cf)'
-  return 'linear-gradient(135deg,#e3a768,#b97a3d)'
+/** Bộ màu huy chương vàng / bạc / đồng. Gradient nhiều chặng mô phỏng kim loại bắt sáng,
+ * kèm màu quầng sáng (glow) và màu viền để hạng 1/2/3 rực rỡ hẳn so với phần còn lại. */
+type MedalTheme = {
+  gradient: string
+  glow: string
+  icon: string
 }
 
-function medalIconColor(rank: number) {
-  if (rank === 1) return '#7a5518'
-  if (rank === 2) return '#42506b'
-  return '#5c3417'
+const medalThemes: Record<number, MedalTheme> = {
+  1: {
+    gradient: 'linear-gradient(135deg,#fff8dc 0%,#f7d774 36%,#e0a92e 70%,#b8801a 100%)',
+    glow: 'rgba(224,169,46,0.5)',
+    icon: '#6b4a10',
+  },
+  2: {
+    gradient: 'linear-gradient(135deg,#ffffff 0%,#e6ecf4 38%,#b8c2d0 72%,#939fb0 100%)',
+    glow: 'rgba(147,159,176,0.45)',
+    icon: '#3c4759',
+  },
+  3: {
+    gradient: 'linear-gradient(135deg,#ffd9b0 0%,#e8a463 38%,#c67a3a 72%,#9a5824 100%)',
+    glow: 'rgba(198,122,58,0.45)',
+    icon: '#5c3417',
+  },
+}
+
+function medalTheme(rank: number) {
+  return medalThemes[rank] ?? medalThemes[3]
 }
 
 /** Màu số điểm theo hạng — hạng 1/2/3 dùng đúng tông vàng/bạc/đồng để nổi bật hẳn khỏi
@@ -73,7 +100,7 @@ function rankPointColorClass(rank: number) {
 }
 
 function podiumCrownWrapClass(rank: number) {
-  return `flex items-center justify-center rounded-full shadow-[0_4px_10px_rgba(0,0,0,0.25)] ring-2 ring-(--surface-1) ${
+  return `relative z-[1] flex items-center justify-center rounded-full ring-2 ring-(--surface-1) ${
     rank === 1 ? 'h-9 w-9' : 'h-7 w-7'
   }`
 }
@@ -81,13 +108,13 @@ function podiumCrownWrapClass(rank: number) {
 function podiumAvatarRingClass(rank: number, isMe: boolean) {
   const size = rank === 1 ? 'h-20 w-20' : 'h-15 w-15'
   const ring = isMe
-    ? 'ring-[rgba(37,99,235,0.55)]'
+    ? 'ring-[rgba(37,99,235,0.6)]'
     : rank === 1
-      ? 'ring-[rgba(212,175,106,0.65)]'
+      ? 'ring-[rgba(247,215,116,0.95)]'
       : rank === 2
-        ? 'ring-[rgba(185,194,207,0.7)]'
-        : 'ring-[rgba(185,122,61,0.65)]'
-  return `relative flex items-center justify-center rounded-full ring-[3px] ring-offset-2 ring-offset-(--surface-1) shadow-[0_8px_20px_var(--shadow)] ${size} ${ring}`
+        ? 'ring-[rgba(214,222,232,0.95)]'
+        : 'ring-[rgba(232,164,99,0.9)]'
+  return `relative flex items-center justify-center rounded-full ring-[3px] ring-offset-2 ring-offset-(--surface-1) ${size} ${ring}`
 }
 
 function podiumAvatarInnerClass(rank: number) {
@@ -100,7 +127,7 @@ function podiumAvatarInnerClass(rank: number) {
  * bục trao giải thay vì thẻ 3D cầu kỳ, dễ nhìn và gọn trên màn hình hẹp. */
 function podiumBaseClass(rank: number) {
   const base =
-    "flex items-center justify-center rounded-2xl font-['Open_Sans',sans-serif] font-extrabold shadow-[0_6px_14px_var(--shadow)]"
+    "relative flex items-center justify-center overflow-hidden rounded-[10px] font-['Open_Sans',sans-serif] font-extrabold"
   if (rank === 1) return `${base} h-16 text-2xl text-[#5c4114]`
   if (rank === 2) return `${base} h-12 text-lg text-[#3a4658]`
   return `${base} h-12 text-lg text-[#4a2f12]`
@@ -110,7 +137,7 @@ function podiumBaseClass(rank: number) {
  * #hạng + tên, điểm kèm sao vàng nằm bên phải. */
 function rankRowClass(isMe: boolean) {
   const base =
-    'flex items-center gap-3 rounded-2xl border px-3.5 py-2.5 shadow-[0_2px_8px_var(--shadow)] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_18px_var(--shadow-strong)]'
+    'flex items-center gap-3 rounded-[10px] border px-3.5 py-2.5 shadow-[0_2px_8px_var(--shadow)] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_18px_var(--shadow-strong)]'
   if (isMe) {
     return `${base} border-[rgba(37,99,235,0.4)] bg-[linear-gradient(90deg,rgba(37,99,235,0.1),var(--surface-1))]`
   }
@@ -251,7 +278,7 @@ export default function UserHomePage() {
   return (
     <div className="min-h-svh bg-[radial-gradient(1100px_480px_at_85%_-10%,var(--bg-glow),transparent_60%),linear-gradient(180deg,var(--bg-1)_0%,var(--bg-2)_40%,var(--bg-3)_100%)] pb-14 text-(--text-primary)">
       {checkinNotice && (
-        <div className="mx-11 mt-5 flex items-center justify-between gap-4 rounded-xl border border-[rgba(76,175,130,0.4)] bg-[rgba(76,175,130,0.12)] px-5 py-3.5 text-sm text-(--text-primary)">
+        <div className="mx-11 mt-5 flex items-center justify-between gap-4 rounded-lg border border-[rgba(76,175,130,0.4)] bg-[rgba(76,175,130,0.12)] px-5 py-3.5 text-sm text-(--text-primary)">
           <div>
             {checkinNotice.alreadyDone ? (
               <>
@@ -277,16 +304,11 @@ export default function UserHomePage() {
 
       <UserNavbar active="home" />
 
-      <section className="flex flex-wrap items-start justify-between gap-3 px-11 pt-10 pb-1 max-[640px]:px-5">
-        <div className="flex flex-col items-start gap-2.5">
-          <div className="inline-flex items-center rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-2 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
-            XẾP HẠNG
-          </div>
-          <p className="m-0 text-[15px] font-semibold text-(--text-secondary)">
-            Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
-          </p>
+      <section className="flex flex-wrap items-center justify-between gap-3 px-11 pt-10 pb-1 max-[640px]:px-5">
+        <div className="inline-flex h-9 items-center rounded-full border border-transparent bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
+          XẾP HẠNG
         </div>
-        <div className="mt-0.5 inline-flex items-center gap-1.5 rounded-full border border-[rgba(212,175,106,0.45)] bg-[rgba(243,217,139,0.16)] px-3.5 py-2 text-[12px] font-extrabold whitespace-nowrap text-[#8a6a1f] dark:text-[#f3d98b]">
+        <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[rgba(212,175,106,0.45)] bg-[rgba(243,217,139,0.16)] px-3.5 text-[12px] font-extrabold whitespace-nowrap text-[#8a6a1f] dark:text-[#f3d98b]">
           <CrownIcon size={14} color="#d4af6a" />
           Bảng vàng vinh danh
         </div>
@@ -298,19 +320,31 @@ export default function UserHomePage() {
         ) : (
           <>
             {podium.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <div className="grid grid-cols-3 items-end gap-2.5">
+              <div className="relative flex flex-col gap-3 overflow-hidden rounded-xl border border-[rgba(212,175,106,0.4)] bg-[linear-gradient(180deg,rgba(255,244,214,0.8),rgba(255,255,255,0))] px-6 pt-7 pb-6 dark:border-[rgba(212,175,106,0.24)] dark:bg-[linear-gradient(180deg,rgba(212,175,106,0.16),rgba(255,255,255,0))] max-[480px]:px-3.5">
+                <span className="pointer-events-none absolute -top-28 left-1/2 h-[300px] w-[460px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(247,199,84,0.38),transparent_70%)]" />
+
+                <div className="relative grid grid-cols-3 items-end gap-2.5">
                   {podiumDisplayOrder.map((entry, slotIndex) => {
                     if (!entry) return <div key={`empty-${slotIndex}`} />
                     const rank = podium.indexOf(entry) + 1
                     const isMe = entry.name === CURRENT_USER_NAME
+                    const theme = medalTheme(rank)
                     return (
                       <div className="flex flex-col items-center gap-1" key={entry.name}>
-                        <div className={podiumCrownWrapClass(rank)} style={{ background: medalGradient(rank) }}>
-                          <CrownIcon size={rank === 1 ? 16 : 13} color={medalIconColor(rank)} />
+                        <div
+                          className={podiumCrownWrapClass(rank)}
+                          style={{ background: theme.gradient, boxShadow: `0 4px 12px ${theme.glow}` }}
+                        >
+                          <CrownIcon size={rank === 1 ? 16 : 13} color={theme.icon} />
                         </div>
-                        <div className={`-mt-1 ${podiumAvatarRingClass(rank, isMe)}`}>
-                          <div className={podiumAvatarInnerClass(rank)} style={{ background: medalGradient(rank) }}>
+                        <div
+                          className={`-mt-1 ${podiumAvatarRingClass(rank, isMe)}`}
+                          style={{ boxShadow: `0 10px 26px ${theme.glow}` }}
+                        >
+                          {rank === 1 && (
+                            <span className="animate-champion-glow pointer-events-none absolute inset-0 rounded-full" />
+                          )}
+                          <div className={podiumAvatarInnerClass(rank)} style={{ background: theme.gradient }}>
                             {entry.avatarUrl ? (
                               <img className="h-full w-full object-cover" src={entry.avatarUrl} alt={entry.name} />
                             ) : (
@@ -333,12 +367,23 @@ export default function UserHomePage() {
                   })}
                 </div>
 
-                <div className="grid grid-cols-3 items-end gap-2.5">
-                  {[2, 1, 3].map((rank) => (
-                    <div key={rank} className={podiumBaseClass(rank)} style={{ background: medalGradient(rank) }}>
-                      {rank}
-                    </div>
-                  ))}
+                <div className="relative grid grid-cols-3 items-end gap-2.5">
+                  {[2, 1, 3].map((rank) => {
+                    const theme = medalTheme(rank)
+                    return (
+                      <div
+                        key={rank}
+                        className={podiumBaseClass(rank)}
+                        style={{ background: theme.gradient, boxShadow: `0 10px 22px ${theme.glow}` }}
+                      >
+                        <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-[linear-gradient(180deg,rgba(255,255,255,0.5),transparent)]" />
+                        {rank === 1 && (
+                          <span className="animate-medal-shine pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.8),transparent)]" />
+                        )}
+                        <span className="relative">{rank}</span>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -350,6 +395,9 @@ export default function UserHomePage() {
                   const isMe = entry.name === CURRENT_USER_NAME
                   return (
                     <div className={rankRowClass(isMe)} key={entry.name}>
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,rgba(37,99,235,0.2),rgba(37,99,235,0.06))] font-['Open_Sans',sans-serif] text-[12px] font-extrabold text-(--gold-bright)">
+                        {rank}
+                      </span>
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-(--surface-1) bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] font-['Open_Sans',sans-serif] text-[13px] font-bold text-(--on-gold) shadow-[0_3px_8px_var(--shadow)]">
                         {entry.avatarUrl ? (
                           <img className="h-full w-full object-cover" src={entry.avatarUrl} alt={entry.name} />
@@ -357,20 +405,15 @@ export default function UserHomePage() {
                           getInitials(entry.name)
                         )}
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-bold text-(--text-tertiary)">#{rank}</span>
-                          {isMe && <span className={leaderboardMeTagClass}>Bạn</span>}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="truncate text-[14.5px] font-extrabold text-(--text-primary)">
-                            {entry.name}
-                          </span>
-                        </div>
+                      <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <span className="truncate text-[14.5px] font-extrabold text-(--text-primary)">
+                          {entry.name}
+                        </span>
+                        {isMe && <span className={leaderboardMeTagClass}>Bạn</span>}
                       </div>
-                      <div className="flex shrink-0 items-center gap-1">
+                      <div className="flex shrink-0 items-center gap-1 rounded-full border border-[rgba(212,175,106,0.45)] bg-[rgba(243,217,139,0.2)] px-3 py-1">
                         <StarIcon size={13} color="#d4af6a" />
-                        <span className="font-['Open_Sans',sans-serif] text-[15px] font-extrabold text-(--gold-bright)">
+                        <span className="font-['Open_Sans',sans-serif] text-[15px] font-extrabold text-[#8a6a1f] dark:text-[#f3d98b]">
                           {formatPoints(entry.points)}
                         </span>
                       </div>
@@ -385,7 +428,7 @@ export default function UserHomePage() {
                       className="flex cursor-pointer items-center justify-center gap-1.5 rounded-full border border-[rgba(37,99,235,0.28)] bg-transparent px-4 py-[7px] font-inherit text-[12.5px] font-bold text-(--gold-bright) transition-[background,border-color] duration-150 hover:border-[rgba(37,99,235,0.45)] hover:bg-[rgba(37,99,235,0.08)]"
                       onClick={() => setVisibleRankCount((v) => Math.min(v + 3, restRanking.length))}
                     >
-                      Xem thêm <ArrowRightIcon size={11} />
+                      Xem thêm <ArrowDownIcon size={12} />
                     </button>
                   )}
                   {visibleRankCount > INITIAL_RANK_COUNT && (
@@ -394,7 +437,7 @@ export default function UserHomePage() {
                       className="flex cursor-pointer items-center justify-center gap-1.5 rounded-full border border-(--hairline) bg-transparent px-4 py-[7px] font-inherit text-[12.5px] font-bold text-(--text-tertiary) transition-[background,border-color] duration-150 hover:border-(--text-tertiary) hover:bg-(--surface-tint)"
                       onClick={() => setVisibleRankCount(INITIAL_RANK_COUNT)}
                     >
-                      Thu gọn
+                      Thu gọn <ArrowUpIcon size={12} color="currentColor" />
                     </button>
                   )}
                 </div>
@@ -404,45 +447,110 @@ export default function UserHomePage() {
         )}
       </section>
 
-      <section className="flex flex-col items-start gap-3.5 px-11 pt-10 max-[640px]:px-5">
-        <div className="inline-flex items-center rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-2 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
-          CÁCH GHI ĐIỂM
+      <section className="px-11 pt-10 max-[640px]:px-5">
+        <div className="relative overflow-hidden rounded-xl border border-[rgba(37,99,235,0.2)] bg-(--surface-1) px-9 py-8 shadow-[0_14px_32px_var(--shadow)] dark:bg-[linear-gradient(135deg,rgba(37,99,235,0.1),color-mix(in_srgb,var(--surface-1)_45%,transparent))] max-[640px]:px-5 max-[640px]:py-6">
+          <span className="pointer-events-none absolute top-0 left-0 h-full w-1 bg-[linear-gradient(180deg,var(--gold-deep),var(--gold))]" />
+          <span className="pointer-events-none absolute -top-[110px] -right-[90px] h-[260px] w-[260px] rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.16),transparent_70%)]" />
+
+          <div className="relative z-[1] flex flex-col gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="inline-flex h-9 items-center gap-2 rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
+                <ClipIcon size={14} color="#ffffff" />
+                CÁCH GHI ĐIỂM
+              </div>
+              <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-(--hairline) bg-(--surface-tint) px-3.5 text-xs font-bold whitespace-nowrap text-(--text-secondary)">
+                <StarIcon size={12} color="#d4af6a" />
+                {categories.length} hạng mục đang mở
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2.5">
+              <h1 className="m-0 max-w-[24ch] font-['Open_Sans',sans-serif] text-[34px] leading-[1.2] font-extrabold tracking-[0.3px] text-(--text-primary) max-[640px]:text-[26px]">
+                Nộp minh chứng{' '}
+                <span className="bg-[linear-gradient(90deg,var(--gold-deep),var(--gold-bright))] bg-clip-text text-transparent">
+                  nhận điểm DTR
+                </span>
+              </h1>
+              <p className="m-0 max-w-[62ch] text-sm leading-[1.65] font-medium text-(--text-tertiary)">
+                Chọn một hạng mục bên dưới và nộp minh chứng để admin xét duyệt điểm.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 border-t border-(--hairline) pt-4.5 max-[760px]:grid-cols-1 max-[760px]:gap-2.5">
+              {submitSteps.map((step, index) => (
+                <div className="flex items-center gap-3" key={step.title}>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[rgba(37,99,235,0.3)] bg-[rgba(37,99,235,0.1)] font-['Open_Sans',sans-serif] text-[13px] font-extrabold text-(--gold-bright)">
+                    {index + 1}
+                  </span>
+                  <div className="flex min-w-0 flex-col">
+                    <span className="text-[13px] leading-[1.3] font-bold text-(--text-primary)">
+                      {step.title}
+                    </span>
+                    <span className="text-[11.5px] leading-[1.35] text-(--text-tertiary)">
+                      {step.detail}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <h1 className="m-0 font-['Open_Sans',sans-serif] text-[30px] font-extrabold tracking-[0.5px] text-(--text-primary)">
-          Nộp minh chứng nhận điểm DTR
-        </h1>
-        <p className="m-0 text-sm font-medium text-(--text-tertiary)">
-          Chọn một hạng mục bên dưới và nộp minh chứng để admin xét duyệt điểm.
-        </p>
       </section>
 
-      <section className="flex flex-col gap-4.5 px-11 pt-6.5 max-[640px]:px-5">
+      <section className="flex flex-col gap-5 px-11 pt-6.5 max-[640px]:px-5">
         {categories.map((category) => {
           const Icon = categoryIcons[category.icon]
+          const accent = breakdownAccents[category.icon]
+          const maxPoints = Math.max(...category.pointOptions.map((option) => option.points))
           return (
             <div
-              className="relative flex items-center gap-8 overflow-hidden rounded-[14px] border border-[rgba(37,99,235,0.16)] bg-(--surface-1) px-7.5 py-7 shadow-[0_4px_14px_var(--shadow)] transition-[transform,box-shadow] duration-200 before:absolute before:top-0 before:right-0 before:left-0 before:h-1 before:bg-[linear-gradient(90deg,var(--gold-deep),var(--gold-bright))] before:content-[''] hover:-translate-y-[3px] hover:shadow-[0_14px_28px_var(--shadow-strong)] max-[960px]:flex-col max-[960px]:items-stretch max-[960px]:gap-5"
+              className="group relative flex flex-col gap-4.5 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface-1) p-6.5 shadow-[0_10px_28px_var(--shadow)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_18px_36px_var(--shadow-strong)] max-[480px]:p-5"
               key={category.id}
             >
-              <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-(--gold) font-['Open_Sans',sans-serif] text-[13px] font-extrabold text-(--on-gold)">
-                    {category.number}
+              <span
+                className="pointer-events-none absolute -top-[90px] -right-[70px] h-[220px] w-[220px] rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{ background: `radial-gradient(circle, ${accent.bg}, transparent 70%)` }}
+              />
+
+              <div className="relative z-[1] flex flex-col gap-3">
+                <span className="text-[11px] font-extrabold tracking-[1.2px] text-(--text-muted) uppercase">
+                  Hạng mục {category.number}
+                </span>
+
+                <div className="flex items-start gap-4 max-[480px]:gap-3">
+                  <div
+                    className="flex h-13 w-13 shrink-0 items-center justify-center rounded-[10px] border transition-transform duration-200 group-hover:scale-105"
+                    style={{ background: accent.bg, borderColor: accent.border }}
+                  >
+                    <Icon size={24} color={accent.fg} />
                   </div>
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[rgba(37,99,235,0.25)] bg-[rgba(37,99,235,0.1)]">
-                    <Icon />
+
+                  <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                    <h3 className="m-0 font-['Open_Sans',sans-serif] text-[18px] leading-[1.35] font-extrabold text-(--text-primary)">
+                      {category.title}
+                    </h3>
+                    {category.audienceTag && (
+                      <span className="w-fit rounded-full border border-[rgba(37,99,235,0.35)] bg-[rgba(37,99,235,0.14)] px-2.5 py-1 text-[11px] font-bold tracking-[0.4px] text-(--gold-bright)">
+                        {category.audienceTag}
+                      </span>
+                    )}
                   </div>
-                  {category.audienceTag && (
-                    <div className="rounded-full border border-[rgba(37,99,235,0.35)] bg-[rgba(37,99,235,0.14)] px-2.5 py-1 text-[11px] font-bold tracking-[0.4px] whitespace-nowrap text-(--gold-bright)">
-                      {category.audienceTag}
-                    </div>
-                  )}
+
+                  <div className="flex shrink-0 flex-col items-end max-[480px]:hidden">
+                    <span className="font-['Open_Sans',sans-serif] text-[22px] leading-none font-extrabold text-(--gold-bright)">
+                      {formatPoints(maxPoints)}
+                    </span>
+                    <span className="mt-1 text-[10px] font-bold tracking-[0.8px] text-(--text-muted) uppercase">
+                      {category.pointOptions.length > 1 ? 'điểm tối đa' : 'điểm'}
+                    </span>
+                  </div>
                 </div>
-                <div className="font-['Open_Sans',sans-serif] text-[17px] leading-[1.4] font-bold text-(--text-primary)">
-                  {category.title}
-                </div>
+              </div>
+
+              <div className="relative z-[1] flex flex-col gap-2.5">
+                <p className="m-0 text-[13.5px] leading-[1.6] text-(--text-tertiary)">{category.description}</p>
                 {category.locationLabels && category.locationLabels.length > 0 && (
-                  <div className="-mt-0.5 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {category.locationLabels.map((location) => (
                       <button
                         type="button"
@@ -455,109 +563,136 @@ export default function UserHomePage() {
                     ))}
                   </div>
                 )}
-                <div className="text-[13.5px] leading-[1.6] text-(--text-tertiary)">{category.description}</div>
               </div>
 
-              <div className="relative flex shrink-0 flex-col items-stretch gap-3.5 py-4.5 pr-5 pl-8 before:absolute before:top-2 before:bottom-2 before:left-0 before:w-px before:bg-[linear-gradient(180deg,transparent,rgba(37,99,235,0.35),transparent)] before:content-[''] max-[960px]:w-auto max-[960px]:items-stretch max-[960px]:py-4 max-[960px]:pr-0 max-[960px]:pl-0 max-[960px]:before:top-0 max-[960px]:before:bottom-auto max-[960px]:before:left-0 max-[960px]:before:h-px max-[960px]:before:w-auto max-[960px]:before:bg-[linear-gradient(90deg,transparent,rgba(37,99,235,0.35),transparent)] min-[961px]:w-[250px]">
-                <div className="flex flex-wrap justify-end gap-2 max-[960px]:justify-start">
-                  {category.pointOptions.map((option) => (
-                    <span
-                      className="rounded-full border border-[rgba(37,99,235,0.35)] bg-[rgba(37,99,235,0.12)] px-3 py-1.5 text-xs font-bold whitespace-nowrap text-(--gold-bright)"
-                      key={option.label}
-                    >
-                      {option.label === 'Điểm'
-                        ? `${formatPoints(option.points)} điểm`
-                        : `${option.label} · ${formatPoints(option.points)} điểm`}
-                    </span>
-                  ))}
-                  {category.id === 'training-kickoff' && (
-                    <button
-                      type="button"
-                      className="cursor-pointer rounded-full border border-[rgba(76,175,130,0.4)] bg-[rgba(76,175,130,0.12)] px-3 py-1.5 font-inherit text-xs font-bold whitespace-nowrap text-(--positive) transition-[background,border-color] duration-150 hover:border-[rgba(76,175,130,0.6)] hover:bg-[rgba(76,175,130,0.22)]"
-                      onClick={() => setShowQrScanner(true)}
-                    >
-                      Quét QR tự động
-                    </button>
-                  )}
-                </div>
-                <button
-                  className="flex min-h-11 w-full items-center justify-center gap-2 rounded-[10px] border-none bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-4 py-3 font-['Open_Sans',sans-serif] text-[13.5px] font-bold whitespace-nowrap text-(--on-gold) shadow-[0_6px_16px_rgba(169,127,47,0.25)] transition-[transform,box-shadow] duration-150 hover:-translate-y-px hover:shadow-[0_10px_22px_rgba(169,127,47,0.35)]"
-                  type="button"
-                  onClick={() => setOpenCategory(category)}
-                >
-                  {category.id === 'training-kickoff' ? 'Nộp thủ công' : 'Nộp minh chứng'}
-                  <ArrowRightIcon color="#ffffff" />
-                </button>
+              <div className="relative z-[1] flex flex-wrap gap-2 border-t border-(--hairline) pt-4">
+                {category.pointOptions.map((option) => (
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(37,99,235,0.3)] bg-[rgba(37,99,235,0.08)] px-3.5 py-2 text-xs font-bold whitespace-nowrap text-(--gold-bright)"
+                    key={option.label}
+                  >
+                    <StarIcon size={12} color={accent.fg} />
+                    {option.label === 'Điểm'
+                      ? `${formatPoints(option.points)} điểm`
+                      : `${option.label} · ${formatPoints(option.points)} điểm`}
+                  </span>
+                ))}
+                {category.id === 'training-kickoff' && (
+                  <button
+                    type="button"
+                    className="cursor-pointer rounded-full border border-[rgba(76,175,130,0.4)] bg-[rgba(76,175,130,0.12)] px-3.5 py-2 font-inherit text-xs font-bold whitespace-nowrap text-(--positive) transition-[background,border-color] duration-150 hover:border-[rgba(76,175,130,0.6)] hover:bg-[rgba(76,175,130,0.22)]"
+                    onClick={() => setShowQrScanner(true)}
+                  >
+                    Quét QR tự động
+                  </button>
+                )}
               </div>
+
+              <button
+                className="relative z-[1] flex min-h-12 w-full items-center justify-center gap-2 rounded-[10px] border-none bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-4 py-3 font-['Open_Sans',sans-serif] text-sm font-bold whitespace-nowrap text-(--on-gold) shadow-[0_8px_20px_rgba(37,99,235,0.28)] transition-[transform,box-shadow] duration-150 hover:-translate-y-px hover:shadow-[0_12px_26px_rgba(37,99,235,0.4)]"
+                type="button"
+                onClick={() => setOpenCategory(category)}
+              >
+                {category.id === 'training-kickoff' ? 'Nộp thủ công' : 'Nộp minh chứng'}
+                <span className="inline-flex transition-transform duration-200 group-hover:translate-x-1">
+                  <ArrowRightIcon color="#ffffff" />
+                </span>
+              </button>
             </div>
           )
         })}
       </section>
 
       <section className="flex px-11 pt-11 pb-2 max-[640px]:px-5">
-        <div className="relative flex w-full flex-col gap-6 overflow-hidden rounded-[20px] border border-[rgba(37,99,235,0.28)] bg-(--surface-1) px-10 py-9 shadow-[0_16px_36px_var(--shadow)] before:absolute before:-top-[120px] before:-right-[100px] before:h-[280px] before:w-[280px] before:rounded-full before:bg-[radial-gradient(circle,rgba(37,99,235,0.16),transparent_70%)] before:pointer-events-none before:content-[''] dark:bg-[linear-gradient(135deg,rgba(37,99,235,0.1),color-mix(in_srgb,var(--surface-1)_40%,transparent))]">
-          <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="relative flex w-full flex-col gap-6 overflow-hidden rounded-xl border border-[rgba(212,175,106,0.4)] bg-(--surface-1) px-10 py-9 shadow-[0_16px_36px_var(--shadow)] before:absolute before:-top-[120px] before:-right-[100px] before:h-[280px] before:w-[280px] before:rounded-full before:bg-[radial-gradient(circle,rgba(212,175,106,0.22),transparent_70%)] before:pointer-events-none before:content-[''] dark:bg-[linear-gradient(135deg,rgba(212,175,106,0.1),color-mix(in_srgb,var(--surface-1)_40%,transparent))] max-[640px]:gap-5 max-[640px]:px-5 max-[640px]:py-6">
+          <div className="relative z-[1] flex flex-wrap items-center justify-between gap-4">
             <div>
               <div className="text-[13px] font-bold tracking-[1.5px] text-(--text-tertiary) uppercase">
                 Tổng điểm DTR hiện tại
               </div>
-              <div className="mt-2.5 font-['Open_Sans',sans-serif] text-[64px] leading-none font-extrabold text-(--gold-bright) max-[640px]:text-[48px]">
-                {totalPoints}
-                <span className="ml-2 text-[22px] font-bold text-(--gold-bright)">điểm</span>
+              <div className="mt-2.5 flex items-baseline gap-2">
+                <span className="bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] bg-clip-text font-['Open_Sans',sans-serif] text-[64px] leading-none font-extrabold text-transparent max-[640px]:text-[48px]">
+                  {totalPoints}
+                </span>
+                <span className="font-['Open_Sans',sans-serif] text-[20px] font-bold text-(--text-tertiary)">
+                  / {nextTierAt} điểm
+                </span>
               </div>
             </div>
-            <div className="relative z-[1] flex items-center gap-2.5 rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] py-2.5 pr-4.5 pl-3 text-[13px] font-bold whitespace-nowrap text-(--on-gold) shadow-[0_8px_18px_rgba(37,99,235,0.3)]">
-              <span className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[rgba(255,255,255,0.22)]">
-                <CrownIcon size={13} color="#ffffff" />
+            <div className="flex items-center gap-2.5 rounded-full bg-[linear-gradient(90deg,#c79a43,#f3d98b)] py-2.5 pr-4.5 pl-3 text-[13px] font-bold whitespace-nowrap text-[#4a3610] shadow-[0_8px_18px_rgba(199,154,67,0.35)]">
+              <span className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[rgba(255,255,255,0.45)]">
+                <CrownIcon size={13} color="#4a3610" />
               </span>
               {tierName}
             </div>
           </div>
 
-          <div className="relative z-[1] flex flex-col gap-2.5">
-            <div className="h-2.5 overflow-hidden rounded-full bg-(--hairline)">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold-bright))] shadow-[0_0_12px_rgba(37,99,235,0.5)] transition-[width] duration-[400ms] ease-in-out"
-                style={{ width: `${progressPercent}%` }}
+          <div className="relative z-[1] flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3 text-[11px] font-extrabold tracking-[0.8px] text-(--text-muted) uppercase">
+              <span>{tierName}</span>
+              <span>Hạng Vương Miện</span>
+            </div>
+
+            <div className="relative">
+              <div className="h-3 overflow-hidden rounded-full bg-(--hairline)">
+                <div
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#c79a43,#f3d98b)] transition-[width] duration-[400ms] ease-in-out"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              <span
+                className="absolute top-1/2 h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-(--surface-1) bg-[#e0a92e] shadow-[0_2px_10px_rgba(199,154,67,0.7)] transition-[left] duration-[400ms] ease-in-out"
+                style={{ left: `${progressPercent}%` }}
               />
             </div>
+
             <div className="flex items-center justify-between gap-3">
               <div className="text-[13px] text-(--text-secondary)">
-                Còn <b className="text-(--gold-bright)">{pointsToNextTier} điểm</b> nữa để đạt Hạng Vương Miện
+                Còn <b className="text-[#8a6a1f] dark:text-[#f3d98b]">{pointsToNextTier} điểm</b> nữa để lên
+                hạng tiếp theo
               </div>
-              <div className="shrink-0 font-['Open_Sans',sans-serif] text-[13px] font-extrabold text-(--gold-bright)">
+              <div className="shrink-0 font-['Open_Sans',sans-serif] text-[15px] font-extrabold text-[#8a6a1f] dark:text-[#f3d98b]">
                 {progressPercent}%
               </div>
             </div>
           </div>
 
-          <div className="relative z-[1] flex flex-col gap-3">
+          <div className="relative z-[1] flex flex-col gap-3 border-t border-(--hairline) pt-5">
             <div className="text-xs font-extrabold tracking-[0.6px] text-(--text-tertiary) uppercase">
               Chi tiết điểm đã ghi nhận
             </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3.5">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3.5 max-[640px]:grid-cols-2 max-[640px]:gap-2.5">
               {pointBreakdown.map((item, index) => {
                 const iconKey = categories[index]?.icon ?? 'office'
                 const Icon = categoryIcons[iconKey]
                 const accent = breakdownAccents[iconKey]
                 return (
                   <div
-                    className={`group flex min-w-0 items-center gap-3 rounded-xl border border-(--hairline) bg-(--surface-tint) px-4 py-3.5 transition-[transform,box-shadow,border-color] duration-150 hover:-translate-y-0.5 hover:border-[rgba(37,99,235,0.3)] hover:shadow-[0_8px_18px_var(--shadow)] ${
+                    className={`group relative flex min-w-0 flex-col gap-2.5 overflow-hidden rounded-lg border border-(--hairline) bg-(--surface-tint) px-4 pt-4 pb-3.5 transition-[transform,box-shadow,border-color] duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_18px_var(--shadow)] max-[640px]:px-3 max-[640px]:pt-3.5 max-[640px]:pb-3 ${
                       item.count === 0 ? 'opacity-55' : ''
                     }`}
                     key={item.label}
+                    style={{ borderColor: item.count === 0 ? undefined : accent.border }}
                   >
-                    <div
-                      className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] border transition-transform duration-150 group-hover:scale-[1.08]"
-                      style={{ background: accent.bg, borderColor: accent.border }}
-                    >
-                      <Icon size={16} color={accent.fg} />
-                    </div>
-                    <div className="flex min-w-0 flex-col gap-0.5">
-                      <div className="text-xl leading-[1.1] font-extrabold text-(--text-primary)">{item.count}</div>
-                      <div className="text-[11.5px] leading-[1.3] font-semibold break-words text-(--text-tertiary)">
-                        {item.label}
+                    <span
+                      className="pointer-events-none absolute inset-x-0 top-0 h-[3px]"
+                      style={{ background: accent.fg }}
+                    />
+
+                    <div className="flex items-center justify-between gap-2">
+                      <div
+                        className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] border transition-transform duration-150 group-hover:scale-[1.08] max-[640px]:h-[30px] max-[640px]:w-[30px]"
+                        style={{ background: accent.bg, borderColor: accent.border }}
+                      >
+                        <Icon size={16} color={accent.fg} />
                       </div>
+                      <span className="font-['Open_Sans',sans-serif] text-[26px] leading-none font-extrabold text-(--text-primary) max-[640px]:text-[22px]">
+                        {item.count}
+                      </span>
+                    </div>
+
+                    <div className="text-[11.5px] leading-[1.3] font-semibold break-words text-(--text-tertiary) max-[640px]:text-[10.5px]">
+                      {item.label}
                     </div>
                   </div>
                 )

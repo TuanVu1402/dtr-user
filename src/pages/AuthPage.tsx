@@ -64,7 +64,7 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
           <BrandLogo height={56} />
         </div>
 
-        <div className="flex w-full flex-col gap-5.5 rounded-[20px] border border-[rgba(37,99,235,0.28)] bg-(--surface-1) p-8 shadow-[0_30px_60px_var(--shadow)] dark:bg-[linear-gradient(160deg,color-mix(in_srgb,var(--surface-1)_60%,transparent),color-mix(in_srgb,var(--surface-2)_60%,transparent))]">
+        <div className="flex w-full flex-col gap-5.5 rounded-xl border border-[rgba(37,99,235,0.28)] bg-(--surface-1) p-8 shadow-[0_30px_60px_var(--shadow)] dark:bg-[linear-gradient(160deg,color-mix(in_srgb,var(--surface-1)_60%,transparent),color-mix(in_srgb,var(--surface-2)_60%,transparent))]">
           {tab === 'forgot' ? (
             <div className="flex flex-col gap-2">
               <h1 className="m-0 font-['Open_Sans',sans-serif] text-[22px] font-extrabold text-(--text-primary)">

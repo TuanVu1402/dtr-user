@@ -42,7 +42,7 @@ export default function FeedbackSection() {
       </p>
 
       <form
-        className="mt-2 flex w-full max-w-[640px] flex-col gap-5 rounded-[18px] border border-[rgba(37,99,235,0.2)] bg-(--surface-tint) p-6.5"
+        className="mt-2 flex w-full max-w-[640px] flex-col gap-5 rounded-xl border border-[rgba(37,99,235,0.2)] bg-(--surface-tint) p-6.5"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-2">
@@ -99,13 +99,13 @@ export default function FeedbackSection() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-4">
-          {submitted && (
-            <span className="text-[13.5px] font-bold text-(--positive)">✓ Cảm ơn bạn, phản hồi đã được gửi!</span>
-          )}
+        <div className="flex flex-col items-center gap-3">
           <button type="submit" className={btnPrimaryClass}>
             Gửi phản hồi
           </button>
+          {submitted && (
+            <span className="text-[13.5px] font-bold text-(--positive)">✓ Cảm ơn bạn, phản hồi đã được gửi!</span>
+          )}
         </div>
       </form>
     </section>

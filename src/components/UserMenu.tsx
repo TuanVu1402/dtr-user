@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 
 type UserMenuProps = {
   name: string
@@ -46,14 +45,7 @@ export default function UserMenu({ name, initials, avatarUrl, onLogout, isProfil
       </button>
 
       {open && (
-        <div className="absolute top-[calc(100%+10px)] right-0 z-[70] flex min-w-[190px] flex-col gap-0.5 rounded-xl border border-[rgba(37,99,235,0.28)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-2))] p-1.5 shadow-[0_20px_40px_var(--shadow-strong)]">
-          <Link
-            to="/profile"
-            className="block w-full rounded-lg px-3 py-2.5 text-left text-[13.5px] font-bold text-(--text-secondary) no-underline hover:bg-[rgba(37,99,235,0.1)] hover:text-(--gold-bright)"
-            onClick={() => setOpen(false)}
-          >
-            Hồ sơ cá nhân
-          </Link>
+        <div className="absolute top-[calc(100%+10px)] right-0 z-[70] flex min-w-[190px] flex-col gap-0.5 rounded-lg border border-[rgba(37,99,235,0.28)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-2))] p-1.5 shadow-[0_20px_40px_var(--shadow-strong)]">
           <button
             type="button"
             className="block w-full cursor-pointer rounded-lg border-none bg-none px-3 py-2.5 text-left text-[13.5px] font-bold text-(--negative) no-underline hover:bg-[rgba(217,122,108,0.1)] hover:text-(--negative)"

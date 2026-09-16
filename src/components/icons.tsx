@@ -182,6 +182,15 @@ export function ArrowUpIcon({ size = 18, color = '#ffffff' }: IconProps) {
   )
 }
 
+export function ArrowDownIcon({ size = 18, color = 'currentColor' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...base} strokeWidth={2} stroke={color}>
+      <path d="M12 5v14" />
+      <path d="m19 12-7 7-7-7" />
+    </svg>
+  )
+}
+
 export function FacebookIcon({ size = 18, color = 'currentColor' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>

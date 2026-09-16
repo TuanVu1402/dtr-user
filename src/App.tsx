@@ -8,6 +8,7 @@ import { TrainingSessionsProvider } from './context/TrainingSessionsContext'
 import { FeedbackProvider } from './context/FeedbackContext'
 import { SubmissionsProvider } from './context/SubmissionsContext'
 import FloatingActions from './components/FloatingActions'
+import ScrollToTop from './components/ScrollToTop'
 import type { Role } from './types/dtr'
 
 function AppShell() {
@@ -43,6 +44,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <AppShell />
         </AuthProvider>

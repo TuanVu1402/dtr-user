@@ -19,9 +19,9 @@ const fieldLabelClass = 'text-[12.5px] font-bold text-(--text-secondary)'
 const btnPrimaryClass =
   "min-h-11 cursor-pointer rounded-[10px] border-none bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-[11px] font-['Open_Sans',sans-serif] text-[13.5px] font-bold text-(--on-gold) shadow-[0_6px_16px_rgba(169,127,47,0.25)] transition-[transform,box-shadow,background,border-color] duration-150 hover:-translate-y-px hover:shadow-[0_10px_22px_rgba(169,127,47,0.35)]"
 const statCardClass =
-  'rounded-2xl border border-[rgba(37,99,235,0.16)] bg-(--surface-1) px-5.5 py-5 shadow-[0_4px_14px_var(--shadow)] transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_14px_28px_var(--shadow-strong)]'
+  'rounded-xl border border-[rgba(37,99,235,0.16)] bg-(--surface-1) px-5.5 py-5 shadow-[0_4px_14px_var(--shadow)] transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_14px_28px_var(--shadow-strong)]'
 const profileCardClass =
-  'flex flex-col gap-4 rounded-2xl border border-[rgba(37,99,235,0.16)] bg-(--surface-1) p-6.5 shadow-[0_8px_24px_var(--shadow)]'
+  'flex flex-col gap-4 rounded-xl border border-[rgba(37,99,235,0.16)] bg-(--surface-1) p-6.5 shadow-[0_8px_24px_var(--shadow)]'
 
 export default function ProfilePage() {
   const { submissions, users } = useSubmissions()
@@ -102,7 +102,7 @@ export default function ProfilePage() {
       </section>
 
       <section className="flex flex-col gap-5 px-11 pt-6.5 max-[640px]:px-5">
-        <div className="relative flex flex-wrap items-center gap-5 overflow-hidden rounded-[18px] border border-[rgba(37,99,235,0.28)] bg-(--surface-1) px-7.5 py-6.5 shadow-[0_16px_36px_var(--shadow)] before:pointer-events-none before:absolute before:-top-[120px] before:-right-[100px] before:h-[280px] before:w-[280px] before:rounded-full before:bg-[radial-gradient(circle,rgba(169,127,47,0.16),transparent_70%)] before:content-[''] dark:bg-[linear-gradient(135deg,rgba(37,99,235,0.1),color-mix(in_srgb,var(--surface-1)_40%,transparent))]">
+        <div className="relative flex flex-wrap items-center gap-5 overflow-hidden rounded-xl border border-[rgba(37,99,235,0.28)] bg-(--surface-1) px-7.5 py-6.5 shadow-[0_16px_36px_var(--shadow)] before:pointer-events-none before:absolute before:-top-[120px] before:-right-[100px] before:h-[280px] before:w-[280px] before:rounded-full before:bg-[radial-gradient(circle,rgba(169,127,47,0.16),transparent_70%)] before:content-[''] dark:bg-[linear-gradient(135deg,rgba(37,99,235,0.1),color-mix(in_srgb,var(--surface-1)_40%,transparent))]">
           <label className="relative h-[76px] w-[76px] shrink-0 cursor-pointer">
             {avatarUrl ? (
               <img
@@ -131,7 +131,7 @@ export default function ProfilePage() {
             <div className="text-[13px] text-(--text-tertiary)">Thành viên từ 12/01/2026</div>
           </div>
 
-          <div className="flex flex-col items-end gap-1 rounded-xl border border-[rgba(37,99,235,0.4)] bg-[rgba(37,99,235,0.14)] px-4.5 py-2.5 font-['Open_Sans',sans-serif] text-sm font-extrabold whitespace-nowrap text-(--gold-bright) max-[640px]:items-start">
+          <div className="flex flex-col items-end gap-1 rounded-lg border border-[rgba(37,99,235,0.4)] bg-[rgba(37,99,235,0.14)] px-4.5 py-2.5 font-['Open_Sans',sans-serif] text-sm font-extrabold whitespace-nowrap text-(--gold-bright) max-[640px]:items-start">
             {tierName}
             <span className="font-['Open_Sans',sans-serif] text-[11.5px] font-semibold text-(--text-tertiary)">
               Còn <b className="text-(--gold-bright)">{pointsToNextTier} điểm</b> để lên Hạng Vương Miện

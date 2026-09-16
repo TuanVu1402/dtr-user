@@ -22,7 +22,7 @@ export default function FloatingActions() {
   return (
     <div className="fixed right-[22px] bottom-[26px] z-[60] flex flex-col items-center gap-3.5 max-[640px]:right-3 max-[640px]:bottom-3">
       <a
-        className="animate-zalo-pulse relative flex h-[52px] w-[52px] items-center justify-center rounded-2xl border-none bg-[#0068ff] no-underline shadow-[0_10px_24px_rgba(0,0,0,0.35)] max-[640px]:h-11 max-[640px]:w-11"
+        className="animate-zalo-pulse relative flex h-[52px] w-[52px] items-center justify-center rounded-xl border-none bg-[#0068ff] no-underline shadow-[0_10px_24px_rgba(0,0,0,0.35)] max-[640px]:h-11 max-[640px]:w-11"
         href="#"
         onClick={(e) => e.preventDefault()}
         aria-label="Chat với chúng tôi qua Zalo"
@@ -33,16 +33,20 @@ export default function FloatingActions() {
         </span>
       </a>
 
-      {showTop && (
-        <button
-          type="button"
-          className="flex h-[52px] w-[52px] cursor-pointer items-center justify-center rounded-full border-none bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] shadow-[0_10px_24px_rgba(0,0,0,0.35)] max-[640px]:h-11 max-[640px]:w-11"
-          onClick={scrollToTop}
-          aria-label="Lên đầu trang"
-        >
-          <ArrowUpIcon color="#ffffff" />
-        </button>
-      )}
+      {/* Luôn giữ nút trong DOM và chỉ ẩn/hiện bằng opacity — nếu unmount, cụm nút
+          (neo theo đáy màn hình) sẽ co lại và làm nút Zalo bị nhảy vị trí khi cuộn. */}
+      <button
+        type="button"
+        className={`flex h-[52px] w-[52px] cursor-pointer items-center justify-center rounded-full border-none bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] shadow-[0_10px_24px_rgba(0,0,0,0.35)] transition-[opacity,transform] duration-200 max-[640px]:h-11 max-[640px]:w-11 ${
+          showTop ? 'scale-100 opacity-100' : 'pointer-events-none scale-75 opacity-0'
+        }`}
+        onClick={scrollToTop}
+        aria-hidden={!showTop}
+        tabIndex={showTop ? 0 : -1}
+        aria-label="Lên đầu trang"
+      >
+        <ArrowUpIcon color="#ffffff" />
+      </button>
     </div>
   )
 }

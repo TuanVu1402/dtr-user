@@ -34,7 +34,7 @@ export default function UserNavbar({ active }: UserNavbarProps) {
   }
 
   return (
-    <header className="relative flex items-center justify-between gap-6 border-b border-[rgba(37,99,235,0.16)] px-11 py-[22px] max-[640px]:px-5 max-[480px]:gap-2.5 max-[480px]:py-4">
+    <header className="sticky top-0 z-40 flex items-center justify-between gap-6 border-b border-[rgba(37,99,235,0.16)] bg-(--surface-1) px-11 py-[22px] max-[640px]:px-5 max-[480px]:gap-2.5 max-[480px]:py-4">
       <Link to="/" className="flex items-center gap-4.5">
         <BrandLogo />
       </Link>

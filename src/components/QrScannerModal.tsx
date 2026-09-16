@@ -76,7 +76,7 @@ export default function QrScannerModal({ onDetected, onCancel }: QrScannerModalP
       onClick={onCancel}
     >
       <div
-        className="flex w-full max-w-[420px] flex-col gap-4.5 rounded-[18px] border border-[rgba(37,99,235,0.32)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-2))] p-7 shadow-[0_30px_60px_var(--shadow-strong)]"
+        className="flex w-full max-w-[420px] flex-col gap-4.5 rounded-xl border border-[rgba(37,99,235,0.32)] bg-[linear-gradient(160deg,var(--surface-1),var(--surface-2))] p-7 shadow-[0_30px_60px_var(--shadow-strong)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
@@ -99,13 +99,13 @@ export default function QrScannerModal({ onDetected, onCancel }: QrScannerModalP
         </div>
 
         {error ? (
-          <div className="rounded-xl border border-[rgba(217,122,108,0.4)] bg-[rgba(217,122,108,0.12)] p-6 text-center text-[13.5px] leading-[1.6] text-(--negative)">
+          <div className="rounded-lg border border-[rgba(217,122,108,0.4)] bg-[rgba(217,122,108,0.12)] p-6 text-center text-[13.5px] leading-[1.6] text-(--negative)">
             {error}
           </div>
         ) : (
-          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black">
+          <div className="relative aspect-square w-full overflow-hidden rounded-[10px] bg-black">
             <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
-            <div className="pointer-events-none absolute inset-[14%] rounded-2xl border-[3px] border-(--gold) shadow-[0_0_0_999px_rgba(0,0,0,0.35)]" />
+            <div className="pointer-events-none absolute inset-[14%] rounded-[10px] border-[3px] border-(--gold) shadow-[0_0_0_999px_rgba(0,0,0,0.35)]" />
           </div>
         )}
 
