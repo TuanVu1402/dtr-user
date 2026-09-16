@@ -1,6 +1,8 @@
-* {
-  box-sizing: border-box;
-}
+@import 'tailwindcss';
+
+/* Cho phép dùng tiền tố dark: (Tailwind) ứng với [data-theme='dark'] thay vì
+   media prefers-color-scheme, vì theme ở đây do người dùng bấm nút chuyển. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 /* Theme tokens — mặc định là SÁNG ngay từ :root (không cần chờ JS gắn data-theme mới
    có màu đúng, tránh chớp tối lúc tải trang). Giao diện tối là phần ghi đè qua
@@ -84,4 +86,28 @@ body {
 
 a {
   color: inherit;
+}
+
+/* Hiệu ứng nhấp nháy vòng sóng của nút Zalo nổi — Tailwind chỉ hỗ trợ animation qua
+   theme (--animate-*) + @keyframes, không có utility class dựng sẵn cho hiệu ứng này. */
+@theme {
+  --animate-zalo-pulse: floating-zalo-pulse 2.4s ease-out infinite;
+}
+
+@keyframes floating-zalo-pulse {
+  0% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.35),
+      0 0 0 0 rgba(0, 104, 255, 0.5);
+  }
+  70% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.35),
+      0 0 0 14px rgba(0, 104, 255, 0);
+  }
+  100% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.35),
+      0 0 0 0 rgba(0, 104, 255, 0);
+  }
 }
