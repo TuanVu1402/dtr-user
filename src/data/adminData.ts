@@ -181,9 +181,6 @@ export const adminUsers: AdminUser[] = [
     room: 'Phòng Kinh doanh 2',
     avatarUrl: taKhoiNguyenAvatar,
   },
-  { id: 'u4', name: 'Phạm Quốc Huy', email: 'huy.pham@dtr.vn', role: 'manager', room: 'Phòng Quản lý' },
-  { id: 'u5', name: 'Đỗ Thanh Hằng', email: 'hang.do@dtr.vn', role: 'admin', room: 'Phòng Vận hành' },
-  { id: 'u6', name: 'Vũ Lan Anh', email: 'lananh.vu@dtr.vn', role: 'support_admin', room: 'Phòng Hỗ trợ' },
 ]
 
 /**
