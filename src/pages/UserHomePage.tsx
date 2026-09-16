@@ -1,7 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { categories, pointBreakdown } from '../data/dtrData'
 import { CURRENT_USER_NAME } from '../data/currentUser'
-import { ArrowRightIcon, BookingIcon, CheckinIcon, ClipIcon, CrownIcon, OfficeIcon, TrainingIcon } from '../components/icons'
+import {
+  ArrowRightIcon,
+  BookingIcon,
+  CheckinIcon,
+  ClipIcon,
+  CrownIcon,
+  OfficeIcon,
+  StarIcon,
+  TrainingIcon,
+} from '../components/icons'
 import UserNavbar from '../components/UserNavbar'
 import SubmissionForm from '../components/SubmissionForm'
 import QrScannerModal from '../components/QrScannerModal'
@@ -38,59 +47,74 @@ const INITIAL_RANK_COUNT = 3
 const leaderboardMeTagClass =
   'rounded-full bg-(--gold) px-2.5 py-[3px] text-[11px] font-bold tracking-[0.4px] text-(--on-gold)'
 
-function podiumSlotClass(rank: number, isMe: boolean) {
+// --- Bảng xếp hạng kiểu "bảng vàng vinh danh": 3 avatar tròn có vương miện phía trên (đại diện
+// hạng 1/2/3) + dải bục màu vàng/bạc/đồng bên dưới + danh sách hạng còn lại dạng hàng. Dùng
+// đúng 1 bộ thiết kế cho mọi kích thước màn hình thay vì tách riêng bản mobile/desktop.
+
+function medalGradient(rank: number) {
+  if (rank === 1) return 'linear-gradient(135deg,#f3d98b,#d4af6a)'
+  if (rank === 2) return 'linear-gradient(135deg,#eef1f5,#b9c2cf)'
+  return 'linear-gradient(135deg,#e3a768,#b97a3d)'
+}
+
+function medalIconColor(rank: number) {
+  if (rank === 1) return '#7a5518'
+  if (rank === 2) return '#42506b'
+  return '#5c3417'
+}
+
+/** Màu số điểm theo hạng — hạng 1/2/3 dùng đúng tông vàng/bạc/đồng để nổi bật hẳn khỏi
+ * phần còn lại của danh sách, thay vì mọi hạng dùng chung 1 màu. */
+function rankPointColorClass(rank: number) {
+  if (rank === 1) return 'text-[#b9852f] dark:text-[#f3d98b]'
+  if (rank === 2) return 'text-[#5b6478] dark:text-[#c9d0da]'
+  if (rank === 3) return 'text-[#a15a26] dark:text-[#e3a768]'
+  return 'text-(--gold-bright)'
+}
+
+function podiumCrownWrapClass(rank: number) {
+  return `flex items-center justify-center rounded-full shadow-[0_4px_10px_rgba(0,0,0,0.25)] ring-2 ring-(--surface-1) ${
+    rank === 1 ? 'h-9 w-9' : 'h-7 w-7'
+  }`
+}
+
+function podiumAvatarRingClass(rank: number, isMe: boolean) {
+  const size = rank === 1 ? 'h-20 w-20' : 'h-15 w-15'
+  const ring = isMe
+    ? 'ring-[rgba(37,99,235,0.55)]'
+    : rank === 1
+      ? 'ring-[rgba(212,175,106,0.65)]'
+      : rank === 2
+        ? 'ring-[rgba(185,194,207,0.7)]'
+        : 'ring-[rgba(185,122,61,0.65)]'
+  return `relative flex items-center justify-center rounded-full ring-[3px] ring-offset-2 ring-offset-(--surface-1) shadow-[0_8px_20px_var(--shadow)] ${size} ${ring}`
+}
+
+function podiumAvatarInnerClass(rank: number) {
   const base =
-    "group relative flex flex-col items-center gap-2.5 overflow-hidden rounded-[20px] border bg-[linear-gradient(180deg,var(--surface-1),var(--surface-tint))] px-4.5 pt-7.5 pb-6 text-center shadow-[0_10px_24px_var(--shadow)] transition-[transform,box-shadow] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] before:absolute before:top-0 before:left-0 before:right-0 before:h-[5px] before:content-[''] max-[640px]:pt-0"
+    "flex h-full w-full items-center justify-center overflow-hidden rounded-full font-['Open_Sans',sans-serif] font-extrabold"
+  return `${base} ${rank === 1 ? 'text-xl' : 'text-base'} text-[#4a2f12]`
+}
+
+/** Bục 3 khối 2 / 1 / 3 bên dưới hàng avatar — khối "1" ở giữa cao và nổi bật nhất, mô phỏng
+ * bục trao giải thay vì thẻ 3D cầu kỳ, dễ nhìn và gọn trên màn hình hẹp. */
+function podiumBaseClass(rank: number) {
+  const base =
+    "flex items-center justify-center rounded-2xl font-['Open_Sans',sans-serif] font-extrabold shadow-[0_6px_14px_var(--shadow)]"
+  if (rank === 1) return `${base} h-16 text-2xl text-[#5c4114]`
+  if (rank === 2) return `${base} h-12 text-lg text-[#3a4658]`
+  return `${base} h-12 text-lg text-[#4a2f12]`
+}
+
+/** Hàng danh sách xếp hạng cho hạng 4 trở đi — avatar nhỏ có huy hiệu tích xanh trang trí,
+ * #hạng + tên, điểm kèm sao vàng nằm bên phải. */
+function rankRowClass(isMe: boolean) {
+  const base =
+    'flex items-center gap-3 rounded-2xl border px-3.5 py-2.5 shadow-[0_2px_8px_var(--shadow)] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_18px_var(--shadow-strong)]'
   if (isMe) {
-    return `${base} border-[rgba(37,99,235,0.4)] bg-[linear-gradient(180deg,rgba(37,99,235,0.08),var(--surface-tint))] hover:-translate-y-1 hover:shadow-[0_16px_32px_var(--shadow-strong)] before:bg-[linear-gradient(90deg,var(--gold),var(--gold-deep))]`
+    return `${base} border-[rgba(37,99,235,0.4)] bg-[linear-gradient(90deg,rgba(37,99,235,0.1),var(--surface-1))]`
   }
-  if (rank === 1) {
-    return `${base} order-2 z-[2] -translate-y-[22px] border-[rgba(212,175,106,0.4)] bg-[linear-gradient(180deg,color-mix(in_srgb,#f3d98b_10%,var(--surface-1)),var(--surface-1))] pt-10 pb-7.5 shadow-[0_22px_44px_rgba(169,127,47,0.22)] before:h-1.5 before:bg-[linear-gradient(90deg,#f3d98b,#d4af6a,#f3d98b)] hover:-translate-y-[26px] hover:shadow-[0_26px_52px_rgba(169,127,47,0.3)] max-[640px]:order-0 max-[640px]:translate-y-0 max-[640px]:hover:translate-y-0`
-  }
-  if (rank === 2) {
-    return `${base} order-1 border-[rgba(37,99,235,0.16)] before:bg-[linear-gradient(90deg,#eef1f5,#b9c2cf)] hover:-translate-y-1 hover:shadow-[0_16px_32px_var(--shadow-strong)]`
-  }
-  return `${base} order-3 border-[rgba(37,99,235,0.16)] before:bg-[linear-gradient(90deg,#e3a768,#b97a3d)] hover:-translate-y-1 hover:shadow-[0_16px_32px_var(--shadow-strong)] max-[640px]:order-2`
-}
-
-function podiumCrownClass(rank: number) {
-  if (rank === 1) {
-    return 'flex h-10 w-10 items-center justify-center rounded-full bg-[linear-gradient(135deg,#f3d98b,#d4af6a)] shadow-[0_6px_14px_rgba(169,127,47,0.4)]'
-  }
-  if (rank === 3) {
-    return 'flex h-[34px] w-[34px] items-center justify-center rounded-full bg-[linear-gradient(135deg,#e3a768,#b97a3d)] shadow-[0_4px_10px_var(--shadow)]'
-  }
-  return 'flex h-[34px] w-[34px] items-center justify-center rounded-full bg-[linear-gradient(135deg,#eef1f5,#b9c2cf)] shadow-[0_4px_10px_var(--shadow)]'
-}
-
-function podiumAvatarClass(rank: number) {
-  const base =
-    'flex items-center justify-center overflow-hidden rounded-full border-[3px] border-(--surface-1) font-[\'Open_Sans\',sans-serif] font-extrabold text-(--on-gold) shadow-[0_6px_14px_var(--shadow)]'
-  if (rank === 1) {
-    return `${base} h-19 w-19 bg-[linear-gradient(135deg,#f3d98b,#d4af6a)] text-[22px] text-[#4a2f12] shadow-[0_0_0_5px_rgba(216,180,99,0.3),0_10px_24px_rgba(169,127,47,0.35)]`
-  }
-  if (rank === 2) {
-    return `${base} h-[58px] w-[58px] bg-[linear-gradient(135deg,#eef1f5,#b9c2cf)] text-lg text-[#33415a]`
-  }
-  if (rank === 3) {
-    return `${base} h-[58px] w-[58px] bg-[linear-gradient(135deg,#e3a768,#b97a3d)] text-lg text-[#4a2f12]`
-  }
-  return `${base} h-[58px] w-[58px] bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] text-lg`
-}
-
-function podiumRankNumClass(rank: number) {
-  const base =
-    'absolute -right-1 -bottom-0.5 flex items-center justify-center rounded-full border-2 border-(--surface-1) font-extrabold text-(--on-gold) shadow-[0_2px_6px_var(--shadow)]'
-  if (rank === 1) {
-    return `${base} h-7 w-7 bg-[linear-gradient(135deg,#f3d98b,#d4af6a)] text-[13px] text-[#4a2f12]`
-  }
-  if (rank === 2) {
-    return `${base} h-6 w-6 bg-[linear-gradient(135deg,#eef1f5,#b9c2cf)] text-xs text-[#33415a]`
-  }
-  if (rank === 3) {
-    return `${base} h-6 w-6 bg-[linear-gradient(135deg,#e3a768,#b97a3d)] text-xs text-[#4a2f12]`
-  }
-  return `${base} h-6 w-6 bg-(--gold) text-xs`
+  return `${base} border-(--hairline) bg-(--surface-1)`
 }
 
 function getInitials(name: string) {
@@ -253,64 +277,69 @@ export default function UserHomePage() {
 
       <UserNavbar active="home" />
 
-      <section className="flex flex-col items-start gap-2.5 px-11 pt-10 pb-1 max-[640px]:px-5">
-        <div className="inline-flex items-center rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-2 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
-          XẾP HẠNG
+      <section className="flex flex-wrap items-start justify-between gap-3 px-11 pt-10 pb-1 max-[640px]:px-5">
+        <div className="flex flex-col items-start gap-2.5">
+          <div className="inline-flex items-center rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-2 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
+            XẾP HẠNG
+          </div>
+          <p className="m-0 text-[15px] font-semibold text-(--text-secondary)">
+            Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
+          </p>
         </div>
-        <p className="m-0 text-[15px] font-semibold text-(--text-secondary)">
-          Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
-        </p>
+        <div className="mt-0.5 inline-flex items-center gap-1.5 rounded-full border border-[rgba(212,175,106,0.45)] bg-[rgba(243,217,139,0.16)] px-3.5 py-2 text-[12px] font-extrabold whitespace-nowrap text-[#8a6a1f] dark:text-[#f3d98b]">
+          <CrownIcon size={14} color="#d4af6a" />
+          Bảng vàng vinh danh
+        </div>
       </section>
 
-      <section className="flex flex-col gap-5.5 px-11 pt-7.5 max-[640px]:px-5">
+      <section className="flex flex-col gap-5 px-11 pt-7.5 max-[640px]:px-5">
         {fullRanking.length === 0 ? (
           <p className="m-0 text-sm font-medium text-(--text-tertiary)">Chưa có dữ liệu xếp hạng.</p>
         ) : (
           <>
             {podium.length > 0 && (
-              <div className="grid grid-cols-3 items-end gap-5 pt-7.5 max-[640px]:grid-cols-1 max-[640px]:items-stretch max-[640px]:gap-3.5 max-[640px]:pt-0">
-                {podiumDisplayOrder.map((entry, slotIndex) => {
-                  if (!entry) return <div className="invisible" key={`empty-${slotIndex}`} />
-                  const rank = podium.indexOf(entry) + 1
-                  const isMe = entry.name === CURRENT_USER_NAME
-                  return (
-                    <div className={podiumSlotClass(rank, isMe)} key={entry.name}>
-                      <div className={podiumCrownClass(rank)}>
-                        <CrownIcon
-                          size={rank === 1 ? 18 : 15}
-                          color={rank === 1 ? '#7a5518' : rank === 2 ? '#42506b' : '#5c3417'}
-                        />
-                      </div>
-                      <div className="relative">
-                        <div className={podiumAvatarClass(rank)}>
-                          {entry.avatarUrl ? (
-                            <img className="h-full w-full object-cover" src={entry.avatarUrl} alt={entry.name} />
-                          ) : (
-                            getInitials(entry.name)
-                          )}
+              <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-3 items-end gap-2.5">
+                  {podiumDisplayOrder.map((entry, slotIndex) => {
+                    if (!entry) return <div key={`empty-${slotIndex}`} />
+                    const rank = podium.indexOf(entry) + 1
+                    const isMe = entry.name === CURRENT_USER_NAME
+                    return (
+                      <div className="flex flex-col items-center gap-1" key={entry.name}>
+                        <div className={podiumCrownWrapClass(rank)} style={{ background: medalGradient(rank) }}>
+                          <CrownIcon size={rank === 1 ? 16 : 13} color={medalIconColor(rank)} />
                         </div>
-                        <div className={podiumRankNumClass(rank)}>{rank}</div>
-                      </div>
-                      <div
-                        className={`flex flex-wrap items-center justify-center gap-1.5 font-bold text-(--text-primary) ${
-                          rank === 1 ? 'text-[15.5px]' : 'text-sm'
-                        }`}
-                      >
-                        {entry.name}
+                        <div className={`-mt-1 ${podiumAvatarRingClass(rank, isMe)}`}>
+                          <div className={podiumAvatarInnerClass(rank)} style={{ background: medalGradient(rank) }}>
+                            {entry.avatarUrl ? (
+                              <img className="h-full w-full object-cover" src={entry.avatarUrl} alt={entry.name} />
+                            ) : (
+                              getInitials(entry.name)
+                            )}
+                          </div>
+                        </div>
+                        <span className="mt-1 line-clamp-2 max-w-full text-center text-[12.5px] leading-[1.25] font-extrabold text-(--text-primary)">
+                          {entry.name}
+                        </span>
                         {isMe && <span className={leaderboardMeTagClass}>Bạn</span>}
+                        <div className="flex items-center gap-1">
+                          <StarIcon size={12} color="#d4af6a" />
+                          <span className={`font-['Open_Sans',sans-serif] text-[13.5px] font-extrabold ${rankPointColorClass(rank)}`}>
+                            {formatPoints(entry.points)}
+                          </span>
+                        </div>
                       </div>
-                      <div
-                        className={`font-['Open_Sans',sans-serif] font-extrabold ${
-                          rank === 1
-                            ? 'text-lg text-[#b9852f] dark:text-[#f3d98b]'
-                            : 'text-[15px] text-(--gold-bright)'
-                        }`}
-                      >
-                        {formatPoints(entry.points)} điểm
-                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="grid grid-cols-3 items-end gap-2.5">
+                  {[2, 1, 3].map((rank) => (
+                    <div key={rank} className={podiumBaseClass(rank)} style={{ background: medalGradient(rank) }}>
+                      {rank}
                     </div>
-                  )
-                })}
+                  ))}
+                </div>
               </div>
             )}
 
@@ -320,30 +349,30 @@ export default function UserHomePage() {
                   const rank = index + 4
                   const isMe = entry.name === CURRENT_USER_NAME
                   return (
-                    <div
-                      className={`grid grid-cols-[44px_44px_1fr_auto] items-center gap-4 rounded-2xl border px-5 py-3.5 shadow-[0_2px_8px_var(--shadow)] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_18px_var(--shadow-strong)] max-[480px]:grid-cols-[36px_36px_1fr] ${
-                        isMe
-                          ? 'border-[rgba(37,99,235,0.4)] bg-[linear-gradient(90deg,rgba(37,99,235,0.1),var(--surface-1))]'
-                          : 'border-[rgba(37,99,235,0.12)] bg-(--surface-1)'
-                      }`}
-                      key={entry.name}
-                    >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full font-['Open_Sans',sans-serif] text-[15px] font-extrabold text-(--text-tertiary)">
-                        {rank}
-                      </div>
-                      <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-(--surface-tint) bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] text-[13px] font-bold text-(--on-gold) shadow-[0_3px_8px_var(--shadow)]">
+                    <div className={rankRowClass(isMe)} key={entry.name}>
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-(--surface-1) bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] font-['Open_Sans',sans-serif] text-[13px] font-bold text-(--on-gold) shadow-[0_3px_8px_var(--shadow)]">
                         {entry.avatarUrl ? (
                           <img className="h-full w-full object-cover" src={entry.avatarUrl} alt={entry.name} />
                         ) : (
                           getInitials(entry.name)
                         )}
                       </div>
-                      <div className="flex items-center gap-2.5 text-[15px] font-bold text-(--text-primary)">
-                        {entry.name}
-                        {isMe && <span className={leaderboardMeTagClass}>Bạn</span>}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-bold text-(--text-tertiary)">#{rank}</span>
+                          {isMe && <span className={leaderboardMeTagClass}>Bạn</span>}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="truncate text-[14.5px] font-extrabold text-(--text-primary)">
+                            {entry.name}
+                          </span>
+                        </div>
                       </div>
-                      <div className="font-['Open_Sans',sans-serif] text-base font-extrabold whitespace-nowrap text-(--gold-bright) max-[480px]:col-[2/-1] max-[480px]:justify-self-end">
-                        {formatPoints(entry.points)} điểm
+                      <div className="flex shrink-0 items-center gap-1">
+                        <StarIcon size={13} color="#d4af6a" />
+                        <span className="font-['Open_Sans',sans-serif] text-[15px] font-extrabold text-(--gold-bright)">
+                          {formatPoints(entry.points)}
+                        </span>
                       </div>
                     </div>
                   )
