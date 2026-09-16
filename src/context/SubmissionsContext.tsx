@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { adminSubmissions, adminUsers } from '../data/adminData'
-import type { AdminSubmission, AdminUser, SubmissionStatus } from '../types/dtr'
+import { adminSubmissions, adminUsers } from '@/data/adminData'
+import type { AdminSubmission, AdminUser, SubmissionStatus } from '@/types/dtr'
 
 export type NewSubmissionInput = {
   userName: string

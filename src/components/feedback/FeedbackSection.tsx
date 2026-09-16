@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { useFeedback } from '../context/FeedbackContext'
-import { feedbackTypeLabels, type FeedbackType } from '../types/dtr'
+import { useFeedback } from '@/context/FeedbackContext'
+import { feedbackTypeLabels, type FeedbackType } from '@/types/dtr'
 
 const feedbackTypeOptions = (Object.entries(feedbackTypeLabels) as [FeedbackType, string][]).map(
   ([value, label]) => ({ value, label }),

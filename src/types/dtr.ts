@@ -41,14 +41,10 @@ export type PointBreakdown = {
   count: number
 }
 
-/** 4 vai trò trong hệ thống. */
-export type Role = 'user' | 'admin' | 'support_admin' | 'manager'
+export type Role = 'user'
 
 export const roleLabels: Record<Role, string> = {
   user: 'Người dùng',
-  admin: 'Admin',
-  support_admin: 'Support Admin',
-  manager: 'Manager',
 }
 
 export type AdminUser = {

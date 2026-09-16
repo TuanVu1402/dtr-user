@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowUpIcon } from './icons'
+import { ArrowUpIcon } from '../icons'
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })

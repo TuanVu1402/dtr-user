@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import type { Category } from '../types/dtr'
-import { formatPoints } from '../utils/format'
+import type { Category } from '@/types/dtr'
+import { formatPoints } from '@/utils/format'
 
 type SubmissionFormProps = {
   category: Category

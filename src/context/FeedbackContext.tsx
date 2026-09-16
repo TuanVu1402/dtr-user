@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { FeedbackEntry, FeedbackStatus, FeedbackType } from '../types/dtr'
+import type { FeedbackEntry, FeedbackStatus, FeedbackType } from '@/types/dtr'
 
 const STORAGE_KEY = 'dtr-feedback-entries'
 
