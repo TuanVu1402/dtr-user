@@ -193,7 +193,6 @@ export default function UserHomePage() {
               key={category.id}
               category={category}
               onOpen={setOpenCategory}
-              onOpenQrScanner={() => setShowQrScanner(true)}
             />
           ))}
         </div>

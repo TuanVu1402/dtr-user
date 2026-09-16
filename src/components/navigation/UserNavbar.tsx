@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CloseIcon, MenuIcon, MoonIcon, SunIcon } from '../icons'
+import { MoonIcon, SunIcon } from '../icons'
 import { BrandLogo } from '../layout'
 import NotificationsMenu from './NotificationsMenu'
 import UserMenu from './UserMenu'
@@ -18,12 +17,10 @@ export default function UserNavbar({ active }: UserNavbarProps) {
   const { theme, toggleTheme } = useTheme()
   const { users } = useSubmissions()
   const navigate = useNavigate()
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   const currentUser = users.find((u) => u.name === CURRENT_USER_NAME)
 
   function handleLogout() {
-    setMobileOpen(false)
     logout()
     navigate('/')
   }
