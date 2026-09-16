@@ -12,7 +12,8 @@ export default function ForgotPasswordForm({ onSubmit, onBackToLogin }: ForgotPa
   const [email, setEmail] = useState('')
 
   return (
-    <form className="flex flex-col gap-4.5" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      {/* Email */}
       <div className="flex flex-col gap-2">
         <label className={fieldLabelClass} htmlFor="forgot-email">
           Email
@@ -21,21 +22,23 @@ export default function ForgotPasswordForm({ onSubmit, onBackToLogin }: ForgotPa
           id="forgot-email"
           className={fieldInputClass}
           type="email"
-          placeholder="ban@dtr.vn"
+          placeholder="ban@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
       </div>
 
+      {/* Submit */}
       <button type="submit" className={authSubmitClass}>
-        Gửi liên kết đặt lại mật khẩu
+        Gửi liên kết đặt lại
       </button>
 
-      <p className="m-0 text-center text-[13.5px] text-(--text-tertiary)">
+      {/* Back Link */}
+      <p className="text-center text-sm text-[var(--text-muted)]">
         Nhớ ra mật khẩu rồi?{' '}
         <button type="button" className={authLinkBtnClass} onClick={onBackToLogin}>
-          Quay lại đăng nhập
+          Đăng nhập
         </button>
       </p>
     </form>

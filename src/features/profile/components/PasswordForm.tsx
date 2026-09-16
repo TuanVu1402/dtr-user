@@ -33,7 +33,7 @@ export default function PasswordForm({ onSave }: PasswordFormProps) {
 
   return (
     <form className={profileFieldStyles.profileCardClass} onSubmit={handleSubmit}>
-      <div className="font-['Open_Sans',sans-serif] text-base font-extrabold text-(--text-primary)">
+      <div className=" text-base font-extrabold text-(--text-primary)">
         Đổi mật khẩu
       </div>
 

@@ -4,7 +4,6 @@ import { CURRENT_USER_NAME } from '@/data/currentUser'
 import { useSubmissions } from '@/context/SubmissionsContext'
 import { ProfileForm, PasswordForm, ProfileStats } from './'
 
-// Cùng số liệu minh hoạ với UserHomePage — trang này chưa có API thật nên khai báo lại tại chỗ.
 const totalPoints = 128
 const tierName = 'Hạng Kim Cương'
 const nextTierAt = 160
@@ -24,52 +23,56 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(currentUser?.avatarUrl ?? null)
 
   return (
-    <div className="min-h-svh bg-[radial-gradient(1100px_480px_at_85%_-10%,var(--bg-glow),transparent_60%),linear-gradient(180deg,var(--bg-1)_0%,var(--bg-2)_40%,var(--bg-3)_100%)] pb-14 text-(--text-primary)">
+    <div className="min-h-svh bg-[var(--bg-1)] pb-16">
       <UserNavbar active="profile" />
 
-      <section className="flex flex-col items-start gap-3.5 px-11 pt-10 max-[900px]:px-6 max-[640px]:px-5">
-        <div className="inline-flex items-center rounded-full bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-2 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
-          HỒ SƠ CỦA BẠN
-        </div>
-        <h1 className="m-0 font-['Open_Sans',sans-serif] text-[30px] font-extrabold tracking-[0.5px] text-(--text-primary)">
-          Hồ sơ cá nhân
-        </h1>
-        <p className="m-0 text-sm font-medium text-(--text-tertiary)">
-          Xem thành tích và cập nhật thông tin tài khoản DTR của bạn.
-        </p>
-      </section>
+      {/* Header */}
+      <div className="px-4 pt-6 md:px-6 md:pt-8 lg:px-6 lg:pt-8">
+        <h1 className="text-xl font-semibold text-[var(--text-primary)] md:text-2xl lg:text-3xl">Hồ sơ cá nhân</h1>
+        <p className="mt-1 text-sm text-[var(--text-muted)] md:text-base">Xem thành tích và cập nhật thông tin tài khoản.</p>
+      </div>
 
-      <section className="flex flex-col gap-5 px-11 pt-6.5 max-[640px]:px-5">
-        <div className="relative flex flex-wrap items-center gap-5 overflow-hidden rounded-xl border border-[rgba(37,99,235,0.28)] bg-(--surface-1) px-7.5 py-6.5 shadow-[0_16px_36px_var(--shadow)] before:pointer-events-none before:absolute before:-top-[120px] before:-right-[100px] before:h-[280px] before:w-[280px] before:rounded-full before:bg-[radial-gradient(circle,rgba(169,127,47,0.16),transparent_70%)] before:content-[''] dark:bg-[linear-gradient(135deg,rgba(37,99,235,0.1),color-mix(in_srgb,var(--surface-1)_40%,transparent))]">
-          <div className="flex flex-col items-end gap-1 rounded-lg border border-[rgba(37,99,235,0.4)] bg-[rgba(37,99,235,0.14)] px-4.5 py-2.5 font-['Open_Sans',sans-serif] text-sm font-extrabold whitespace-nowrap text-(--gold-bright) max-[640px]:items-start">
-            {tierName}
-            <span className="font-['Open_Sans',sans-serif] text-[11.5px] font-semibold text-(--text-tertiary)">
-              Còn <b className="text-(--gold-bright)">{pointsToNextTier} điểm</b> để lên Hạng Vương Miện
-            </span>
+      {/* Tier Badge - Centered container on desktop */}
+      <div className="mx-4 mt-5 md:mx-6 md:mt-6 lg:mx-auto lg:mt-6 lg:max-w-3xl">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--hairline)] bg-[var(--surface-1)] px-4 py-3 md:px-6 md:py-4 lg:px-8 lg:py-5">
+          <div>
+            <div className="text-sm font-medium text-[var(--text-primary)] md:text-base lg:text-lg">{tierName}</div>
+            <div className="text-xs text-[var(--text-muted)] md:text-sm lg:text-base">
+              Còn <b className="text-[var(--gold-bright)]">{pointsToNextTier} điểm</b> để lên hạng
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-[var(--gold-bright)] md:text-3xl lg:text-4xl">{totalPoints}</div>
+            <div className="text-xs text-[var(--text-muted)] md:text-sm lg:text-base">điểm DTR</div>
           </div>
         </div>
+      </div>
 
-        <ProfileStats
-          totalPoints={totalPoints}
-          approvedCount={approvedCount}
-          pendingCount={pendingCount}
-          approvalRate={approvalRate}
-        />
-
-        <div className="grid grid-cols-2 items-start gap-5 max-[960px]:grid-cols-1">
-          <ProfileForm
-            initialName={CURRENT_USER_NAME}
-            initialEmail="an.nguyen@dtr.vn"
-            initialPhone="0909 123 456"
-            initialBranch="Chi nhánh Hà Nội"
-            avatarUrl={avatarUrl}
-            onAvatarChange={setAvatarUrl}
-            onSave={() => {}}
+      {/* Stats - Centered container on desktop */}
+      <div className="px-4 pt-5 md:px-6 md:pt-6 lg:px-6 lg:pt-6">
+        <div className="mx-auto max-w-3xl">
+          <ProfileStats
+            totalPoints={totalPoints}
+            approvedCount={approvedCount}
+            pendingCount={pendingCount}
+            approvalRate={approvalRate}
           />
-
-          <PasswordForm onSave={() => {}} />
         </div>
-      </section>
+      </div>
+
+      {/* Forms - Centered container on desktop */}
+      <div className="flex flex-col gap-4 px-4 pt-5 md:px-6 md:pt-6 lg:mx-auto lg:max-w-3xl lg:gap-6 lg:pt-6">
+        <ProfileForm
+          initialName={CURRENT_USER_NAME}
+          initialEmail="an.nguyen@dtr.vn"
+          initialPhone="0909 123 456"
+          initialBranch="Chi nhánh Hà Nội"
+          avatarUrl={avatarUrl}
+          onAvatarChange={setAvatarUrl}
+          onSave={() => {}}
+        />
+        <PasswordForm onSave={() => {}} />
+      </div>
 
       <Footer />
     </div>

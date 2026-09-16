@@ -83,8 +83,33 @@ function AppShell() {
     );
   }
 
-  // Show auth page if not authenticated, otherwise show protected routes
-  return isAuthenticated ? <ProtectedRoutes /> : <AuthRoutes />;
+  return (
+    <Routes>
+      {/* Auth route - accessible when NOT authenticated */}
+      <Route
+        path="/auth"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/" replace />
+          ) : (
+            <AuthRoutes />
+          )
+        }
+      />
+
+      {/* Protected routes - require authentication */}
+      <Route
+        path="/*"
+        element={
+          isAuthenticated ? (
+            <ProtectedRoutes />
+          ) : (
+            <Navigate to="/auth" replace />
+          )
+        }
+      />
+    </Routes>
+  );
 }
 
 export default function App() {

@@ -38,92 +38,93 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
   }
 
   return (
-    <div className="relative flex min-h-svh items-center justify-center bg-[radial-gradient(1100px_480px_at_85%_-10%,var(--bg-glow),transparent_60%),linear-gradient(180deg,var(--bg-1)_0%,var(--bg-2)_40%,var(--bg-3)_100%)] px-5 py-10 text-(--text-primary)">
+    <div className="flex min-h-svh flex-col items-center justify-center bg-[var(--bg-1)] px-4 py-8">
+      {/* Theme Toggle */}
       <button
         type="button"
-        className="absolute top-5 right-5 flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(37,99,235,0.22)] bg-[rgba(37,99,235,0.08)] text-(--gold)"
+        className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--hairline)] bg-[var(--bg-2)] text-[var(--text-secondary)]"
         onClick={toggleTheme}
-        aria-label={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
-        title={theme === 'dark' ? 'Giao diện sáng' : 'Giao diện tối'}
+        aria-label="Chuyển giao diện"
       >
         {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
       </button>
 
-      <div className="flex w-full max-w-[420px] flex-col items-center gap-7">
-        <div className="flex flex-col items-center gap-1.5">
-          <BrandLogo height={56} />
-        </div>
-
-        <div className="flex w-full flex-col gap-5.5 rounded-xl border border-[rgba(37,99,235,0.28)] bg-(--surface-1) p-8 shadow-[0_30px_60px_var(--shadow)] dark:bg-[linear-gradient(160deg,color-mix(in_srgb,var(--surface-1)_60%,transparent),color-mix(in_srgb,var(--surface-2)_60%,transparent))]">
-          {tab === 'forgot' ? (
-            <div className="flex flex-col gap-2">
-              <h1 className="m-0 font-['Open_Sans',sans-serif] text-[22px] font-extrabold text-(--text-primary)">
-                Quên mật khẩu
-              </h1>
-              <p className="m-0 text-[13.5px] leading-[1.55] text-(--text-tertiary)">
-                Nhập email đã đăng ký, mình sẽ gửi liên kết đặt lại mật khẩu cho bạn.
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <h1 className="m-0 font-['Open_Sans',sans-serif] text-[22px] font-extrabold text-(--text-primary)">
-                Chào mừng bạn quay lại
-              </h1>
-              <p className="m-0 text-[13.5px] leading-[1.55] text-(--text-tertiary)">
-                Đăng nhập để nộp minh chứng, theo dõi điểm DTR và nhận thông báo mới nhất.
-              </p>
-            </div>
-          )}
-
-          {tab !== 'forgot' && (
-            <div className="flex rounded-full border border-[rgba(37,99,235,0.2)] bg-(--surface-tint) p-1.5">
-              <button
-                type="button"
-                className={`flex-1 cursor-pointer rounded-full border-none p-2.5 font-['Open_Sans',sans-serif] text-[13.5px] font-bold ${
-                  tab === 'login' ? 'bg-(--gold) text-(--on-gold)' : 'bg-transparent text-(--text-secondary)'
-                }`}
-                onClick={() => setTab('login')}
-              >
-                Đăng nhập
-              </button>
-              <button
-                type="button"
-                className={`flex-1 cursor-pointer rounded-full border-none p-2.5 font-['Open_Sans',sans-serif] text-[13.5px] font-bold ${
-                  tab === 'register' ? 'bg-(--gold) text-(--on-gold)' : 'bg-transparent text-(--text-secondary)'
-                }`}
-                onClick={() => setTab('register')}
-              >
-                Đăng ký
-              </button>
-            </div>
-          )}
-
-          {tab === 'login' ? (
-            <LoginForm
-              onSubmit={handleLogin}
-              onQuickLogin={onAuthenticated}
-              onForgotPassword={() => setTab('forgot')}
-              onSwitchToRegister={() => setTab('register')}
-            />
-          ) : tab === 'register' ? (
-            <RegisterForm onSubmit={handleRegister} onSwitchToLogin={() => setTab('login')} />
-          ) : resetSent ? (
-            <div className="flex flex-col gap-4.5">
-              <p className="m-0 text-[13.5px] leading-[1.55] text-(--text-tertiary)">
-                Đã gửi liên kết đặt lại mật khẩu tới email của bạn (giả lập — chưa nối email thật).
-                Kiểm tra hộp thư để tiếp tục.
-              </p>
-              <button type="button" className="min-h-[46px] cursor-pointer rounded-[10px] border-none bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-[13px] font-['Open_Sans',sans-serif] text-sm font-bold text-(--on-gold) shadow-[0_6px_16px_rgba(169,127,47,0.25)] transition-[transform,box-shadow] duration-150 hover:-translate-y-px hover:shadow-[0_10px_22px_rgba(169,127,47,0.35)]" onClick={backToLogin}>
-                Quay lại đăng nhập
-              </button>
-            </div>
-          ) : (
-            <ForgotPasswordForm onSubmit={handleForgotPassword} onBackToLogin={backToLogin} />
-          )}
-        </div>
-
-        <div className="text-center text-xs text-(--text-muted)">© 2026 DTR — Your Time Has Come</div>
+      {/* Logo */}
+      <div className="mb-6">
+        <BrandLogo height={48} />
       </div>
+
+      {/* Card */}
+      <div className="w-full max-w-[360px] rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-6">
+        {tab === 'forgot' ? (
+          <>
+            <h1 className="mb-1 text-xl font-semibold text-[var(--text-primary)]">Quên mật khẩu</h1>
+            <p className="mb-5 text-sm text-[var(--text-muted)]">
+              Nhập email đã đăng ký để nhận liên kết đặt lại mật khẩu.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="mb-1 text-xl font-semibold text-[var(--text-primary)]">Chào mừng bạn</h1>
+            <p className="mb-5 text-sm text-[var(--text-muted)]">
+              Đăng nhập để nộp minh chứng và theo dõi điểm DTR.
+            </p>
+          </>
+        )}
+
+        {/* Tabs */}
+        {tab !== 'forgot' && (
+          <div className="mb-5 flex rounded-lg border border-[var(--hairline)] bg-[var(--bg-2)] p-1">
+            <button
+              type="button"
+              className={`flex-1 cursor-pointer rounded-md py-2 text-sm font-medium ${
+                tab === 'login' ? 'bg-[var(--gold)] text-[var(--on-gold)]' : 'text-[var(--text-secondary)]'
+              }`}
+              onClick={() => setTab('login')}
+            >
+              Đăng nhập
+            </button>
+            <button
+              type="button"
+              className={`flex-1 cursor-pointer rounded-md py-2 text-sm font-medium ${
+                tab === 'register' ? 'bg-[var(--gold)] text-[var(--on-gold)]' : 'text-[var(--text-secondary)]'
+              }`}
+              onClick={() => setTab('register')}
+            >
+              Đăng ký
+            </button>
+          </div>
+        )}
+
+        {tab === 'login' ? (
+          <LoginForm
+            onSubmit={handleLogin}
+            onQuickLogin={onAuthenticated}
+            onForgotPassword={() => setTab('forgot')}
+            onSwitchToRegister={() => setTab('register')}
+          />
+        ) : tab === 'register' ? (
+          <RegisterForm onSubmit={handleRegister} onSwitchToLogin={() => setTab('login')} />
+        ) : resetSent ? (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-[var(--text-muted)]">
+              Đã gửi liên kết đặt lại mật khẩu tới email của bạn.
+            </p>
+            <button
+              type="button"
+              className="w-full rounded-lg bg-[var(--gold)] py-2.5 text-sm font-medium text-[var(--on-gold)]"
+              onClick={backToLogin}
+            >
+              Quay lại đăng nhập
+            </button>
+          </div>
+        ) : (
+          <ForgotPasswordForm onSubmit={handleForgotPassword} onBackToLogin={backToLogin} />
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="mt-6 text-xs text-[var(--text-muted)]">© 2026 DTR</div>
     </div>
   )
 }

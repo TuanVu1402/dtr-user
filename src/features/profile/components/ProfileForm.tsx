@@ -56,10 +56,6 @@ export default function ProfileForm({
 
   return (
     <form className={profileFieldStyles.profileCardClass} onSubmit={handleSubmit}>
-      <div className="font-['Open_Sans',sans-serif] text-base font-extrabold text-(--text-primary)">
-        Thông tin tài khoản
-      </div>
-
       <div className="flex items-center gap-4">
         <label className="relative h-[76px] w-[76px] shrink-0 cursor-pointer">
           {avatarUrl ? (
@@ -69,7 +65,7 @@ export default function ProfileForm({
               className="h-[76px] w-[76px] rounded-full border-2 border-[rgba(37,99,235,0.4)] object-cover"
             />
           ) : (
-            <div className="flex h-[76px] w-[76px] items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] font-['Open_Sans',sans-serif] text-2xl font-extrabold text-(--on-gold)">
+            <div className="flex h-[76px] w-[76px] items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))]  text-2xl font-extrabold text-(--on-gold)">
               {initials}
             </div>
           )}
@@ -79,7 +75,7 @@ export default function ProfileForm({
           <input type="file" accept="image/*" hidden onChange={handleAvatarChange} />
         </label>
         <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-          <div className="font-['Open_Sans',sans-serif] text-[19px] font-extrabold text-(--text-primary)">
+          <div className=" text-[19px] font-extrabold text-(--text-primary)">
             {form.name}
           </div>
           <div className="text-[13px] text-(--text-tertiary)">

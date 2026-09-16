@@ -51,12 +51,12 @@ const categoryIcons: Record<Category['icon'], React.ComponentType<{ size?: numbe
   ),
 }
 
-const breakdownAccents: Record<Category['icon'], { fg: string; bg: string; border: string }> = {
-  booking: { fg: '#2563eb', bg: 'rgba(37, 99, 235, 0.12)', border: 'rgba(37, 99, 235, 0.28)' },
-  training: { fg: '#7c3aed', bg: 'rgba(124, 58, 237, 0.12)', border: 'rgba(124, 58, 237, 0.28)' },
-  clip: { fg: '#db2777', bg: 'rgba(219, 39, 119, 0.12)', border: 'rgba(219, 39, 119, 0.28)' },
-  checkin: { fg: '#059669', bg: 'rgba(5, 150, 105, 0.12)', border: 'rgba(5, 150, 105, 0.28)' },
-  office: { fg: '#d97706', bg: 'rgba(217, 119, 6, 0.12)', border: 'rgba(217, 119, 6, 0.28)' },
+const categoryColors: Record<Category['icon'], { bg: string; text: string }> = {
+  booking: { bg: '#dbeafe', text: '#2563eb' },
+  training: { bg: '#ede9fe', text: '#7c3aed' },
+  clip: { bg: '#fce7f3', text: '#db2777' },
+  checkin: { bg: '#dcfce7', text: '#16a34a' },
+  office: { bg: '#fef3c7', text: '#d97706' },
 }
 
 export default function PointsProgress({ totalPoints, nextTierAt, tierName, categories, pointBreakdown }: PointsProgressProps) {
@@ -64,101 +64,79 @@ export default function PointsProgress({ totalPoints, nextTierAt, tierName, cate
   const pointsToNextTier = nextTierAt - totalPoints
 
   return (
-    <section className="flex px-11 pt-11 pb-2 max-[640px]:px-5">
-      <div className="relative flex w-full flex-col gap-6 overflow-hidden rounded-xl border border-[rgba(212,175,106,0.4)] bg-(--surface-1) px-10 py-9 shadow-[0_16px_36px_var(--shadow)] before:absolute before:-top-[120px] before:-right-[100px] before:h-[280px] before:w-[280px] before:rounded-full before:bg-[radial-gradient(circle,rgba(212,175,106,0.22),transparent_70%)] before:pointer-events-none before:content-[''] dark:bg-[linear-gradient(135deg,rgba(212,175,106,0.1),color-mix(in_srgb,var(--surface-1)_40%,transparent))] max-[640px]:gap-5 max-[640px]:px-5 max-[640px]:py-6">
-        <div className="relative z-[1] flex flex-wrap items-center justify-between gap-4">
+    <section className="pt-6 pb-2 md:px-0 md:pt-8 md:pb-6 lg:px-0 lg:pt-8 lg:pb-6">
+      {/* Main Card */}
+      <div className="mb-4 rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-5 md:mb-6 md:p-6 lg:p-8">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-[13px] font-bold tracking-[1.5px] text-(--text-tertiary) uppercase">
-              Tổng điểm DTR hiện tại
-            </div>
-            <div className="mt-2.5 flex items-baseline gap-2">
-              <span className="bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] bg-clip-text font-['Open_Sans',sans-serif] text-[64px] leading-none font-extrabold text-transparent max-[640px]:text-[48px]">
+            <div className="text-xs text-[var(--text-muted)] md:text-sm">Tổng điểm DTR</div>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-3xl font-bold text-[var(--gold-bright)] md:text-4xl lg:text-5xl">
                 {formatPoints(totalPoints)}
               </span>
-              <span className="font-['Open_Sans',sans-serif] text-[20px] font-bold text-(--text-tertiary)">
-                / {nextTierAt} điểm
-              </span>
+              <span className="text-sm text-[var(--text-muted)] md:text-base">/ {nextTierAt}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2.5 rounded-full bg-[linear-gradient(90deg,#c79a43,#f3d98b)] py-2.5 pr-4.5 pl-3 text-[13px] font-bold whitespace-nowrap text-[#4a3610] shadow-[0_8px_18px_rgba(199,154,67,0.35)]">
-            <span className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[rgba(255,255,255,0.45)]">
-              <CrownIcon size={13} color="#4a3610" />
-            </span>
-            {tierName}
+          <div className="flex items-center gap-2 rounded-full bg-[var(--gold)]/[0.1] px-3 py-1.5 md:px-4 md:py-2">
+            <CrownIcon size={14} color="var(--gold-bright)" />
+            <span className="text-xs font-medium text-[var(--gold-bright)] md:text-sm">{tierName}</span>
           </div>
         </div>
 
-        <div className="relative z-[1] flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3 text-[11px] font-extrabold tracking-[0.8px] text-(--text-muted) uppercase">
+        {/* Progress Bar */}
+        <div className="mt-4 md:mt-6">
+          <div className="flex items-center justify-between text-xs text-[var(--text-muted)] mb-1.5 md:text-sm">
             <span>{tierName}</span>
             <span>Hạng Vương Miện</span>
           </div>
-
-          <div className="relative">
-            <div className="h-3 overflow-hidden rounded-full bg-(--hairline)">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#c79a43,#f3d98b)] transition-[width] duration-[400ms] ease-in-out"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-            <span
-              className="absolute top-1/2 h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-(--surface-1) bg-[#e0a92e] shadow-[0_2px_10px_rgba(199,154,67,0.7)] transition-[left] duration-[400ms] ease-in-out"
-              style={{ left: `${progressPercent}%` }}
+          <div className="h-2.5 overflow-hidden rounded-full bg-[var(--bg-2)] md:h-3">
+            <div
+              className="h-full rounded-full bg-[var(--gold)] transition-all duration-300"
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
-
-          <div className="flex items-center justify-between gap-3">
-            <div className="text-[13px] text-(--text-secondary)">
-              Còn <b className="text-[#8a6a1f] dark:text-[#f3d98b]">{pointsToNextTier} điểm</b> nữa để lên
-              hạng tiếp theo
-            </div>
-            <div className="shrink-0 font-['Open_Sans',sans-serif] text-[15px] font-extrabold text-[#8a6a1f] dark:text-[#f3d98b]">
-              {progressPercent}%
-            </div>
+          <div className="mt-1.5 flex items-center justify-between text-xs md:text-sm">
+            <span className="text-[var(--text-muted)]">
+              Còn <b className="text-[var(--gold-bright)]">{pointsToNextTier} điểm</b> để lên hạng
+            </span>
+            <span className="font-medium text-[var(--gold-bright)]">{progressPercent}%</span>
           </div>
         </div>
+      </div>
 
-        <div className="relative z-[1] flex flex-col gap-3 border-t border-(--hairline) pt-5">
-          <div className="text-xs font-extrabold tracking-[0.6px] text-(--text-tertiary) uppercase">
-            Chi tiết điểm đã ghi nhận
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3.5 max-[640px]:grid-cols-2 max-[640px]:gap-2.5">
-            {pointBreakdown.map((item, index) => {
-              const iconKey = categories[index]?.icon ?? 'office'
-              const Icon = categoryIcons[iconKey]
-              const accent = breakdownAccents[iconKey]
-              return (
+      {/* Point Breakdown - Responsive grid */}
+      <div className="rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-4 md:p-6 lg:p-8">
+        <h3 className="mb-3 text-sm font-medium text-[var(--text-secondary)] md:text-base md:mb-4">
+          Chi tiết điểm đã ghi nhận
+        </h3>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-5">
+          {pointBreakdown.map((item, index) => {
+            const iconKey = categories[index]?.icon ?? 'office'
+            const Icon = categoryIcons[iconKey]
+            const colors = categoryColors[iconKey]
+            return (
+              <div
+                className="flex items-center gap-3 rounded-lg border border-[var(--hairline)] bg-[var(--bg-2)] p-3 md:p-4"
+                key={item.label}
+              >
                 <div
-                  className={`group relative flex min-w-0 flex-col gap-2.5 overflow-hidden rounded-lg border border-(--hairline) bg-(--surface-tint) px-4 pt-4 pb-3.5 transition-[transform,box-shadow,border-color] duration-150 hover:-translate-y-0.5 hover:shadow-[0_8px_18px_var(--shadow)] max-[640px]:px-3 max-[640px]:pt-3.5 max-[640px]:pb-3 ${
-                    item.count === 0 ? 'opacity-55' : ''
-                  }`}
-                  key={item.label}
-                  style={{ borderColor: item.count === 0 ? undefined : accent.border }}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg md:h-10 md:w-10"
+                  style={{ background: colors.bg }}
                 >
-                  <span
-                    className="pointer-events-none absolute inset-x-0 top-0 h-[3px]"
-                    style={{ background: accent.fg }}
-                  />
-
-                  <div className="flex items-center justify-between gap-2">
-                    <div
-                      className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] border transition-transform duration-150 group-hover:scale-[1.08] max-[640px]:h-[30px] max-[640px]:w-[30px]"
-                      style={{ background: accent.bg, borderColor: accent.border }}
-                    >
-                      <Icon size={16} color={accent.fg} />
-                    </div>
-                    <span className="font-['Open_Sans',sans-serif] text-[26px] leading-none font-extrabold text-(--text-primary) max-[640px]:text-[22px]">
-                      {item.count}
-                    </span>
+                  <Icon size={14} color={colors.text} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-lg font-semibold text-[var(--text-primary)] md:text-xl">
+                    {item.count}
                   </div>
-
-                  <div className="text-[11.5px] leading-[1.3] font-semibold break-words text-(--text-tertiary) max-[640px]:text-[10.5px]">
+                  <div className="text-xs text-[var(--text-muted)] truncate md:text-sm">
                     {item.label}
                   </div>
                 </div>
-              )
-            })}
-          </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </section>

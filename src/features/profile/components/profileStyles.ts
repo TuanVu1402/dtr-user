@@ -1,13 +1,15 @@
-const fieldInputClass =
-  "w-full rounded-[10px] border border-[rgba(37,99,235,0.25)] bg-(--surface-tint) px-3.5 py-[11px] font-['Open_Sans',sans-serif] text-sm text-(--text-primary) placeholder:text-(--text-muted) focus:border-(--gold) focus:outline-none"
-
 export const profileFieldStyles = {
-  fieldInputClass,
-  fieldLabelClass: 'text-[12.5px] font-bold text-(--text-secondary)',
-  btnPrimaryClass:
-    "min-h-11 cursor-pointer rounded-[10px] border-none bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 py-[11px] font-['Open_Sans',sans-serif] text-[13.5px] font-bold text-(--on-gold) shadow-[0_6px_16px_rgba(169,127,47,0.25)] transition-[transform,box-shadow,background,border-color] duration-150 hover:-translate-y-px hover:shadow-[0_10px_22px_rgba(169,127,47,0.35)]",
-  statCardClass:
-    'rounded-xl border border-[rgba(37,99,235,0.16)] bg-(--surface-1) px-5.5 py-5 shadow-[0_4px_14px_var(--shadow)] transition-[transform,box-shadow] duration-200 hover:-translate-y-[3px] hover:shadow-[0_14px_28px_var(--shadow-strong)]',
   profileCardClass:
-    'flex flex-col gap-4 rounded-xl border border-[rgba(37,99,235,0.16)] bg-(--surface-1) p-6.5 shadow-[0_8px_24px_var(--shadow)]',
+    'rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-5 md:p-6 lg:p-8',
+
+  fieldLabelClass: 'text-xs font-medium text-[var(--text-secondary)] md:text-sm',
+
+  fieldInputClass:
+    'w-full rounded-lg border border-[var(--hairline)] bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none md:px-4 md:py-3 md:text-base',
+
+  btnPrimaryClass:
+    'cursor-pointer rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-medium text-[var(--on-gold)] transition-colors hover:bg-[var(--gold-deep)] md:px-6 md:py-2.5 md:text-base',
+
+  statCardClass:
+    'flex flex-col items-center rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] text-center md:p-5 lg:p-6',
 }

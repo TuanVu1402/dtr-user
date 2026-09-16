@@ -10,7 +10,8 @@ type RegisterFormProps = {
 
 export default function RegisterForm({ onSubmit, onSwitchToLogin }: RegisterFormProps) {
   return (
-    <form className="flex flex-col gap-4.5" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      {/* Name */}
       <div className="flex flex-col gap-2">
         <label className={fieldLabelClass} htmlFor="register-name">
           Họ và tên
@@ -24,6 +25,7 @@ export default function RegisterForm({ onSubmit, onSwitchToLogin }: RegisterForm
         />
       </div>
 
+      {/* Email */}
       <div className="flex flex-col gap-2">
         <label className={fieldLabelClass} htmlFor="register-email">
           Email
@@ -32,11 +34,12 @@ export default function RegisterForm({ onSubmit, onSwitchToLogin }: RegisterForm
           id="register-email"
           className={fieldInputClass}
           type="email"
-          placeholder="ban@dtr.vn"
+          placeholder="ban@email.com"
           required
         />
       </div>
 
+      {/* Phone */}
       <div className="flex flex-col gap-2">
         <label className={fieldLabelClass} htmlFor="register-phone">
           Số điện thoại
@@ -50,38 +53,41 @@ export default function RegisterForm({ onSubmit, onSwitchToLogin }: RegisterForm
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3.5 max-[480px]:grid-cols-1">
-        <div className="flex flex-col gap-2">
-          <label className={fieldLabelClass} htmlFor="register-password">
-            Mật khẩu
-          </label>
-          <input
-            id="register-password"
-            className={fieldInputClass}
-            type="password"
-            placeholder="••••••••"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className={fieldLabelClass} htmlFor="register-password-confirm">
-            Xác nhận mật khẩu
-          </label>
-          <input
-            id="register-password-confirm"
-            className={fieldInputClass}
-            type="password"
-            placeholder="••••••••"
-            required
-          />
-        </div>
+      {/* Password */}
+      <div className="flex flex-col gap-2">
+        <label className={fieldLabelClass} htmlFor="register-password">
+          Mật khẩu
+        </label>
+        <input
+          id="register-password"
+          className={fieldInputClass}
+          type="password"
+          placeholder="Ít nhất 6 ký tự"
+          required
+        />
       </div>
 
+      {/* Confirm Password */}
+      <div className="flex flex-col gap-2">
+        <label className={fieldLabelClass} htmlFor="register-password-confirm">
+          Xác nhận mật khẩu
+        </label>
+        <input
+          id="register-password-confirm"
+          className={fieldInputClass}
+          type="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      {/* Submit */}
       <button type="submit" className={authSubmitClass}>
         Tạo tài khoản
       </button>
 
-      <p className="m-0 text-center text-[13.5px] text-(--text-tertiary)">
+      {/* Login Link */}
+      <p className="text-center text-sm text-[var(--text-muted)]">
         Đã có tài khoản?{' '}
         <button type="button" className={authLinkBtnClass} onClick={onSwitchToLogin}>
           Đăng nhập

@@ -130,24 +130,24 @@ export default function UserHomePage() {
   }
 
   return (
-    <div className="min-h-svh bg-[radial-gradient(1100px_480px_at_85%_-10%,var(--bg-glow),transparent_60%),linear-gradient(180deg,var(--bg-1)_0%,var(--bg-2)_40%,var(--bg-3)_100%)] pb-14 text-(--text-primary)">
+    <div className="min-h-svh bg-[var(--bg-1)] pb-4">
+      {/* Checkin Notice */}
       {checkinNotice && (
-        <div className="mx-11 mt-5 flex items-center justify-between gap-4 rounded-lg border border-[rgba(76,175,130,0.4)] bg-[rgba(76,175,130,0.12)] px-5 py-3.5 text-sm text-(--text-primary)">
+        <div className="mx-4 mt-4 flex items-center justify-between gap-3 rounded-lg bg-[var(--gold)]/[0.1] border border-[var(--gold)]/[0.3] px-4 py-3 text-sm text-[var(--text-primary)]">
           <div>
             {checkinNotice.alreadyDone ? (
               <>
-                Bạn đã điểm danh <b className="text-(--gold-bright)">{checkinNotice.title}</b> trước đó rồi.
+                Bạn đã điểm danh <b className="text-[var(--gold-bright)]">{checkinNotice.title}</b> trước đó rồi.
               </>
             ) : (
               <>
-                ✓ Điểm danh thành công <b className="text-(--gold-bright)">{checkinNotice.title}</b> — đã tự động
-                cộng <b className="text-(--gold-bright)">+1 điểm DTR</b>
+                ✓ Điểm danh thành công <b className="text-[var(--gold-bright)]">{checkinNotice.title}</b> — đã cộng <b className="text-[var(--gold-bright)]">+1 điểm DTR</b>
               </>
             )}
           </div>
           <button
             type="button"
-            className="shrink-0 cursor-pointer border-none bg-transparent text-xl leading-none text-(--text-primary)"
+            className="shrink-0 cursor-pointer border-none bg-transparent text-xl leading-none text-[var(--text-primary)]"
             onClick={() => setCheckinNotice(null)}
             aria-label="Đóng"
           >
@@ -158,54 +158,66 @@ export default function UserHomePage() {
 
       <UserNavbar active="home" />
 
-      {/* Leaderboard Section */}
-      <section className="flex flex-wrap items-center justify-between gap-3 px-11 pt-10 pb-1 max-[640px]:px-5">
-        <div className="inline-flex h-9 items-center rounded-full border border-transparent bg-[linear-gradient(90deg,var(--gold-deep),var(--gold))] px-5 font-['Open_Sans',sans-serif] text-xs font-extrabold tracking-[1.6px] text-(--on-gold)">
+      {/* Leaderboard Header */}
+      <div className="flex items-center justify-between gap-3 px-4 pt-6 pb-2 max-md:px-4 max-lg:px-6 max-lg:pt-8 max-lg:pb-4 lg:px-6 lg:pt-8 lg:pb-4">
+        <span className="rounded-full bg-[var(--gold)] px-4 py-1.5 text-xs font-bold tracking-wide text-[var(--on-gold)]">
           XẾP HẠNG
-        </div>
-        <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[rgba(212,175,106,0.45)] bg-[rgba(243,217,139,0.16)] px-3.5 text-[12px] font-extrabold whitespace-nowrap text-[#8a6a1f] dark:text-[#f3d98b]">
+        </span>
+        <span className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)]">
           <CrownIcon size={14} color="#d4af6a" />
-          Bảng vàng vinh danh
-        </div>
-      </section>
+          Bảng vàng
+        </span>
+      </div>
 
-      <section className="flex flex-col gap-5 px-11 pt-7.5 max-[640px]:px-5">
+      {/* Leaderboard Section - Responsive: full width mobile, 2-col tablet/desktop */}
+      <div className="px-4 pb-6 max-lg:px-4 max-lg:pb-8 lg:px-6 lg:pb-8">
         {fullRanking.length === 0 ? (
-          <p className="m-0 text-sm font-medium text-(--text-tertiary)">Chưa có dữ liệu xếp hạng.</p>
+          <p className="text-sm text-[var(--text-tertiary)]">Chưa có dữ liệu xếp hạng.</p>
         ) : (
           <>
             <LeaderboardPodium podium={podium} />
             <LeaderboardList entries={restRanking} />
           </>
         )}
-      </section>
+      </div>
 
+      {/* How To Earn Section */}
       <HowToEarnSection />
 
-      {/* Categories Section */}
-      <section className="flex flex-col gap-5 px-11 pt-6.5 max-[640px]:px-5">
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.id}
-            category={category}
-            onOpen={setOpenCategory}
-            onOpenQrScanner={() => setShowQrScanner(true)}
+      {/* Categories Section - Responsive grid layout */}
+      <div className="px-4 pt-6 pb-4 max-lg:px-4 max-lg:pt-8 lg:px-6 lg:pt-8">
+        <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)] lg:text-xl">Nộp minh chứng</h2>
+        <div className="grid gap-4 max-sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              category={category}
+              onOpen={setOpenCategory}
+              onOpenQrScanner={() => setShowQrScanner(true)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Points Progress - Centered container on desktop */}
+      <div className="max-lg:px-4 max-lg:pb-6 lg:px-6 lg:pb-8">
+        <div className="mx-auto max-w-3xl">
+          <PointsProgressSection
+            totalPoints={totalPoints}
+            nextTierAt={nextTierAt}
+            tierName={tierName}
+            categories={categories}
+            pointBreakdown={pointBreakdown}
           />
-        ))}
-      </section>
+        </div>
+      </div>
 
-      <PointsProgressSection
-        totalPoints={totalPoints}
-        nextTierAt={nextTierAt}
-        tierName={tierName}
-        categories={categories}
-        pointBreakdown={pointBreakdown}
-      />
-
+      {/* Feedback Section */}
       <FeedbackSection />
 
       <Footer />
 
+      {/* Modals */}
       {openCategory && (
         <SubmissionForm
           category={openCategory}
