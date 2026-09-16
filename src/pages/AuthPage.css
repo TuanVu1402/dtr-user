@@ -103,11 +103,14 @@
   cursor: pointer;
   min-height: 44px;
   text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .quick-role-btn:hover {
   background: rgba(37, 99, 235, 0.12);
   border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px var(--shadow);
 }
 
 .auth-divider {
@@ -215,6 +218,13 @@
   font-weight: 700;
   cursor: pointer;
   min-height: 46px;
+  box-shadow: 0 6px 16px rgba(169, 127, 47, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(169, 127, 47, 0.35);
 }
 
 .auth-switch {

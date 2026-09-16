@@ -4,6 +4,7 @@ import { CURRENT_USER_NAME } from '../data/currentUser'
 import { ArrowRightIcon, BookingIcon, CheckinIcon, ClipIcon, CrownIcon, OfficeIcon, TrainingIcon } from '../components/icons'
 import UserNavbar from '../components/UserNavbar'
 import SubmissionForm from '../components/SubmissionForm'
+import QrScannerModal from '../components/QrScannerModal'
 import FeedbackSection from '../components/FeedbackSection'
 import Footer from '../components/Footer'
 import { useTrainingSessions } from '../context/TrainingSessionsContext'
@@ -56,7 +57,50 @@ export default function UserHomePage() {
   const [openCategory, setOpenCategory] = useState<Category | null>(null)
   const [checkinNotice, setCheckinNotice] = useState<CheckinNotice | null>(null)
   const [visibleRankCount, setVisibleRankCount] = useState(INITIAL_RANK_COUNT)
+  const [showQrScanner, setShowQrScanner] = useState(false)
   const { findSession } = useTrainingSessions()
+
+  // Ghi nhận điểm danh QR cho 1 mã buổi Training/Kick off — dùng chung cho cả link quét từ
+  // app camera ngoài (URL ?checkin=) lẫn quét trực tiếp trong app qua QrScannerModal.
+  function processCheckinCode(code: string) {
+    const session = findSession(code)
+    const title = session?.title ?? 'Buổi Training'
+    const storageKey = `dtr-checkin-done-${code}`
+    const alreadyDone = localStorage.getItem(storageKey) === '1'
+
+    if (!alreadyDone) {
+      localStorage.setItem(storageKey, '1')
+      addSubmission({
+        userName: CURRENT_USER_NAME,
+        categoryLabel: 'Training / Kick off',
+        description: `Điểm danh QR — ${title}`,
+        date: new Date().toLocaleDateString('vi-VN'),
+        points: 1,
+        status: 'approved',
+      })
+    }
+
+    setCheckinNotice({ title, alreadyDone })
+  }
+
+  // Mã QR có thể chứa cả link đầy đủ (?checkin=<mã>) hoặc chỉ riêng mã buổi — lấy đúng mã
+  // trong cả 2 trường hợp.
+  function extractCheckinCode(rawValue: string) {
+    try {
+      const url = new URL(rawValue)
+      const code = url.searchParams.get('checkin')
+      if (code) return code
+    } catch {
+      // Không phải URL — coi cả chuỗi quét được là mã buổi.
+    }
+    return rawValue.trim()
+  }
+
+  function handleQrDetected(rawValue: string) {
+    setShowQrScanner(false)
+    const code = extractCheckinCode(rawValue)
+    if (code) processCheckinCode(code)
+  }
 
   const fullRanking = useMemo(() => {
     const totals = new Map<string, number>()
@@ -78,31 +122,15 @@ export default function UserHomePage() {
   const progressPercent = Math.min(100, Math.round((totalPoints / nextTierAt) * 100))
   const pointsToNextTier = nextTierAt - totalPoints
 
-  // Quét mã QR điểm danh Training/Kick off: URL dạng ?checkin=<mã buổi> sẽ tự động
-  // cộng điểm mà không cần chờ admin duyệt (do đã có bằng chứng có mặt qua QR).
+  // Quét mã QR điểm danh Training/Kick off bằng app camera ngoài: mở link dạng
+  // ?checkin=<mã buổi> sẽ tự động cộng điểm mà không cần chờ admin duyệt (do đã có bằng
+  // chứng có mặt qua QR).
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const code = params.get('checkin')
     if (!code) return
 
-    const session = findSession(code)
-    const title = session?.title ?? 'Buổi Training'
-    const storageKey = `dtr-checkin-done-${code}`
-    const alreadyDone = localStorage.getItem(storageKey) === '1'
-
-    if (!alreadyDone) {
-      localStorage.setItem(storageKey, '1')
-      addSubmission({
-        userName: CURRENT_USER_NAME,
-        categoryLabel: 'Training / Kick off',
-        description: `Điểm danh QR — ${title}`,
-        date: new Date().toLocaleDateString('vi-VN'),
-        points: 1,
-        status: 'approved',
-      })
-    }
-
-    setCheckinNotice({ title, alreadyDone })
+    processCheckinCode(code)
 
     const url = new URL(window.location.href)
     url.searchParams.delete('checkin')
@@ -170,9 +198,9 @@ export default function UserHomePage() {
 
       <UserNavbar active="home" />
 
-      <section className="section-head">
+      <section className="section-head section-head-compact">
         <div className="pill">XẾP HẠNG</div>
-        <p className="section-caption">
+        <p className="section-caption section-caption-lead">
           Xếp hạng theo tổng điểm DTR đã được duyệt, cập nhật theo thời gian thực.
         </p>
       </section>
@@ -316,7 +344,13 @@ export default function UserHomePage() {
                     </span>
                   ))}
                   {category.id === 'training-kickoff' && (
-                    <span className="point-chip qr-chip">Quét QR tự động</span>
+                    <button
+                      type="button"
+                      className="point-chip qr-chip"
+                      onClick={() => setShowQrScanner(true)}
+                    >
+                      Quét QR tự động
+                    </button>
                   )}
                 </div>
                 <button className="cat-btn" type="button" onClick={() => setOpenCategory(category)}>
@@ -396,6 +430,10 @@ export default function UserHomePage() {
           onCancel={() => setOpenCategory(null)}
           onSubmit={handleSubmit}
         />
+      )}
+
+      {showQrScanner && (
+        <QrScannerModal onDetected={handleQrDetected} onCancel={() => setShowQrScanner(false)} />
       )}
     </div>
   )

@@ -533,6 +533,7 @@
   font-family: 'Open Sans', sans-serif;
   cursor: pointer;
   min-height: 44px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-secondary {
@@ -541,10 +542,21 @@
   color: var(--text-secondary);
 }
 
+.btn-secondary:hover {
+  background: rgba(169, 127, 47, 0.08);
+  border-color: rgba(169, 127, 47, 0.5);
+}
+
 .btn-primary {
   background: linear-gradient(90deg, var(--gold-deep), var(--gold));
   border: none;
   color: var(--on-gold);
+  box-shadow: 0 6px 16px rgba(169, 127, 47, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(169, 127, 47, 0.35);
 }
 
 /* Select giống field-input, dùng cho ManualEntryForm */

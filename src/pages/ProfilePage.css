@@ -6,6 +6,8 @@
 }
 
 .profile-top-card {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -14,6 +16,19 @@
   border-radius: 18px;
   background: var(--surface-1);
   border: 1px solid rgba(37, 99, 235, 0.28);
+  box-shadow: 0 16px 36px var(--shadow);
+}
+
+.profile-top-card::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -100px;
+  width: 280px;
+  height: 280px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(169, 127, 47, 0.16), transparent 70%);
+  pointer-events: none;
 }
 
 :root[data-theme='dark'] .profile-top-card {
@@ -117,8 +132,15 @@
 .stat-card {
   border-radius: 14px;
   padding: 20px 22px;
-  background: var(--surface-tint);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  background: var(--surface-1);
+  border: 1px solid rgba(37, 99, 235, 0.16);
+  box-shadow: 0 4px 14px var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px var(--shadow-strong);
 }
 
 .stat-num {
@@ -147,8 +169,9 @@
   gap: 16px;
   padding: 26px;
   border-radius: 16px;
-  background: var(--surface-tint);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  background: var(--surface-1);
+  border: 1px solid rgba(37, 99, 235, 0.16);
+  box-shadow: 0 8px 24px var(--shadow);
 }
 
 .profile-card-title {

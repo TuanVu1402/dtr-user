@@ -1,3 +1,17 @@
+/* Khu vực "XẾP HẠNG" trên trang chủ không có tiêu đề lớn (h1/h2) như các mục khác —
+   siết gap lại và làm câu mô tả đậm/rõ hơn để tự nó đóng vai trò dẫn nhập, tránh nhìn
+   trống trải giữa pill và nội dung bên dưới. */
+.section-head-compact {
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.section-caption-lead {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
 .checkin-toast {
   margin: 20px 44px 0;
   display: flex;
@@ -26,6 +40,14 @@
   color: var(--positive);
   background: rgba(76, 175, 130, 0.12);
   border-color: rgba(76, 175, 130, 0.4);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.qr-chip:hover {
+  background: rgba(76, 175, 130, 0.22);
+  border-color: rgba(76, 175, 130, 0.6);
 }
 
 /* Hero */
