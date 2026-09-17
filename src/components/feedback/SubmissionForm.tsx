@@ -21,10 +21,17 @@ type FormErrors = {
   file?: string
 }
 
+function todayIsoDate() {
+  const now = new Date()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${now.getFullYear()}-${month}-${day}`
+}
+
 export default function SubmissionForm({ category, onCancel, onSubmit }: SubmissionFormProps) {
   const [optionLabel, setOptionLabel] = useState(category.pointOptions[0].label)
   const [description, setDescription] = useState('')
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState(todayIsoDate)
   const [link, setLink] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined)

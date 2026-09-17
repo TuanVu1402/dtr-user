@@ -5,14 +5,9 @@ import { formatPoints } from '@/utils/format'
 import { useLanguage } from '@/context/LanguageContext'
 import type { LeaderboardEntry } from './LeaderboardSection'
 import { getInitials } from './LeaderboardSection'
+
 const SLIDE_COUNT = 2
 const SLIDE_MS = 6000
-
-const rankBadge: Record<number, string> = {
-  1: 'bg-[#f5c542] text-[#5b3b00]',
-  2: 'bg-[#cfd6e4] text-[#334155]',
-  3: 'bg-[#e8b07a] text-[#7c3a12]',
-}
 
 type LeaderboardSlideshowProps = {
   ranking: LeaderboardEntry[]
@@ -29,27 +24,187 @@ function formatBoardMonth(monthKey: string, locale: 'vi' | 'en') {
   return `THÁNG ${Number(month)}/${year}`
 }
 
-function RankRow({ entry, rank }: { entry: LeaderboardEntry; rank: number }) {
+function GoldCorners() {
+  const corner =
+    'pointer-events-none absolute h-7 w-7 text-[#f5c542] md:h-[4.25rem] md:w-[4.25rem] xl:h-20 xl:w-20'
   return (
-    <li className="grid h-5 grid-cols-[0.9rem_1.1rem_minmax(0,1fr)_auto] items-center gap-x-1 md:h-auto md:grid-cols-[2rem_2.5rem_minmax(0,1fr)_2.75rem] md:gap-3 xl:grid-cols-[3rem_4rem_minmax(0,1fr)_3rem] xl:gap-4">
+    <>
+      <svg className={`${corner} top-1 left-1 md:top-2 md:left-2`} viewBox="0 0 64 64" fill="none" aria-hidden>
+        <path d="M6 50V12c0-5 3-7 8-7h38" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        <path d="M10 20c10-3 20-5 34-5" stroke="currentColor" strokeWidth="1.3" opacity="0.75" />
+        <path d="M8 28c8-2 18-3 28-3" stroke="currentColor" strokeWidth="0.9" opacity="0.45" />
+        <circle cx="14" cy="12" r="2.4" fill="currentColor" />
+      </svg>
+      <svg className={`${corner} top-1 right-1 rotate-90 md:top-2 md:right-2`} viewBox="0 0 64 64" fill="none" aria-hidden>
+        <path d="M6 50V12c0-5 3-7 8-7h38" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        <path d="M10 20c10-3 20-5 34-5" stroke="currentColor" strokeWidth="1.3" opacity="0.75" />
+        <circle cx="14" cy="12" r="2.4" fill="currentColor" />
+      </svg>
+      <svg className={`${corner} bottom-1 left-1 -rotate-90 md:bottom-2 md:left-2`} viewBox="0 0 64 64" fill="none" aria-hidden>
+        <path d="M6 50V12c0-5 3-7 8-7h38" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        <circle cx="14" cy="12" r="2.4" fill="currentColor" />
+      </svg>
+      <svg className={`${corner} right-1 bottom-1 rotate-180 md:right-2 md:bottom-2`} viewBox="0 0 64 64" fill="none" aria-hidden>
+        <path d="M6 50V12c0-5 3-7 8-7h38" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+        <circle cx="14" cy="12" r="2.4" fill="currentColor" />
+      </svg>
+    </>
+  )
+}
+
+function CityGlow() {
+  return (
+    <svg
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-8 w-full text-[#f5c542] md:h-24 xl:h-28"
+      viewBox="0 0 800 120"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="city-fade" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#f5c542" stopOpacity="0.42" />
+          <stop offset="70%" stopColor="#f5c542" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#f5c542" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path
+        fill="url(#city-fade)"
+        d="M0 120V82h22v-26h16v26h20V52h12v16h18V38h14v44h22V62h16v18h28V46h18v36h24V66h14v16h34V42h20v40h26V54h16v28h38V48h22v34h30V72h14v48H0Z"
+      />
+    </svg>
+  )
+}
+
+function GoldRays() {
+  return (
+    <svg className="pointer-events-none absolute inset-x-0 top-0 h-10 w-full md:h-36 xl:h-40" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden>
+      <defs>
+        <linearGradient id="ray-fade" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#f5c542" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#f5c542" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon fill="url(#ray-fade)" points="400,0 430,160 370,160" />
+      <polygon fill="url(#ray-fade)" points="400,0 490,160 450,160" opacity="0.7" />
+      <polygon fill="url(#ray-fade)" points="400,0 350,160 310,160" opacity="0.7" />
+      <polygon fill="url(#ray-fade)" points="400,0 560,160 530,160" opacity="0.4" />
+      <polygon fill="url(#ray-fade)" points="400,0 270,160 240,160" opacity="0.4" />
+    </svg>
+  )
+}
+
+function HonorCrest({ className }: { className: string }) {
+  const leftLeaves = [
+    [38, 108, -62],
+    [28, 94, -48],
+    [22, 78, -32],
+    [20, 62, -14],
+    [24, 46, 8],
+    [32, 32, 28],
+    [44, 22, 48],
+  ] as const
+  return (
+    <span className={`relative inline-flex shrink-0 ${className}`}>
+      <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true">
+        <defs>
+          <linearGradient id="honor-gold" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="#fff6c8" />
+            <stop offset="42%" stopColor="#f5c542" />
+            <stop offset="100%" stopColor="#b8860b" />
+          </linearGradient>
+        </defs>
+        {leftLeaves.map(([cx, cy, rot], index) => (
+          <g key={`l${index}`}>
+            <ellipse
+              cx={cx}
+              cy={cy}
+              rx="11"
+              ry="5.2"
+              fill="url(#honor-gold)"
+              transform={`rotate(${rot} ${cx} ${cy})`}
+            />
+            <ellipse
+              cx={120 - cx}
+              cy={cy}
+              rx="11"
+              ry="5.2"
+              fill="url(#honor-gold)"
+              transform={`rotate(${-rot} ${120 - cx} ${cy})`}
+            />
+          </g>
+        ))}
+        <path
+          d="M44 34 60 10l16 24 10-8-6 28H40l-6-28 10 8Z"
+          fill="url(#honor-gold)"
+          stroke="#7a4b00"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        <rect x="42" y="52" width="36" height="7" rx="1.4" fill="url(#honor-gold)" stroke="#7a4b00" strokeWidth="0.8" />
+        <circle cx="44" cy="32" r="2.4" fill="#fff6c8" />
+        <circle cx="60" cy="14" r="2.4" fill="#fff6c8" />
+        <circle cx="76" cy="32" r="2.4" fill="#fff6c8" />
+      </svg>
+    </span>
+  )
+}
+
+function rankBadgeClass(rank: number) {
+  if (rank === 1) {
+    return 'bg-[linear-gradient(180deg,#fff3b0,#f5c542_50%,#c49212)] text-[#5b3b00] shadow-[0_0_0_2px_#f8e38a,0_0_12px_rgba(245,197,66,0.45)]'
+  }
+  if (rank === 2) {
+    return 'bg-[linear-gradient(180deg,#f4f7fb,#c5d0de_45%,#7f8ea3)] text-[#1d2a3c] ring-2 ring-[#e8eef6]/90'
+  }
+  if (rank === 3) {
+    return 'bg-[linear-gradient(180deg,#f6d0a4,#c47a3a_55%,#8a4b18)] text-white ring-2 ring-[#f3c38a]/70'
+  }
+  return 'bg-[#0b1f44] text-[#f5c542] ring-2 ring-[#d4a017]/80'
+}
+
+function RankRow({ entry, rank }: { entry: LeaderboardEntry; rank: number }) {
+  const champion = rank === 1
+  return (
+    <li
+      className={`relative flex min-h-0 flex-1 items-center gap-1 rounded-full md:min-h-[2.75rem] md:gap-2.5 xl:min-h-[3.15rem] xl:gap-3 ${
+        champion
+          ? 'bg-[linear-gradient(90deg,#c9a024_0%,#f6e27a_18%,#fff6c2_50%,#f6e27a_82%,#c9a024_100%)] px-1 py-0 shadow-[0_6px_16px_rgba(245,197,66,0.32)] md:px-2.5 md:py-1 xl:px-3.5 xl:py-1.5'
+          : 'bg-[#071a38]/90 px-1 py-0 ring-1 ring-[#1e4a86]/75 md:px-2.5 md:py-1 xl:px-3.5 xl:py-1.5'
+      }`}
+    >
       <span
-        className={`flex h-3.5 w-3.5 items-center justify-center justify-self-center rounded-full text-[7px] font-bold md:h-8 md:w-8 md:text-sm xl:h-12 xl:w-12 xl:text-lg ${
-          rankBadge[rank] ?? 'bg-white/15 text-white'
-        }`}
+        className={`relative z-[1] flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[8px] font-extrabold md:h-9 md:w-9 md:text-sm xl:h-12 xl:w-12 xl:text-lg ${rankBadgeClass(rank)}`}
       >
+        {champion ? (
+          <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 md:-top-2.5">
+            <CrownIcon size={9} color="#f5c542" filled />
+          </span>
+        ) : null}
         {rank}
       </span>
-      <div className="flex h-[1.125rem] w-[1.125rem] items-center justify-center justify-self-center overflow-hidden rounded-full bg-white/10 text-[6px] font-semibold text-white md:h-10 md:w-10 md:text-xs xl:h-16 xl:w-16 xl:text-sm">
+      <div
+        className={`relative z-[1] flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-full text-[6px] font-semibold md:h-10 md:w-10 md:text-xs xl:h-14 xl:w-14 xl:text-sm ${
+          champion ? 'bg-[#1a2f5a] text-white ring-2 ring-[#fff4c2]' : 'bg-white/10 text-white ring-1 ring-white/40'
+        }`}
+      >
         {entry.avatarUrl ? (
           <img className="h-full w-full object-cover" src={entry.avatarUrl} alt="" />
         ) : (
           getInitials(entry.name)
         )}
       </div>
-      <span className="min-w-0 truncate text-[10px] leading-none font-medium text-white md:text-base md:leading-normal xl:text-[22px]">
+      <span
+        className={`relative z-[1] min-w-0 flex-1 truncate text-[9px] leading-none font-semibold md:text-[15px] md:leading-normal xl:text-[20px] ${
+          champion ? 'text-[#1a2744]' : 'text-white'
+        }`}
+      >
         {entry.name}
       </span>
-      <span className="shrink-0 pl-0.5 text-right text-[10px] leading-none font-semibold tabular-nums text-[#f5c542] md:pl-0 md:text-base md:leading-normal xl:text-[22px]">
+      <span
+        className={`relative z-[1] w-4 shrink-0 text-right text-[9px] leading-none font-extrabold tabular-nums md:w-8 md:text-base md:leading-normal xl:w-10 xl:text-[22px] ${
+          champion ? 'text-[#7a4b00]' : 'text-[#f5c542]'
+        }`}
+      >
         {formatPoints(entry.points)}
       </span>
     </li>
@@ -86,7 +241,7 @@ export default function LeaderboardSlideshow({ ranking, monthKey }: LeaderboardS
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl border border-white/10 shadow-[0_12px_32px_rgba(8,18,40,0.35)] md:aspect-video xl:rounded-3xl"
+      className="relative aspect-video w-full overflow-hidden rounded-2xl border border-[#d4a017]/40 shadow-[0_12px_32px_rgba(8,18,40,0.35)] xl:rounded-3xl"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={(event) => {
@@ -104,7 +259,7 @@ export default function LeaderboardSlideshow({ ranking, monthKey }: LeaderboardS
       }}
     >
       <div
-        className={`relative h-full cursor-pointer bg-[linear-gradient(145deg,#071226_0%,#123056_55%,#0b1c34_100%)] px-2.5 py-3 pr-3 pb-7 text-left transition-opacity duration-500 md:absolute md:inset-0 md:px-8 md:py-5 md:pr-8 md:pb-5 lg:px-10 lg:py-6 xl:px-16 xl:py-10 ${
+        className={`absolute inset-0 cursor-pointer overflow-hidden bg-[radial-gradient(ellipse_at_50%_-10%,rgba(245,197,66,0.34),transparent_46%),linear-gradient(180deg,#071833_0%,#12356c_48%,#061427_100%)] px-2 pt-1.5 pr-2.5 pb-5 text-left transition-opacity duration-500 md:px-8 md:pt-5 md:pr-8 md:pb-7 lg:px-10 lg:pt-6 xl:px-12 xl:pt-7 xl:pb-9 ${
           slide === 0 ? 'z-10 opacity-100' : 'pointer-events-none z-0 opacity-0'
         }`}
         onClick={openRanking}
@@ -119,35 +274,36 @@ export default function LeaderboardSlideshow({ ranking, monthKey }: LeaderboardS
         aria-hidden={slide !== 0}
         aria-label="Mở bảng xếp hạng theo tháng"
       >
-        <div className="flex h-full min-h-0 flex-col justify-center xl:justify-evenly">
-          <div className="mb-2.5 flex shrink-0 flex-col items-center gap-0.5 px-1 md:mb-4 md:-translate-y-4 md:px-0 lg:-translate-y-5 xl:mb-0 xl:translate-y-0">
-            <div className="flex w-full items-center justify-center gap-1 md:w-auto md:gap-2.5 xl:gap-3.5">
-              <span className="animate-crown-blink inline-flex shrink-0 md:hidden">
-                <CrownIcon size={13} color="#f5c542" filled />
-              </span>
-              <span className="animate-crown-blink hidden md:inline-flex xl:hidden">
-                <CrownIcon size={28} color="#f5c542" filled />
-              </span>
-              <span className="animate-crown-blink hidden xl:inline-flex">
-                <CrownIcon size={40} color="#f5c542" filled />
-              </span>
-              <p className="text-center text-[11px] leading-5 font-bold tracking-normal text-[#f5c542] whitespace-nowrap md:text-2xl md:leading-normal md:tracking-[0.04em] md:whitespace-normal xl:text-[2.15rem] xl:tracking-[0.06em] xl:whitespace-nowrap">
+        <GoldRays />
+        <GoldCorners />
+        <CityGlow />
+
+        <div className="relative flex h-full min-h-0 flex-col gap-1 md:gap-3 xl:gap-4">
+          <div className="flex shrink-0 flex-col items-center pt-0 md:pt-1">
+            <div className="flex items-center justify-center gap-1 md:gap-3 xl:gap-4">
+              <HonorCrest className="h-7 w-7 md:h-16 md:w-16 xl:h-[5.25rem] xl:w-[5.25rem]" />
+              <p
+                className="bg-[linear-gradient(180deg,#fff8d6_0%,#f5c542_48%,#c49212_100%)] bg-clip-text text-center text-[11px] leading-none font-extrabold tracking-[0.06em] text-transparent uppercase md:text-[1.85rem] md:tracking-[0.1em] xl:text-[2.55rem] xl:tracking-[0.12em]"
+                style={{ filter: 'drop-shadow(0 0 14px rgba(245,197,66,0.35))' }}
+              >
                 {t('board.title')}
-                <span className="hidden md:inline"> - {monthText}</span>
               </p>
             </div>
-            <p className="text-[10px] leading-4 font-semibold tracking-wide text-[#f5c542] md:hidden">
+            <div
+              className="mt-1 bg-[linear-gradient(180deg,#ffe9a0,#f5c542_42%,#c49212)] px-3 py-px text-[7px] font-extrabold tracking-[0.16em] text-[#5b3b00] uppercase shadow-[0_3px_10px_rgba(245,197,66,0.4)] md:mt-2.5 md:px-8 md:py-1 md:text-xs xl:mt-3 xl:px-9 xl:text-sm"
+              style={{ clipPath: 'polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%)' }}
+            >
               {monthText}
-            </p>
+            </div>
           </div>
 
-          <div className="grid w-full shrink-0 grid-cols-2 gap-x-1.5 md:gap-x-10 lg:gap-x-14 xl:flex-1 xl:gap-x-24">
-            <ul className="flex min-w-0 flex-col gap-1.5 md:gap-3.5 xl:h-full xl:justify-evenly xl:gap-0">
+          <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-1 gap-x-1.5 gap-y-0 md:gap-x-8 lg:gap-x-12 xl:gap-x-14">
+            <ul className="flex h-full min-h-0 min-w-0 flex-col gap-0.5 md:gap-2 xl:gap-2.5">
               {left.map((entry, index) => (
                 <RankRow key={entry.name} entry={entry} rank={index + 1} />
               ))}
             </ul>
-            <ul className="flex min-w-0 flex-col gap-1.5 md:gap-3.5 xl:h-full xl:justify-evenly xl:gap-0">
+            <ul className="flex h-full min-h-0 min-w-0 flex-col gap-0.5 md:gap-2 xl:gap-2.5">
               {right.map((entry, index) => (
                 <RankRow key={entry.name} entry={entry} rank={index + 6} />
               ))}

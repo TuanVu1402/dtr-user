@@ -19,6 +19,8 @@ const filters: { value: HistoryFilter; label: string }[] = [
   { value: 'rejected', label: 'Từ chối' },
 ]
 
+const PREVIEW_COUNT = 5
+
 function statusTitle(status: SubmissionStatus) {
   if (status === 'approved') return 'Đã duyệt'
   if (status === 'pending') return 'Chờ duyệt'
@@ -34,6 +36,7 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
   const [appealSent, setAppealSent] = useState(false)
   const [pendingImage, setPendingImage] = useState<string | undefined>()
   const [pendingSaved, setPendingSaved] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   const sorted = useMemo(
     () =>
@@ -49,6 +52,9 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
     if (filter === 'all') return sorted
     return sorted.filter((entry) => entry.status === filter)
   }, [sorted, filter])
+
+  const visible = expanded ? filtered : filtered.slice(0, PREVIEW_COUNT)
+  const canShowMore = filtered.length > PREVIEW_COUNT
 
   const selectedLive = selected ? sorted.find((entry) => entry.id === selected.id) ?? selected : null
   const canAppeal = selectedLive?.status === 'rejected' && !selectedLive.appealedAt
@@ -111,7 +117,10 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
                 ? 'border-[var(--gold)] bg-[var(--gold)] text-[var(--on-gold)]'
                 : 'border-[var(--hairline)] bg-[var(--surface-1)] text-[var(--text-secondary)]'
             }`}
-            onClick={() => setFilter(item.value)}
+            onClick={() => {
+              setFilter(item.value)
+              setExpanded(false)
+            }}
           >
             {item.label}
           </button>
@@ -124,7 +133,7 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
         </p>
       ) : (
         <ul className="m-0 flex list-none flex-col divide-y divide-[var(--hairline)] p-0">
-          {filtered.map((entry) => (
+          {visible.map((entry) => (
             <li className="py-3 first:pt-0 last:pb-0" key={entry.id}>
               <button
                 type="button"
@@ -163,6 +172,18 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
           ))}
         </ul>
       )}
+
+      {canShowMore ? (
+        <div className="mt-3 flex justify-center border-t border-[var(--hairline)] pt-3">
+          <button
+            type="button"
+            className="text-sm font-semibold text-[var(--gold-bright)] hover:underline"
+            onClick={() => setExpanded((current) => !current)}
+          >
+            {expanded ? 'Thu gọn' : 'Xem thêm'}
+          </button>
+        </div>
+      ) : null}
 
       {selectedLive ? (
         <div

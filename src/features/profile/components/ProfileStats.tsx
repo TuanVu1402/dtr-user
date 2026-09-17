@@ -1,4 +1,3 @@
-import { formatPoints } from '@/utils/format'
 import { profileFieldStyles } from './profileStyles'
 
 const { statCardClass } = profileFieldStyles
