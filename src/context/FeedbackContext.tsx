@@ -5,7 +5,7 @@ const STORAGE_KEY = 'dtr-feedback-entries'
 
 type FeedbackContextValue = {
   feedbackList: FeedbackEntry[]
-  addFeedback: (type: FeedbackType, content: string, email?: string) => void
+  addFeedback: (type: FeedbackType, content: string, email?: string, imageDataUrl?: string) => void
   setFeedbackStatus: (id: string, status: FeedbackStatus) => void
 }
 
@@ -35,12 +35,13 @@ export function FeedbackProvider({ children }: { children: ReactNode }) {
     }
   }, [feedbackList])
 
-  function addFeedback(type: FeedbackType, content: string, email?: string) {
+  function addFeedback(type: FeedbackType, content: string, email?: string, imageDataUrl?: string) {
     const entry: FeedbackEntry = {
       id: generateId(),
       type,
       content,
       email: email || undefined,
+      imageDataUrl,
       createdAt: new Date().toLocaleString('vi-VN'),
       status: 'new',
     }

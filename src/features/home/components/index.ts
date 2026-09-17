@@ -1,5 +1,7 @@
 export { default as UserHomePage } from './UserHomePage'
-export { default as HowToEarnSection } from './HowToEarnSection'
 export { default as CategoryCard } from './CategoryCard'
 export { default as PointsProgressSection } from './PointsProgressSection'
 export { LeaderboardPodium, LeaderboardList } from './LeaderboardSection'
+export { default as LeaderboardSlideshow } from './LeaderboardSlideshow'
+export { default as LeaderboardPage } from './LeaderboardPage'
+export { default as PointsTicker } from './PointsTicker'

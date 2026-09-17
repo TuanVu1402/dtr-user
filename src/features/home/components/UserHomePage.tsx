@@ -2,56 +2,67 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   UserNavbar,
   SubmissionForm,
-  QrScannerModal,
   FeedbackSection,
   Footer,
-  CrownIcon,
 } from '@/components'
-import { categories, pointBreakdown } from '@/data/dtrData'
+import QrScannerModal from '@/components/feedback/QrScannerModal'
+import { readLocation, startCameraStream, type GeoPoint } from '@/utils/qrCheckin'
+import { categories } from '@/data/dtrData'
 import { CURRENT_USER_NAME } from '@/data/currentUser'
 import { useTrainingSessions } from '@/context/TrainingSessionsContext'
 import { useSubmissions } from '@/context/SubmissionsContext'
 import type { Category } from '@/types/dtr'
-import { LeaderboardPodium, LeaderboardList } from './LeaderboardSection'
-import HowToEarnSection from './HowToEarnSection'
+import { buildRanking, formatMonthLabel, previousMonthKey } from '@/utils/ranking'
+import { formatPoints } from '@/utils/format'
+import { ApprovalHistory } from '@/features/profile'
+import LeaderboardSlideshow from './LeaderboardSlideshow'
+import PointsTicker from './PointsTicker'
 import CategoryCard from './CategoryCard'
-import PointsProgressSection from './PointsProgressSection'
 
 type CheckinNotice = {
   title: string
   alreadyDone: boolean
+  points: number
 }
 
-const totalPoints = 128
-const nextTierAt = 160
-const tierName = 'Hạng Kim Cương'
+type ScanTarget = {
+  category: Category
+  location?: string
+  cameraPromise: Promise<MediaStream>
+  geoPromise: Promise<GeoPoint>
+}
 
 export default function UserHomePage() {
   const { submissions, users, addSubmission } = useSubmissions()
   const [openCategory, setOpenCategory] = useState<Category | null>(null)
   const [checkinNotice, setCheckinNotice] = useState<CheckinNotice | null>(null)
-  const [showQrScanner, setShowQrScanner] = useState(false)
+  const [scanTarget, setScanTarget] = useState<ScanTarget | null>(null)
   const { findSession } = useTrainingSessions()
 
-  function processCheckinCode(code: string) {
+  function processCheckinCode(code: string, category: Category, locationLabel?: string, geo?: GeoPoint) {
     const session = findSession(code)
-    const title = session?.title ?? 'Buổi Training'
-    const storageKey = `dtr-checkin-done-${code}`
+    const points = category.pointOptions[0]?.points ?? 1
+    const title =
+      locationLabel ??
+      session?.title ??
+      category.title
+    const storageKey = `dtr-checkin-done-${category.id}-${code}`
     const alreadyDone = localStorage.getItem(storageKey) === '1'
+    const geoText = geo ? ` · GPS ${geo.lat.toFixed(5)}, ${geo.lng.toFixed(5)}` : ''
 
     if (!alreadyDone) {
       localStorage.setItem(storageKey, '1')
       addSubmission({
         userName: CURRENT_USER_NAME,
-        categoryLabel: 'Training / Kick off',
-        description: `Điểm danh QR — ${title}`,
+        categoryLabel: category.id === 'training-kickoff' ? 'Training / Kick off' : category.title,
+        description: `Điểm danh QR — ${title}${geoText}`,
         date: new Date().toLocaleDateString('vi-VN'),
-        points: 1,
+        points,
         status: 'approved',
       })
     }
 
-    setCheckinNotice({ title, alreadyDone })
+    setCheckinNotice({ title, alreadyDone, points })
   }
 
   function extractCheckinCode(rawValue: string) {
@@ -65,39 +76,60 @@ export default function UserHomePage() {
     return rawValue.trim()
   }
 
-  function handleQrDetected(rawValue: string) {
-    setShowQrScanner(false)
-    const code = extractCheckinCode(rawValue)
-    if (code) processCheckinCode(code)
+  function releaseScanner(target: ScanTarget | null) {
+    target?.cameraPromise
+      .then((stream) => {
+        stream.getTracks().forEach((track) => track.stop())
+      })
+      .catch(() => {})
   }
 
-  const fullRanking = useMemo(() => {
-    const totals = new Map<string, number>()
-    for (const s of submissions) {
-      if (s.status !== 'approved') continue
-      totals.set(s.userName, (totals.get(s.userName) ?? 0) + s.points)
-    }
-    return users
-      .filter((u) => u.role === 'user')
-      .map((u) => ({ name: u.name, points: totals.get(u.name) ?? 0, avatarUrl: u.avatarUrl }))
-      .sort((a, b) => b.points - a.points)
-  }, [submissions, users])
+  function handleQrDetected(rawValue: string, geo?: GeoPoint) {
+    const category = scanTarget?.category
+    const location = scanTarget?.location
+    releaseScanner(scanTarget)
+    setScanTarget(null)
+    const code = extractCheckinCode(rawValue)
+    if (code && category) processCheckinCode(code, category, location, geo)
+  }
 
-  const podium = fullRanking.slice(0, 3)
-  const restRanking = fullRanking.slice(3)
+  const myEntries = useMemo(
+    () => submissions.filter((s) => s.userName === CURRENT_USER_NAME),
+    [submissions],
+  )
+
+  const monthKey = previousMonthKey()
+  const monthlyRanking = useMemo(
+    () => buildRanking(users, submissions, monthKey),
+    [users, submissions, monthKey],
+  )
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const code = params.get('checkin')
     if (!code) return
 
-    processCheckinCode(code)
+    const training = categories.find((item) => item.id === 'training-kickoff')
+    if (training) processCheckinCode(code, training)
 
     const url = new URL(window.location.href)
     url.searchParams.delete('checkin')
     window.history.replaceState({}, '', url.toString())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  function openCategoryCard(next: Category, location?: string) {
+    if (next.qrCheckin) {
+      setScanTarget({
+        category: next,
+        location,
+        cameraPromise: startCameraStream(),
+        geoPromise: readLocation(),
+      })
+      return
+    }
+    setOpenCategory(next)
+  }
 
   function handleSubmit(data: {
     optionLabel: string
@@ -141,7 +173,7 @@ export default function UserHomePage() {
               </>
             ) : (
               <>
-                ✓ Điểm danh thành công <b className="text-[var(--gold-bright)]">{checkinNotice.title}</b> — đã cộng <b className="text-[var(--gold-bright)]">+1 điểm DTR</b>
+                ✓ Điểm danh thành công <b className="text-[var(--gold-bright)]">{checkinNotice.title}</b> — đã cộng <b className="text-[var(--gold-bright)]">+{formatPoints(checkinNotice.points)} điểm DTR</b>
               </>
             )}
           </div>
@@ -158,61 +190,41 @@ export default function UserHomePage() {
 
       <UserNavbar active="home" />
 
-      {/* Leaderboard Header */}
-      <div className="flex items-center justify-between gap-3 px-4 pt-6 pb-2 max-md:px-4 max-lg:px-6 max-lg:pt-8 max-lg:pb-4 lg:px-6 lg:pt-8 lg:pb-4">
-        <span className="rounded-full bg-[var(--gold)] px-4 py-1.5 text-xs font-bold tracking-wide text-[var(--on-gold)]">
-          XẾP HẠNG
-        </span>
-        <span className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)]">
-          <CrownIcon size={14} color="#d4af6a" />
-          Bảng vàng
-        </span>
-      </div>
-
-      {/* Leaderboard Section - Responsive: full width mobile, 2-col tablet/desktop */}
-      <div className="px-4 pb-6 max-lg:px-4 max-lg:pb-8 lg:px-6 lg:pb-8">
-        {fullRanking.length === 0 ? (
+      <div className="mx-auto max-w-3xl px-4 pt-5 pb-6 md:max-w-4xl md:px-6 md:pt-6 md:pb-8 lg:max-w-6xl lg:px-8 xl:max-w-[1280px]">
+        {monthlyRanking.length === 0 ? (
           <p className="text-sm text-[var(--text-tertiary)]">Chưa có dữ liệu xếp hạng.</p>
         ) : (
           <>
-            <LeaderboardPodium podium={podium} />
-            <LeaderboardList entries={restRanking} />
+            <LeaderboardSlideshow
+              ranking={monthlyRanking}
+              monthKey={monthKey}
+              monthLabel={formatMonthLabel(monthKey)}
+            />
+            <PointsTicker submissions={submissions} />
           </>
         )}
-      </div>
 
-      {/* How To Earn Section */}
-      <HowToEarnSection />
-
-      {/* Categories Section - Responsive grid layout */}
-      <div className="px-4 pt-6 pb-4 max-lg:px-4 max-lg:pt-8 lg:px-6 lg:pt-8">
-        <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)] lg:text-xl">Nộp minh chứng</h2>
-        <div className="grid gap-4 max-sm:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {categories.map((category) => (
-            <CategoryCard
-              key={category.id}
-              category={category}
-              onOpen={setOpenCategory}
-            />
-          ))}
+        <div className="pt-6 pb-4 max-lg:pt-8 lg:pt-8">
+          <h2 className="mb-4 text-lg font-semibold whitespace-nowrap text-[var(--text-primary)] lg:mb-5 lg:text-xl">
+            Cách ghi điểm
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+            {categories.map((category) => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                onOpen={openCategoryCard}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Points Progress - Centered container on desktop */}
-      <div className="max-lg:px-4 max-lg:pb-6 lg:px-6 lg:pb-8">
-        <div className="mx-auto max-w-3xl">
-          <PointsProgressSection
-            totalPoints={totalPoints}
-            nextTierAt={nextTierAt}
-            tierName={tierName}
-            categories={categories}
-            pointBreakdown={pointBreakdown}
-          />
-        </div>
-      </div>
+        <section className="pt-6 pb-0 md:pt-8">
+          <ApprovalHistory entries={myEntries} />
+        </section>
 
-      {/* Feedback Section */}
-      <FeedbackSection />
+        <FeedbackSection embedded />
+      </div>
 
       <Footer />
 
@@ -225,8 +237,18 @@ export default function UserHomePage() {
         />
       )}
 
-      {showQrScanner && (
-        <QrScannerModal onDetected={handleQrDetected} onCancel={() => setShowQrScanner(false)} />
+      {scanTarget && (
+        <QrScannerModal
+          heading="Quét mã QR"
+          requireLocation
+          cameraPromise={scanTarget.cameraPromise}
+          geoPromise={scanTarget.geoPromise}
+          onDetected={handleQrDetected}
+          onCancel={() => {
+            releaseScanner(scanTarget)
+            setScanTarget(null)
+          }}
+        />
       )}
     </div>
   )

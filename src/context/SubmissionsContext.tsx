@@ -19,6 +19,8 @@ type SubmissionsContextValue = {
   setStatus: (id: string, status: SubmissionStatus) => void
   addSubmission: (input: NewSubmissionInput) => AdminSubmission
   addUser: (name: string, email: string) => AdminUser
+  submitAppeal: (id: string, note: string, imageDataUrl?: string) => void
+  updatePendingEvidence: (id: string, imageDataUrl: string) => void
 }
 
 const SubmissionsContext = createContext<SubmissionsContextValue | null>(null)
@@ -35,7 +37,7 @@ const USERS_KEY = 'dtr-users'
 // Tăng số này mỗi khi sửa dữ liệu mẫu (adminData.ts) — dữ liệu cũ trong localStorage của
 // trình duyệt sẽ tự bị bỏ qua và nạp lại dữ liệu mẫu mới nhất, khỏi cần người dùng tự xóa
 // localStorage thủ công mỗi lần demo có cập nhật.
-const DATA_VERSION = '9'
+const DATA_VERSION = '11'
 const VERSION_KEY = 'dtr-data-version'
 
 function loadFromStorage<T>(key: string, fallback: T): T {
@@ -99,8 +101,32 @@ export function SubmissionsProvider({ children }: { children: ReactNode }) {
     return user
   }
 
+  function submitAppeal(id: string, note: string, imageDataUrl?: string) {
+    setSubmissions((prev) =>
+      prev.map((s) =>
+        s.id === id
+          ? {
+              ...s,
+              status: 'pending' as const,
+              appealNote: note,
+              appealImageDataUrl: imageDataUrl,
+              appealedAt: new Date().toLocaleString('vi-VN'),
+            }
+          : s,
+      ),
+    )
+  }
+
+  function updatePendingEvidence(id: string, imageDataUrl: string) {
+    setSubmissions((prev) =>
+      prev.map((s) => (s.id === id && s.status === 'pending' ? { ...s, imageDataUrl } : s)),
+    )
+  }
+
   return (
-    <SubmissionsContext.Provider value={{ submissions, users, setStatus, addSubmission, addUser }}>
+    <SubmissionsContext.Provider
+      value={{ submissions, users, setStatus, addSubmission, addUser, submitAppeal, updatePendingEvidence }}
+    >
       {children}
     </SubmissionsContext.Provider>
   )

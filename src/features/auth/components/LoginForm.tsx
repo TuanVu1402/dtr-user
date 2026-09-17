@@ -7,10 +7,9 @@ type LoginFormProps = {
   onSubmit: (e: FormEvent) => void
   onQuickLogin: (role: 'user') => void
   onForgotPassword: () => void
-  onSwitchToRegister: () => void
 }
 
-export default function LoginForm({ onSubmit, onQuickLogin, onForgotPassword, onSwitchToRegister }: LoginFormProps) {
+export default function LoginForm({ onSubmit, onQuickLogin, onForgotPassword }: LoginFormProps) {
   return (
     <form className="flex flex-col gap-4" onSubmit={onSubmit}>
       {/* Quick Login */}
@@ -72,14 +71,6 @@ export default function LoginForm({ onSubmit, onQuickLogin, onForgotPassword, on
       <button type="submit" className={authSubmitClass}>
         Đăng nhập
       </button>
-
-      {/* Register Link */}
-      <p className="text-center text-sm text-[var(--text-muted)]">
-        Chưa có tài khoản?{' '}
-        <button type="button" className={authLinkBtnClass} onClick={onSwitchToRegister}>
-          Đăng ký
-        </button>
-      </p>
     </form>
   )
 }

@@ -1,5 +1,5 @@
 // UI Icons
-export { SunIcon, MoonIcon, BellIcon, ArrowUpIcon } from './ui'
+export { SunIcon, MoonIcon, BellIcon, ChatIcon, ArrowUpIcon } from './ui'
 
 // Navigation Icons
 export { MenuIcon, CloseIcon } from './navigation'
@@ -20,6 +20,7 @@ export {
 // Feature Icons
 export {
   BookingIcon,
+  HandshakeIcon,
   TrainingIcon,
   ClipIcon,
   CheckinIcon,

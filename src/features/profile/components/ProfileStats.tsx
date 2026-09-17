@@ -4,23 +4,14 @@ import { profileFieldStyles } from './profileStyles'
 const { statCardClass } = profileFieldStyles
 
 type ProfileStatsProps = {
-  totalPoints: number
   approvedCount: number
   pendingCount: number
   approvalRate: number
 }
 
-export default function ProfileStats({ totalPoints, approvedCount, pendingCount, approvalRate }: ProfileStatsProps) {
+export default function ProfileStats({ approvedCount, pendingCount, approvalRate }: ProfileStatsProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 lg:gap-6">
-      <div className={statCardClass}>
-        <div className="text-[24px] font-extrabold text-[var(--gold-bright)] md:text-[32px] lg:text-[36px]">
-          {formatPoints(totalPoints)}
-        </div>
-        <div className="mt-1 text-[13px] text-[var(--text-tertiary)] md:text-sm">
-          Tổng điểm DTR
-        </div>
-      </div>
+    <div className="grid grid-cols-3 gap-3 md:gap-4 lg:gap-6">
       <div className={statCardClass}>
         <div className="text-[24px] font-extrabold text-[var(--positive)] md:text-[32px] lg:text-[36px]">
           {approvedCount}

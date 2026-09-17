@@ -1,35 +1,38 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { CameraIcon, CheckCircleIcon } from '@/components'
+import { adminUsers } from '@/data/adminData'
 import { profileFieldStyles } from './profileStyles'
 
 const { fieldInputClass, fieldLabelClass, btnPrimaryClass } = profileFieldStyles
 
-const branchOptions = ['Chi nhánh Hà Nội', 'Chi nhánh Hồ Chí Minh', 'Chi nhánh Đà Nẵng']
+const roomOptions = [...new Set(adminUsers.map((user) => user.room).filter(Boolean))] as string[]
 
 type ProfileFormProps = {
   initialName: string
   initialEmail: string
   initialPhone: string
-  initialBranch: string
+  initialRoom: string
   avatarUrl: string | null
   onAvatarChange: (url: string) => void
-  onSave: (data: { name: string; email: string; phone: string; branch: string }) => void
+  onChangePassword?: () => void
+  onSave: (data: { name: string; email: string; phone: string; room: string }) => void
 }
 
 export default function ProfileForm({
   initialName,
   initialEmail,
   initialPhone,
-  initialBranch,
+  initialRoom,
   avatarUrl,
   onAvatarChange,
+  onChangePassword,
   onSave,
 }: ProfileFormProps) {
   const [form, setForm] = useState({
     name: initialName,
     email: initialEmail,
     phone: initialPhone,
-    branch: initialBranch,
+    room: initialRoom,
   })
   const [savedNote, setSavedNote] = useState(false)
 
@@ -55,7 +58,7 @@ export default function ProfileForm({
     .toUpperCase()
 
   return (
-    <form className={profileFieldStyles.profileCardClass} onSubmit={handleSubmit}>
+    <form className={`${profileFieldStyles.profileCardClass} flex flex-col gap-4 lg:gap-6`} onSubmit={handleSubmit}>
       <div className="flex items-center gap-4">
         <label className="relative h-[76px] w-[76px] shrink-0 cursor-pointer">
           {avatarUrl ? (
@@ -79,12 +82,12 @@ export default function ProfileForm({
             {form.name}
           </div>
           <div className="text-[13px] text-(--text-tertiary)">
-            {form.email} · {form.branch}
+            {form.email} · {form.room}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3.5 max-[420px]:grid-cols-1">
+      <div className="grid grid-cols-2 gap-3.5 max-[420px]:grid-cols-1 lg:gap-5">
         <div className="flex flex-col gap-2">
           <label className={fieldLabelClass} htmlFor="profile-name">
             Họ và tên
@@ -111,49 +114,60 @@ export default function ProfileForm({
             required
           />
         </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label className={fieldLabelClass} htmlFor="profile-email">
-          Email
-        </label>
-        <input
-          id="profile-email"
-          className={fieldInputClass}
-          type="email"
-          value={form.email}
-          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          required
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label className={fieldLabelClass} htmlFor="profile-branch">
-          Chi nhánh
-        </label>
-        <select
-          id="profile-branch"
-          className={`cursor-pointer ${fieldInputClass}`}
-          value={form.branch}
-          onChange={(e) => setForm((f) => ({ ...f, branch: e.target.value }))}
-        >
-          {branchOptions.map((b) => (
-            <option key={b} value={b} className="bg-[#fdf8ec] text-[#0d1f3d]">
-              {b}
+        <div className="col-span-2 flex flex-col gap-2 max-[420px]:col-span-1 lg:col-span-1">
+          <label className={fieldLabelClass} htmlFor="profile-email">
+            Email
+          </label>
+          <input
+            id="profile-email"
+            className={fieldInputClass}
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+            required
+          />
+        </div>
+        <div className="col-span-2 flex flex-col gap-2 max-[420px]:col-span-1 lg:col-span-1">
+          <label className={fieldLabelClass} htmlFor="profile-room">
+            Phòng
+          </label>
+          <select
+            id="profile-room"
+            className={`cursor-pointer ${fieldInputClass}`}
+            value={form.room}
+            onChange={(e) => setForm((f) => ({ ...f, room: e.target.value }))}
+            required
+          >
+            <option value="" disabled>
+              Chọn phòng
             </option>
-          ))}
-        </select>
+            {roomOptions.map((room) => (
+              <option key={room} value={room} className="bg-[#fdf8ec] text-[#0d1f3d]">
+                {room}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="mt-1 flex items-center justify-end gap-3.5">
-        {savedNote && (
-          <span className="inline-flex items-center gap-1.5 text-[13px] font-bold text-(--positive)">
-            <CheckCircleIcon size={16} /> Đã lưu thay đổi
-          </span>
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
+        {onChangePassword ? (
+          <button type="button" className={btnPrimaryClass} onClick={onChangePassword}>
+            Đổi mật khẩu
+          </button>
+        ) : (
+          <span className="hidden lg:block" />
         )}
-        <button type="submit" className={btnPrimaryClass}>
-          Lưu thay đổi
-        </button>
+        <div className="flex items-center gap-3">
+          {savedNote && (
+            <span className="inline-flex items-center gap-1.5 text-[13px] font-bold text-(--positive)">
+              <CheckCircleIcon size={16} /> Đã lưu thay đổi
+            </span>
+          )}
+          <button type="submit" className={btnPrimaryClass}>
+            Lưu thay đổi
+          </button>
+        </div>
       </div>
     </form>
   )

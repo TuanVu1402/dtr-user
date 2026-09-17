@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 
 type UserMenuProps = {
   name: string
@@ -14,6 +15,7 @@ type UserMenuProps = {
 export default function UserMenu({ name, initials, avatarUrl, onLogout, isProfileActive }: UserMenuProps) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (!open) return
@@ -37,7 +39,7 @@ export default function UserMenu({ name, initials, avatarUrl, onLogout, isProfil
         }`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label="Tài khoản"
+        aria-label={t('nav.account')}
       >
         <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,var(--gold),var(--gold-deep))] text-[13px] font-bold text-(--on-gold)">
           {avatarUrl ? <img className="h-full w-full object-cover" src={avatarUrl} alt={name} /> : initials}
@@ -56,7 +58,7 @@ export default function UserMenu({ name, initials, avatarUrl, onLogout, isProfil
             }`}
             onClick={() => setOpen(false)}
           >
-            Hồ sơ cá nhân
+            {t('user.profile')}
           </Link>
           <button
             type="button"
@@ -66,7 +68,7 @@ export default function UserMenu({ name, initials, avatarUrl, onLogout, isProfil
               onLogout()
             }}
           >
-            Đăng xuất
+            {t('user.logout')}
           </button>
         </div>
       )}

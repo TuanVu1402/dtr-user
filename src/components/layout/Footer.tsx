@@ -10,15 +10,27 @@ export default function Footer() {
       <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-8 max-[960px]:grid-cols-2 max-[640px]:grid-cols-1 max-[640px]:gap-7">
         <div>
           <BrandLogo height={34} />
-          <p className="mt-3.5 mb-5 max-w-[30ch] text-[13px] leading-[1.6] text-(--text-tertiary) max-[640px]:max-w-none">
-            Nền tảng tích điểm DTR dành riêng cho môi giới Dong Tay Land — theo dõi thành tích, nộp minh chứng và
+          <p className="mt-3.5 mb-4 max-w-[30ch] text-[13px] leading-[1.6] text-(--text-tertiary) max-[640px]:max-w-none">
+            Nền tảng tích điểm DTR Point dành riêng cho nhà môi giới tại Đông Tây Land — theo dõi thành tích, nộp minh chứng và
             nhận thưởng theo thời gian thực.
           </p>
+          <a
+            href="#"
+            onClick={(e) => e.preventDefault()}
+            className="inline-flex items-center gap-2 rounded-lg border border-[rgba(37,99,235,0.28)] bg-[var(--surface-1)] px-4 py-2.5 text-sm font-medium text-[var(--gold-bright)]! no-underline shadow-[0_1px_2px_var(--shadow)] transition-colors hover:border-[var(--gold)] hover:bg-[var(--bg-2)]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 4v11" />
+              <path d="m7.5 11.5 4.5 4.5 4.5-4.5" />
+              <path d="M4 19h16" />
+            </svg>
+            Tải app ngay
+          </a>
         </div>
 
         <div>
           <div className="relative mb-4 w-fit pb-3 text-[12.5px] font-extrabold tracking-[1.2px] text-(--gold-bright) after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-[28px] after:bg-(--gold) after:content-['']">
-            VỀ DTR
+            VỀ CHÚNG TÔI
           </div>
           <ul className="m-0 flex list-none flex-col gap-3 p-0">
             <li className={footerLinkItemClass}>
@@ -33,15 +45,15 @@ export default function Footer() {
             <li className={footerLinkItemClass}>
               <span>Điều khoản sử dụng</span>
             </li>
-            <li className={footerLinkItemClass}>
+            {/* <li className={footerLinkItemClass}>
               <span>Liên hệ chúng tôi</span>
-            </li>
+            </li> */}
           </ul>
         </div>
 
         <div>
           <div className="relative mb-4 w-fit pb-3 text-[12.5px] font-extrabold tracking-[1.2px] text-(--gold-bright) after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-[28px] after:bg-(--gold) after:content-['']">
-            DÀNH CHO MÔI GIỚI
+            DÀNH CHO NHÀ MÔI GIỚI
           </div>
           <ul className="m-0 flex list-none flex-col gap-3 p-0">
             <li className={footerLinkItemClass}>
@@ -81,26 +93,38 @@ export default function Footer() {
 
       </div>
 
-      <div className="mt-10 flex flex-col gap-1.5 border-t border-[rgba(37,99,235,0.16)] pt-5">
-        <p className="m-0 text-[12.5px] text-(--text-muted)">
-          © 2026. <b className="text-(--text-secondary)">CÔNG TY CỔ PHẦN CÔNG NGHỆ XHUB</b>. GPĐKKD: 0312312011,
-          thành lập vào xx/09/2026.
+      <div className="mt-10 flex flex-col gap-2 border-t border-[rgba(37,99,235,0.16)] pt-5 text-[12.5px] leading-relaxed text-(--text-muted)">
+        <p className="m-0">
+          <b className="text-(--text-secondary)">
+            © 2026 Đông Tây Land. All rights reserved | Designed by XHUB TECHNOLOGY.
+          </b>
         </p>
-        <p className="m-0 text-[12.5px] text-(--text-muted)">
-          Địa chỉ: 192 Trần Não, Khu Phố 2, Phường An Khánh, Thành Phố Hồ Chí Minh, Việt Nam. Điện thoại:
-          0939653777. Email: xhub@dongtayland.vn
+        <p className="m-0">
+          Địa chỉ: 192 Trần Não, Khu Phố 2, Phường An Khánh, Thành phố Hồ Chí Minh, Việt Nam.
         </p>
-        <p className="m-0 text-[12.5px] text-(--text-muted)">
-          Người đại diện theo pháp luật: Ông Nguyễn Thái Bình – Chủ Tịch Hội Đồng Quản Trị.
+        <p className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="whitespace-nowrap">
+            Điện thoại:{' '}
+            <a href="tel:0939653777" className="text-inherit no-underline">
+              0939653777
+            </a>
+          </span>
+          <span className="whitespace-nowrap">
+            Email:{' '}
+            <a href="mailto:xhub@dongtayland.vn" className="text-inherit no-underline">
+              xhub@dongtayland.vn
+            </a>
+          </span>
         </p>
-        <p className="m-0 text-[12.5px] text-(--text-muted)">
-          <a
+        <p className="m-0">Người đại diện theo pháp luật: Ông Nguyễn Thái Bình – Chủ Tịch Hội Đồng Quản Trị.</p>
+        <p className="m-0">
+          {/* <a
             href="#"
             onClick={(e) => e.preventDefault()}
             className="font-semibold text-(--gold-bright) no-underline hover:underline"
           >
             Xem chính sách sử dụng
-          </a>
+          </a> */}
         </p>
       </div>
     </footer>

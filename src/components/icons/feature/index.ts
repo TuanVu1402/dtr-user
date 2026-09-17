@@ -1,4 +1,5 @@
 export { BookingIcon } from './BookingIcon'
+export { HandshakeIcon } from './HandshakeIcon'
 export { TrainingIcon } from './TrainingIcon'
 export { ClipIcon } from './ClipIcon'
 export { CheckinIcon } from './CheckinIcon'

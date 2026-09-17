@@ -3,10 +3,9 @@ import { MoonIcon, SunIcon, BrandLogo } from '@/components'
 import { useTheme } from '@/context/ThemeContext'
 import { type Role } from '@/types/dtr'
 import LoginForm from './LoginForm'
-import RegisterForm from './RegisterForm'
 import ForgotPasswordForm from './ForgotPasswordForm'
 
-type AuthTab = 'login' | 'register' | 'forgot'
+type AuthTab = 'login' | 'forgot'
 
 type AuthPageProps = {
   onAuthenticated: (role: Role) => void
@@ -18,11 +17,6 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
   const { theme, toggleTheme } = useTheme()
 
   function handleLogin(e: FormEvent) {
-    e.preventDefault()
-    onAuthenticated('user')
-  }
-
-  function handleRegister(e: FormEvent) {
     e.preventDefault()
     onAuthenticated('user')
   }
@@ -72,39 +66,12 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
           </>
         )}
 
-        {/* Tabs */}
-        {tab !== 'forgot' && (
-          <div className="mb-5 flex rounded-lg border border-[var(--hairline)] bg-[var(--bg-2)] p-1">
-            <button
-              type="button"
-              className={`flex-1 cursor-pointer rounded-md py-2 text-sm font-medium ${
-                tab === 'login' ? 'bg-[var(--gold)] text-[var(--on-gold)]' : 'text-[var(--text-secondary)]'
-              }`}
-              onClick={() => setTab('login')}
-            >
-              Đăng nhập
-            </button>
-            <button
-              type="button"
-              className={`flex-1 cursor-pointer rounded-md py-2 text-sm font-medium ${
-                tab === 'register' ? 'bg-[var(--gold)] text-[var(--on-gold)]' : 'text-[var(--text-secondary)]'
-              }`}
-              onClick={() => setTab('register')}
-            >
-              Đăng ký
-            </button>
-          </div>
-        )}
-
         {tab === 'login' ? (
           <LoginForm
             onSubmit={handleLogin}
             onQuickLogin={onAuthenticated}
             onForgotPassword={() => setTab('forgot')}
-            onSwitchToRegister={() => setTab('register')}
           />
-        ) : tab === 'register' ? (
-          <RegisterForm onSubmit={handleRegister} onSwitchToLogin={() => setTab('login')} />
         ) : resetSent ? (
           <div className="flex flex-col gap-4">
             <p className="text-sm text-[var(--text-muted)]">

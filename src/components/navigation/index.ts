@@ -1,3 +1,5 @@
 export { default as UserMenu } from './UserMenu'
 export { default as NotificationsMenu } from './NotificationsMenu'
+export { default as MessagesMenu } from './MessagesMenu'
+export { default as LanguageMenu } from './LanguageMenu'
 export { default as UserNavbar } from './UserNavbar'

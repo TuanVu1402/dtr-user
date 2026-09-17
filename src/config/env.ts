@@ -1,31 +1,14 @@
-import { z } from 'zod';
+function readEnv() {
+  const raw = import.meta.env
+  const timeout = Number(raw.VITE_API_TIMEOUT ?? 10000)
 
-const envSchema = z.object({
-  VITE_APP_VERSION: z.string().min(1),
-
-  VITE_APP_ENV: z.enum([
-    'development',
-    'production',
-  ]),
-
-  VITE_API_URL: z.string().url(),
-
-  VITE_API_TIMEOUT: z.coerce.number().positive(),
-
-  VITE_ENABLE_DEVTOOLS: z.coerce.boolean(),
-});
-
-const parsedEnv = envSchema.safeParse(import.meta.env);
-
-if (!parsedEnv.success) {
-  console.error(
-    'Invalid environment variables:',
-    parsedEnv.error.flatten().fieldErrors,
-  );
-
-  throw new Error(
-    'Invalid environment configuration',
-  );
+  return {
+    VITE_APP_VERSION: raw.VITE_APP_VERSION || '1.0.0',
+    VITE_APP_ENV: raw.VITE_APP_ENV === 'production' ? ('production' as const) : ('development' as const),
+    VITE_API_URL: raw.VITE_API_URL || 'http://localhost:8010/v1',
+    VITE_API_TIMEOUT: Number.isFinite(timeout) && timeout > 0 ? timeout : 10000,
+    VITE_ENABLE_DEVTOOLS: String(raw.VITE_ENABLE_DEVTOOLS ?? 'true') !== 'false',
+  }
 }
 
-export const env = parsedEnv.data;
+export const env = readEnv()

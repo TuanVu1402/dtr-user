@@ -17,7 +17,6 @@ type SubmissionFormProps = {
 
 type FormErrors = {
   date?: string
-  description?: string
   link?: string
   file?: string
 }
@@ -40,7 +39,6 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
 
     const nextErrors: FormErrors = {}
     if (!date.trim()) nextErrors.date = 'Vui lòng chọn ngày thực hiện'
-    if (!description.trim()) nextErrors.description = 'Vui lòng nhập mô tả / thông tin minh chứng'
     if (isLinkEvidence) {
       if (!link.trim()) nextErrors.link = 'Vui lòng dán link clip minh chứng'
     } else if (!file) {
@@ -157,21 +155,15 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
         {/* Description */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-desc">
-            Mô tả minh chứng <span className="text-[var(--negative)]">*</span>
+            Mô tả minh chứng
           </label>
           <textarea
             id="submission-desc"
-            className={`min-h-[72px] resize-y rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none ${
-              errors.description ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
-            }`}
-            placeholder="Ví dụ: Dự án, mã booking, tên sự kiện..."
+            className="min-h-[72px] resize-y rounded-lg border border-[var(--hairline)] bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none"
+            placeholder="Ví dụ: Dự án, mã booking, tên sự kiện... (không bắt buộc)"
             value={description}
-            onChange={(e) => {
-              setDescription(e.target.value)
-              if (errors.description) setErrors((prev) => ({ ...prev, description: undefined }))
-            }}
+            onChange={(e) => setDescription(e.target.value)}
           />
-          {errors.description && <div className="text-xs text-[var(--negative)]">{errors.description}</div>}
         </div>
 
         {/* Evidence - Link */}
