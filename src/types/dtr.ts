@@ -12,8 +12,8 @@ export type Category = {
   description: string
   icon: 'booking' | 'deal' | 'training' | 'clip' | 'megaphone' | 'checkin' | 'office' | 'pin'
   pointOptions: PointOption[]
-  /** Loại minh chứng cần nộp: ảnh/tệp đính kèm hoặc một đường link (ví dụ link clip). Mặc định 'file'. */
-  evidenceType?: 'file' | 'link'
+  /** Loại minh chứng: ảnh/tệp, link clip, hoặc chỉ mô tả (booking/giao dịch). Mặc định 'file'. */
+  evidenceType?: 'file' | 'link' | 'none'
   /** Nhãn nhỏ ghi rõ hạng mục chỉ áp dụng cho nhóm sales nào, ví dụ "Dành cho Sales DTLDN". */
   audienceTag?: string
   /** Nhãn phụ thêm dưới tiêu đề, ví dụ "DN, NT, VT 0,5". */

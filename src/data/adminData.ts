@@ -32,7 +32,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u2',
     name: 'Nguyễn Công Thiện',
-    email: 'khanh.tran@dtr.vn',
+    email: 'khanh.tran@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 2',
     avatarUrl: nguyenCongThienAvatar,
@@ -40,7 +40,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u3',
     name: 'Nguyễn Hoàng Long',
-    email: 'thu.le@dtr.vn',
+    email: 'thu.le@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 1',
     avatarUrl: nguyenHoangLongAvatar,
@@ -48,7 +48,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u7',
     name: 'Nguyễn Hữu Thái',
-    email: 'bao.hoang@dtr.vn',
+    email: 'bao.hoang@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 3',
     avatarUrl: nguyenHuuThaiAvatar,
@@ -56,7 +56,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u8',
     name: 'Nguyễn Minh Tân',
-    email: 'duong.ngo@dtr.vn',
+    email: 'duong.ngo@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 2',
     avatarUrl: nguyenMinhTanAvatar,
@@ -64,7 +64,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u9',
     name: 'Nguyễn Ngọc Thiện Tâm',
-    email: 'anh.bui@dtr.vn',
+    email: 'anh.bui@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh DTLDN',
     avatarUrl: nguyenNgocThienTamAvatar,
@@ -72,7 +72,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u10',
     name: 'Nguyễn Quốc Tín',
-    email: 'linh.dang@dtr.vn',
+    email: 'linh.dang@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh DTLNT',
     avatarUrl: nguyenQuocTinAvatar,
@@ -80,7 +80,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u11',
     name: 'Nguyễn Thiên Ân',
-    email: 'my.vuong@dtr.vn',
+    email: 'my.vuong@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh DTLVT',
     avatarUrl: nguyenThienAnAvatar,
@@ -88,7 +88,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u12',
     name: 'Nguyễn Thị Khánh Hường',
-    email: 'minh.phan@dtr.vn',
+    email: 'minh.phan@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 3',
     avatarUrl: nguyenThiKhanhHuongAvatar,
@@ -96,7 +96,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u13',
     name: 'Nguyễn Thị Thương',
-    email: 'yen.dinh@dtr.vn',
+    email: 'yen.dinh@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 1',
     avatarUrl: nguyenThiThuongAvatar,
@@ -104,7 +104,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u14',
     name: 'Nguyễn Thị Yến Nhi',
-    email: 'tuan.trinh@dtr.vn',
+    email: 'tuan.trinh@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 2',
     avatarUrl: nguyenThiYenNhiAvatar,
@@ -112,7 +112,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u15',
     name: 'Nguyễn Đạt Lợi',
-    email: 'ngoc.lam@dtr.vn',
+    email: 'ngoc.lam@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 3',
     avatarUrl: nguyenDatLoiAvatar,
@@ -120,7 +120,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u16',
     name: 'Nguyễn Đỗ Linh Dung',
-    email: 'phat.doan@dtr.vn',
+    email: 'phat.doan@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh DTLDN',
     avatarUrl: nguyenDoLinhDungAvatar,
@@ -128,7 +128,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u17',
     name: 'Nguyễn Đức Thịnh',
-    email: 'chi.nguyen@dtr.vn',
+    email: 'chi.nguyen@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 1',
     avatarUrl: nguyenDucThinhAvatar,
@@ -136,7 +136,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u18',
     name: 'Ngô Quốc Đại',
-    email: 'nam.vo@dtr.vn',
+    email: 'nam.vo@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh DTLNT',
     avatarUrl: ngoQuocDaiAvatar,
@@ -144,7 +144,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u19',
     name: 'Ngô Thái Bảo',
-    email: 'han.truong@dtr.vn',
+    email: 'han.truong@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 2',
     avatarUrl: ngoThaiBaoAvatar,
@@ -152,7 +152,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u20',
     name: 'Ngô Tấn Hưng',
-    email: 'duc.ly@dtr.vn',
+    email: 'duc.ly@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh DTLVT',
     avatarUrl: ngoTanHungAvatar,
@@ -160,7 +160,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u21',
     name: 'Tăng Gia Huy',
-    email: 'vy.phung@dtr.vn',
+    email: 'vy.phung@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 3',
     avatarUrl: tangGiaHuyAvatar,
@@ -168,7 +168,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u22',
     name: 'Tăng Lệ Hà',
-    email: 'khoa.ho@dtr.vn',
+    email: 'khoa.ho@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 1',
     avatarUrl: tangLeHaAvatar,
@@ -176,7 +176,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u23',
     name: 'Tạ Khôi Nguyên',
-    email: 'anh.duong@dtr.vn',
+    email: 'anh.duong@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 2',
     avatarUrl: taKhoiNguyenAvatar,

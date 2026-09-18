@@ -19,6 +19,7 @@ type SubmissionFormProps = {
 type FormErrors = {
   date?: string
   project?: string
+  description?: string
   link?: string
   file?: string
 }
@@ -43,6 +44,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
   const selectedOption = category.pointOptions.find((o) => o.label === optionLabel) ?? category.pointOptions[0]
   const hasMultipleOptions = category.pointOptions.length > 1
   const isLinkEvidence = category.evidenceType === 'link'
+  const needsFile = category.evidenceType !== 'link' && category.evidenceType !== 'none'
   const projectOptions = category.projectLabels ?? []
   const needsProject = projectOptions.length > 0
 
@@ -52,9 +54,10 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
     const nextErrors: FormErrors = {}
     if (!date.trim()) nextErrors.date = 'Vui lòng chọn ngày thực hiện'
     if (needsProject && !project) nextErrors.project = 'Vui lòng chọn dự án'
+    if (!description.trim()) nextErrors.description = 'Vui lòng nhập mô tả minh chứng'
     if (isLinkEvidence) {
       if (!link.trim()) nextErrors.link = 'Vui lòng dán link clip minh chứng'
-    } else if (!file) {
+    } else if (needsFile && !file) {
       nextErrors.file = 'Vui lòng chọn ảnh hoặc tệp minh chứng'
     }
 
@@ -67,7 +70,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
     onSubmit({
       optionLabel: selectedOption.label,
       points: selectedOption.points,
-      description,
+      description: description.trim(),
       date,
       project: needsProject ? project : undefined,
       link: isLinkEvidence ? link : undefined,
@@ -196,18 +199,24 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
         {/* Description */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-desc">
-            Mô tả minh chứng
+            Mô tả minh chứng <span className="text-[var(--negative)]">*</span>
           </label>
           <textarea
             id="submission-desc"
-            className="min-h-[72px] resize-y rounded-lg border border-[var(--hairline)] bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none"
-            placeholder="Ví dụ: Dự án, mã booking, tên sự kiện... (không bắt buộc)"
+            className={`min-h-[72px] resize-y rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:outline-none ${
+              errors.description ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
+            }`}
+            placeholder="Ví dụ: Dự án, mã booking, tên sự kiện..."
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value)
+              if (errors.description) setErrors((prev) => ({ ...prev, description: undefined }))
+            }}
           />
+          {errors.description && <div className="text-xs text-[var(--negative)]">{errors.description}</div>}
         </div>
 
-        {/* Evidence - Link */}
+        {/* Evidence - Link / ảnh. Booking & giao dịch (evidenceType none) không cần ảnh. */}
         {isLinkEvidence ? (
           <div className="flex flex-col gap-2">
             <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-link">
@@ -228,7 +237,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
             />
             {errors.link && <div className="text-xs text-[var(--negative)]">{errors.link}</div>}
           </div>
-        ) : (
+        ) : needsFile ? (
           <div className="flex flex-col gap-2">
             <label className="text-xs font-medium text-[var(--text-secondary)]">
               Ảnh minh chứng <span className="text-[var(--negative)]">*</span>
@@ -243,7 +252,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
             </label>
             {errors.file && <div className="text-xs text-[var(--negative)]">{errors.file}</div>}
           </div>
-        )}
+        ) : null}
 
         {/* Actions */}
         <div className="flex justify-end gap-2 pt-2">

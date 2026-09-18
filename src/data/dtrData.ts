@@ -28,6 +28,7 @@ export const categories: Category[] = [
     description: 'Ghi nhận khi bạn phát sinh một booking thành công.',
     icon: 'booking',
     pointOptions: [{ label: 'Booking', points: 4 }],
+    evidenceType: 'none',
   },
   {
     id: 'giaodich',
@@ -36,6 +37,7 @@ export const categories: Category[] = [
     description: 'Ghi nhận khi bạn phát sinh một giao dịch thành công.',
     icon: 'deal',
     pointOptions: [{ label: 'Giao dịch', points: 5 }],
+    evidenceType: 'none',
   },
   {
     id: 'clip-dtlo',
