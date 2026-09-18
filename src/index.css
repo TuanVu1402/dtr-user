@@ -187,3 +187,17 @@ a {
 .ticker-track:hover {
   animation-play-state: paused;
 }
+
+/* Căn giữa chữ số theo nét chữ (cap-height → baseline) thay vì theo line box.
+   Không có nó, con số nằm thấp hơn tâm khung ~0.023em vì ascent/descent của font lệch nhau
+   — thấy rõ khi số nằm trong khung kín (huy hiệu, ô điểm) của bảng vàng. */
+.lb-optical-center {
+  display: block;
+  text-box: trim-both cap alphabetic;
+}
+
+@supports not (text-box: trim-both cap alphabetic) {
+  .lb-optical-center {
+    transform: translateY(-0.023em);
+  }
+}

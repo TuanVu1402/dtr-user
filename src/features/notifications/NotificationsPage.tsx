@@ -3,25 +3,15 @@ import { Link } from 'react-router-dom'
 import { Footer, UserNavbar, SearchIcon } from '@/components'
 import { useLanguage } from '@/context/LanguageContext'
 import { useNotifications } from '@/context/NotificationsContext'
-import { topicLabels, type NotificationTopic } from '@/data/notificationsData'
+import { topicLabels } from '@/data/notificationsData'
 import { MailBadge, NotificationAvatar } from './notificationUi'
 
 type StatusFilter = 'all' | 'unread' | 'read'
-type TopicFilter = 'all' | NotificationTopic
 
 const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
   { id: 'all', label: 'Tất cả' },
   { id: 'unread', label: 'Chưa đọc' },
   { id: 'read', label: 'Đã đọc' },
-]
-
-const TOPIC_FILTERS: { id: TopicFilter; label: string }[] = [
-  { id: 'all', label: 'Mọi loại' },
-  { id: 'approved', label: topicLabels.approved },
-  { id: 'rejected', label: topicLabels.rejected },
-  { id: 'training', label: topicLabels.training },
-  { id: 'rank', label: topicLabels.rank },
-  { id: 'system', label: topicLabels.system },
 ]
 
 function normalizeText(value: string) {
@@ -61,7 +51,6 @@ export default function NotificationsPage() {
   const { items, markRead, toggleReadStatus } = useNotifications()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<StatusFilter>('all')
-  const [topic, setTopic] = useState<TopicFilter>('all')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
@@ -69,16 +58,14 @@ export default function NotificationsPage() {
     return items.filter((item) => {
       if (status === 'unread' && item.read) return false
       if (status === 'read' && !item.read) return false
-      if (topic !== 'all' && item.topic !== topic) return false
       if (!needle) return true
       return [item.sender, item.title, item.description, item.snippet ?? ''].some((field) =>
         normalizeText(field).includes(needle),
       )
     })
-  }, [items, query, status, topic])
+  }, [items, query, status])
 
   const selected = items.find((item) => item.id === selectedId) ?? null
-  const unreadInView = filtered.filter((item) => !item.read).length
 
   function openItem(id: string) {
     markRead(id)
@@ -97,15 +84,7 @@ export default function NotificationsPage() {
           ← Trang chủ
         </Link>
 
-        <div className="mb-4 flex items-end justify-between gap-3">
-          <div>
-            <h1 className="text-lg font-semibold text-[var(--text-primary)] lg:text-xl">Tất cả thông báo</h1>
-            <p className="mt-1 text-xs text-[var(--text-muted)] md:text-sm">
-              {filtered.length} thông báo
-              {unreadInView > 0 ? ` · ${unreadInView} chưa đọc` : ''}
-            </p>
-          </div>
-        </div>
+        <h1 className="mb-4 text-lg font-semibold text-[var(--text-primary)] lg:text-xl">Tất cả thông báo</h1>
 
         <form className="mb-4 flex h-10 items-center rounded-full border border-[var(--hairline)] bg-[var(--surface-1)] p-1 pl-4 shadow-[0_6px_18px_var(--shadow)] md:h-11 md:pl-5" onSubmit={(event) => event.preventDefault()}>
           <input
@@ -126,16 +105,9 @@ export default function NotificationsPage() {
           </button>
         </form>
 
-        <div className="mb-3 grid grid-cols-3 gap-2 md:flex md:flex-wrap">
+        <div className="mb-5 grid grid-cols-3 gap-2 md:flex md:flex-wrap">
           {STATUS_FILTERS.map((item) => (
             <Chip key={item.id} active={status === item.id} onClick={() => setStatus(item.id)}>
-              {item.label}
-            </Chip>
-          ))}
-        </div>
-        <div className="mb-5 grid grid-cols-3 gap-2 md:flex md:flex-wrap">
-          {TOPIC_FILTERS.map((item) => (
-            <Chip key={item.id} active={topic === item.id} onClick={() => setTopic(item.id)}>
               {item.label}
             </Chip>
           ))}
