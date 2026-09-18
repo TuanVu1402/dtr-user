@@ -82,15 +82,48 @@ const FAQ_ITEMS: FaqItem[] = [
       'Ngay trên trang chủ, mục Lịch sử duyệt điểm. Lọc Tất cả / Đã duyệt / Chờ duyệt / Từ chối để theo dõi từng yêu cầu. Ảnh minh chứng (nếu có) mở khi bấm vào dòng tương ứng.',
     ],
   },
+  {
+    question: 'Minh chứng bị từ chối thì kháng cáo thế nào?',
+    paragraphs: [
+      'Vào Lịch sử duyệt điểm, chọn dòng bị từ chối để xem lý do. Ở cuối chi tiết, điền nội dung kháng cáo rồi bấm Gửi kháng cáo. Mỗi minh chứng chỉ kháng cáo được một lần.',
+    ],
+  },
+  {
+    question: 'Kháng cáo có bắt buộc đính kèm ảnh không?',
+    paragraphs: [
+      'Cần giải thích bằng chữ. Ảnh bổ sung nên đính kèm với hạng mục vốn có minh chứng hình (ví dụ check-in VPBH). Booking và giao dịch không yêu cầu ảnh khi kháng cáo.',
+    ],
+  },
+  {
+    question: 'Sau khi gửi kháng cáo thì chuyện gì xảy ra?',
+    paragraphs: [
+      'Minh chứng chuyển lại trạng thái Chờ duyệt để được xem xét lần nữa. Bạn sẽ thấy dòng “Đã gửi kháng cáo” kèm thời điểm gửi trong chi tiết lịch sử.',
+    ],
+  },
+  {
+    question: 'Tôi có thể kháng cáo minh chứng đã được duyệt không?',
+    paragraphs: [
+      'Không. Chỉ minh chứng bị từ chối và chưa từng kháng cáo mới hiện form gửi. Nếu cần chỉnh hạng mục đã duyệt, liên hệ hotline 0939 653 777 hoặc email xhub@dongtayland.vn.',
+    ],
+  },
 ]
 
 export default function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndexes, setOpenIndexes] = useState<Set<number>>(new Set())
   const midpoint = Math.ceil(FAQ_ITEMS.length / 2)
   const columns = [FAQ_ITEMS.slice(0, midpoint), FAQ_ITEMS.slice(midpoint)]
 
+  function toggleItem(index: number) {
+    setOpenIndexes((prev) => {
+      const next = new Set(prev)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
+  }
+
   function renderItem(item: FaqItem, index: number) {
-    const open = openIndex === index
+    const open = openIndexes.has(index)
     return (
       <div
         key={item.question}
@@ -100,13 +133,13 @@ export default function FaqSection() {
           type="button"
           className="flex w-full min-w-0 cursor-pointer items-start gap-3 text-left"
           aria-expanded={open}
-          onClick={() => setOpenIndex(open ? null : index)}
+          onClick={() => toggleItem(index)}
         >
-          <span className="min-w-0 flex-1 text-sm font-medium leading-snug text-[var(--text-primary)] md:text-[15px]">
+          <span className="min-w-0 flex-1 text-sm font-semibold leading-snug text-[#4a3728] md:text-[15px]">
             {item.question}
           </span>
           <span
-            className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-lg leading-none font-medium text-[var(--text-muted)]"
+            className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-lg leading-none font-medium text-[#8a6a54]"
             aria-hidden
           >
             {open ? '−' : '+'}
@@ -114,7 +147,7 @@ export default function FaqSection() {
         </button>
 
         {open ? (
-          <div className="mt-3 min-w-0 overflow-hidden border-t border-[var(--hairline)] pt-3 text-sm leading-relaxed break-words text-[var(--text-secondary)]">
+          <div className="mt-3 min-w-0 overflow-hidden border-t border-[var(--hairline)] pt-3 text-sm italic leading-relaxed break-words text-[#6b4f3a]">
             {item.paragraphs.map((text) => (
               <p key={text} className="mb-2 last:mb-0">
                 {text}
@@ -137,14 +170,11 @@ export default function FaqSection() {
 
   return (
     <section id="faq" className="scroll-mt-24 pt-6 pb-4 md:pt-8 md:pb-6">
-      <h2 className="text-center text-[1.375rem] font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
+      <h2 className="mb-4 text-right text-lg font-semibold text-[var(--text-primary)] lg:text-xl">
         Câu hỏi thường gặp
       </h2>
-      <p className="mx-auto mt-2 max-w-md text-center text-sm leading-relaxed text-[var(--text-secondary)]">
-        Mọi thắc mắc khác về DTR Point, vui lòng liên hệ hotline để được giải đáp đầy đủ
-      </p>
 
-      <div className="mt-5 grid grid-cols-1 gap-2.5 md:grid-cols-2 md:items-start md:gap-x-4 md:gap-y-0">
+      <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 md:items-start md:gap-x-4 md:gap-y-0">
         {columns.map((column, columnIndex) => (
           <div key={columnIndex} className="flex min-w-0 flex-col gap-2.5">
             {column.map((item, offset) => renderItem(item, columnIndex === 0 ? offset : midpoint + offset))}

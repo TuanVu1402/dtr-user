@@ -1,4 +1,3 @@
-import { ClipIcon, HandshakeIcon } from '@/components'
 import { formatPoints } from '@/utils/format'
 import type { Category } from '@/types/dtr'
 
@@ -7,65 +6,37 @@ type CategoryCardProps = {
   onOpen: (category: Category, location?: string) => void
 }
 
-const categoryColors: Record<Category['icon'], { bg: string; text: string }> = {
-  booking: { bg: '#dbeafe', text: '#2563eb' },
-  deal: { bg: '#ccfbf1', text: '#0f766e' },
-  training: { bg: '#ede9fe', text: '#7c3aed' },
-  clip: { bg: '#fce7f3', text: '#db2777' },
-  megaphone: { bg: '#ffedd5', text: '#ea580c' },
-  checkin: { bg: '#dcfce7', text: '#16a34a' },
-  office: { bg: '#fef3c7', text: '#d97706' },
-  pin: { bg: '#e0f2fe', text: '#0284c7' },
+const RANK_PALETTE = [
+  { bg: '#fecaca', text: '#b91c1c' },
+  { bg: '#fed7aa', text: '#c2410c' },
+  { bg: '#fde68a', text: '#a16207' },
+  { bg: '#bbf7d0', text: '#15803d' },
+  { bg: '#bfdbfe', text: '#1d4ed8' },
+  { bg: '#c7d2fe', text: '#3730a3' },
+  { bg: '#e9d5ff', text: '#6d28d9' },
+  { bg: '#f3d19a', text: '#92400e' },
+] as const
+
+function ordinalSuffix(rank: number) {
+  if (rank === 1) return 'st'
+  if (rank === 2) return 'nd'
+  if (rank === 3) return 'rd'
+  return 'th'
 }
 
-const categoryIcons: Record<Category['icon'], React.ComponentType<{ size?: number; color?: string }>> = {
-  booking: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-      <path d="M8 3v4" />
-      <path d="M16 3v4" />
-      <path d="M3 10h18" />
-      <path d="M8 14h4" />
-    </svg>
-  ),
-  deal: HandshakeIcon,
-  training: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="5" width="18" height="12" rx="1.5" />
-      <path d="M8 21h8" />
-      <path d="M12 17v4" />
-      <path d="M8 10h5" />
-      <path d="M8 13h3" />
-    </svg>
-  ),
-  clip: ClipIcon,
-  megaphone: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4.5 10h3.4L16 6v12l-8.1-4H4.5a1.5 1.5 0 0 1-1.5-1.5v-1A1.5 1.5 0 0 1 4.5 10Z" />
-      <path d="M18.4 9.1a3.4 3.4 0 0 1 0 5.8" />
-      <path d="M8.4 16.4 7.3 20h3.4" />
-    </svg>
-  ),
-  checkin: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="8" r="3" />
-      <path d="M2.5 19c0-3.3 2.9-6 6.5-6s6.5 2.7 6.5 6" />
-      <path d="M17.5 9.5 19 11l3-3" />
-    </svg>
-  ),
-  office: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" />
-      <circle cx="12" cy="13.5" r="3.5" />
-    </svg>
-  ),
-  pin: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" />
-      <circle cx="12" cy="13.5" r="3.5" />
-      <path d="M19 6.2V4.8" />
-    </svg>
-  ),
+function RankBadge({ rank }: { rank: number }) {
+  const palette = RANK_PALETTE[Math.min(Math.max(rank, 1), RANK_PALETTE.length) - 1]
+  return (
+    <div
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg md:h-12 md:w-12"
+      style={{ background: palette.bg, color: palette.text }}
+    >
+      <span className="text-[17px] font-extrabold leading-none md:text-[19px]">
+        {rank}
+        <sup className="ml-px text-[9px] font-extrabold leading-none md:text-[10px]">{ordinalSuffix(rank)}</sup>
+      </span>
+    </div>
+  )
 }
 
 const ArrowRightIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) => (
@@ -93,8 +64,7 @@ const QrIcon = ({ size = 16, color = 'currentColor' }: { size?: number; color?: 
 )
 
 export default function CategoryCard({ category, onOpen }: CategoryCardProps) {
-  const Icon = categoryIcons[category.icon]
-  const colors = categoryColors[category.icon]
+  const rank = Number.parseInt(category.number, 10) || 1
   const maxPoints = Math.max(...category.pointOptions.map((option) => option.points))
   const hasLocations = Boolean(category.locationLabels?.length)
 
@@ -102,12 +72,7 @@ export default function CategoryCard({ category, onOpen }: CategoryCardProps) {
     <div className="flex h-full flex-col rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-4 md:p-5 lg:p-6">
       {/* Header */}
       <div className="mb-3 flex items-start gap-3 md:mb-4">
-        <div
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg md:h-12 md:w-12"
-          style={{ background: colors.bg }}
-        >
-          <Icon size={20} color={colors.text} />
-        </div>
+        <RankBadge rank={rank} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h3
             className={`whitespace-pre-line text-sm font-semibold leading-snug text-[var(--text-primary)] md:text-base ${hasLocations ? 'min-h-[3lh]' : ''}`}

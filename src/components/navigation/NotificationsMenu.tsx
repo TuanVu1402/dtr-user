@@ -20,13 +20,19 @@ function MailBadge({ unread }: { unread: boolean }) {
   return (
     <span
       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-        unread ? 'bg-[#2563eb]/12 text-[#2563eb]' : 'bg-[var(--bg-2)] text-[var(--text-muted)]'
+        unread ? 'bg-[#dbeafe] text-[#2563eb]' : 'bg-[#e8edf2] text-[#9aa4b2]'
       }`}
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect x="3.5" y="5.5" width="17" height="13" rx="2.2" stroke="currentColor" strokeWidth="1.7" />
-        <path d="m4.2 7.2 7.8 6.2 7.8-6.2" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-      </svg>
+      {unread ? (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z" />
+        </svg>
+      ) : (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
+          <path d="M3 7 12 2l9 5-9 5-9-5Z" />
+        </svg>
+      )}
     </span>
   )
 }
@@ -36,17 +42,16 @@ export default function NotificationsMenu() {
   const [items, setItems] = useState<AppNotification[]>(initialNotifications)
   const [open, setOpen] = useState(false)
   const [showRead, setShowRead] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
 
   const unreadCount = items.filter((n) => !n.read).length
-  const visible = items.filter((item) => item.read === showRead)
+  const visible = showRead ? items.filter((item) => item.read) : items
   const selected = items.find((item) => item.id === selectedId) ?? null
+  const filterLabel = showRead ? t('notif.read') : t('notif.all')
 
   useEffect(() => {
     if (!open) {
-      setMenuOpen(false)
       setSelectedId(null)
       return
     }
@@ -59,15 +64,9 @@ export default function NotificationsMenu() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [open])
 
-  function markAllRead() {
-    setItems((prev) => prev.map((n) => ({ ...n, read: true })))
-    setMenuOpen(false)
-  }
-
   function openItem(id: string) {
     setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
     setSelectedId(id)
-    setMenuOpen(false)
   }
 
   function toggleReadStatus(id: string) {
@@ -105,12 +104,12 @@ export default function NotificationsMenu() {
               <>
                 <p className="min-w-0 flex-1 text-[15px] font-bold text-[var(--text-primary)]">{t('notif.title')}</p>
                 <label className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-[var(--text-secondary)]">
-                  {showRead ? t('notif.read') : t('notif.unread')}
+                  {filterLabel}
                   <button
                     type="button"
                     role="switch"
                     aria-checked={showRead}
-                    aria-label={showRead ? t('notif.read') : t('notif.unread')}
+                    aria-label={filterLabel}
                     className={`relative h-5 w-9 cursor-pointer rounded-full transition-colors ${
                       showRead ? 'bg-[#2563eb]' : 'bg-[var(--hairline)]'
                     }`}
@@ -123,29 +122,6 @@ export default function NotificationsMenu() {
                     />
                   </button>
                 </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-2)]"
-                    aria-label={t('notif.markAll')}
-                    onClick={() => setMenuOpen((value) => !value)}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                      <circle cx="5" cy="12" r="1.7" />
-                      <circle cx="12" cy="12" r="1.7" />
-                      <circle cx="19" cy="12" r="1.7" />
-                    </svg>
-                  </button>
-                  {menuOpen && unreadCount > 0 ? (
-                    <button
-                      type="button"
-                      className="absolute top-[calc(100%+6px)] right-0 z-10 cursor-pointer whitespace-nowrap rounded-lg border border-[var(--hairline)] bg-[var(--surface-1)] px-3 py-2 text-left text-[12px] font-semibold text-[var(--text-primary)] shadow-lg hover:bg-[var(--bg-2)]"
-                      onClick={markAllRead}
-                    >
-                      {t('notif.markAll')}
-                    </button>
-                  ) : null}
-                </div>
               </>
             )}
             <button
@@ -194,7 +170,7 @@ export default function NotificationsMenu() {
               </div>
             ) : visible.length === 0 ? (
               <div className="px-4 py-8 text-center text-[13px] text-[var(--text-tertiary)]">
-                {showRead ? t('notif.emptyRead') : t('notif.emptyUnread')}
+                {showRead ? t('notif.emptyRead') : t('notif.empty')}
               </div>
             ) : (
               visible.map((item) => (
