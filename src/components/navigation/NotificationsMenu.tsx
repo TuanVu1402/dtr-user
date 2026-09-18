@@ -21,16 +21,16 @@ export default function NotificationsMenu() {
   const { items, unreadCount, markRead, toggleReadStatus } = useNotifications()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
-  const [showRead, setShowRead] = useState(false)
+  const [showUnread, setShowUnread] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [panelPos, setPanelPos] = useState<PanelPos | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
-  const visible = showRead ? items.filter((item) => item.read) : items
+  const visible = showUnread ? items.filter((item) => !item.read) : items
   const preview = visible.slice(0, PREVIEW_COUNT)
   const selected = items.find((item) => item.id === selectedId) ?? null
-  const filterLabel = showRead ? t('notif.read') : t('notif.all')
+  const filterLabel = showUnread ? t('notif.unread') : t('notif.all')
 
   useLayoutEffect(() => {
     if (!open || !buttonRef.current) {
@@ -145,16 +145,16 @@ export default function NotificationsMenu() {
                       <button
                         type="button"
                         role="switch"
-                        aria-checked={showRead}
+                        aria-checked={showUnread}
                         aria-label={filterLabel}
                         className={`relative h-5 w-9 cursor-pointer rounded-full transition-colors ${
-                          showRead ? 'bg-[#2563eb]' : 'bg-[var(--hairline)]'
+                          showUnread ? 'bg-[#2563eb]' : 'bg-[var(--hairline)]'
                         }`}
-                        onClick={() => setShowRead((value) => !value)}
+                        onClick={() => setShowUnread((value) => !value)}
                       >
                         <span
                           className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                            showRead ? 'translate-x-4' : ''
+                            showUnread ? 'translate-x-4' : ''
                           }`}
                         />
                       </button>
@@ -207,7 +207,7 @@ export default function NotificationsMenu() {
                   </div>
                 ) : preview.length === 0 ? (
                   <div className="px-4 py-8 text-center text-[13px] text-[var(--text-tertiary)]">
-                    {showRead ? t('notif.emptyRead') : t('notif.empty')}
+                    {showUnread ? t('notif.emptyUnread') : t('notif.empty')}
                   </div>
                 ) : (
                   preview.map((item) => (
