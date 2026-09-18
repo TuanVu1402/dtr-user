@@ -102,7 +102,7 @@ export default function RankingPeriodBar({
   }, [open])
 
   const pillClass = (active: boolean) =>
-    `flex h-10 cursor-pointer items-center justify-center rounded-2xl border px-2.5 text-[13px] leading-none font-semibold transition-colors md:h-11 md:px-3 md:text-sm ${
+    `flex h-10 cursor-pointer items-center justify-center rounded-2xl border px-2.5 text-[13px] leading-5 font-semibold transition-colors md:h-11 md:px-3 md:text-sm ${
       active
         ? 'border-[var(--gold)] bg-[var(--gold)] text-[var(--on-gold)] shadow-[0_8px_18px_rgba(37,99,235,0.22)]'
         : 'border-[var(--hairline)] bg-[var(--surface-1)] text-[var(--text-secondary)] hover:border-[var(--gold)]/40'
@@ -119,7 +119,7 @@ export default function RankingPeriodBar({
           className={`min-w-0 flex-1 justify-between gap-1.5 ${pillClass(!viewAll)}`}
           onClick={() => setOpen((value) => !value)}
         >
-          <span className="min-w-0 truncate">{formatMonthLabel(selectedMonth)}</span>
+          <span className="overflow-visible pb-px">{formatMonthLabel(selectedMonth)}</span>
           <ChevronIcon open={open} />
         </button>
         <button

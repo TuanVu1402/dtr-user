@@ -66,7 +66,7 @@ export default function Footer() {
               <span>Hạng mục &amp; mốc điểm</span>
             </li>
             <li className={footerLinkItemClass}>
-              <span>Câu hỏi thường gặp</span>
+              <a href="/#faq">Câu hỏi thường gặp</a>
             </li>
           </ul>
         </div>

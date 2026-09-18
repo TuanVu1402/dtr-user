@@ -18,6 +18,7 @@ import { ApprovalHistory } from '@/features/profile'
 import LeaderboardSlideshow from './LeaderboardSlideshow'
 import PointsTicker from './PointsTicker'
 import CategoryCard from './CategoryCard'
+import FaqSection from './FaqSection'
 
 type CheckinNotice = {
   title: string
@@ -226,6 +227,8 @@ export default function UserHomePage() {
         </section>
 
         <FeedbackSection embedded />
+
+        <FaqSection />
       </div>
 
       <Footer />
