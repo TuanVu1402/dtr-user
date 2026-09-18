@@ -110,10 +110,10 @@ export default function LeaderboardPage() {
                   {viewAll ? 'Toàn thời gian' : formatMonthLabel(selectedMonth)}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-                Xếp hạng hiện tại: #{myIndex + 1}
-                <span className="mx-1.5">·</span>
-                Độ uy tín: {(myEntry.accuracy ?? 0).toFixed(2)}%
+              <p className="mt-0.5 text-xs leading-5 text-[var(--text-muted)] md:leading-normal">
+                <span className="block md:inline">Xếp hạng hiện tại: #{myIndex + 1}</span>
+                <span className="mx-1.5 hidden md:inline">·</span>
+                <span className="block md:inline">Độ uy tín: {(myEntry.accuracy ?? 0).toFixed(2)}%</span>
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-1 text-[var(--gold-bright)]">
