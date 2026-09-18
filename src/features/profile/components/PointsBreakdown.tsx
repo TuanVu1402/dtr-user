@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CloseIcon, HandshakeIcon, ClipIcon, StatusBadge } from '@/components'
 import { formatPoints } from '@/utils/format'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 import type { AdminSubmission, Category } from '@/types/dtr'
 
 type PointsBreakdownProps = {
@@ -126,6 +127,8 @@ export default function PointsBreakdown({
     }
   }, [selectedIndex, pointBreakdown, categories, entries])
 
+  useLockBodyScroll(selected !== null)
+
   return (
     <div className="rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] p-4 md:p-6 lg:p-8">
       <h3 className="mb-3 text-sm font-medium text-[var(--text-secondary)] md:mb-4 md:text-base">
@@ -164,11 +167,11 @@ export default function PointsBreakdown({
 
       {selected ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-[var(--scrim)] p-0 md:items-center md:p-4"
+          className="fixed inset-0 z-[80] flex items-end justify-center overflow-hidden overscroll-none bg-[var(--scrim)] p-0 md:items-center md:p-4"
           onClick={() => setSelectedIndex(null)}
         >
           <div
-            className="flex max-h-[92svh] w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-t-2xl border border-[var(--hairline)] bg-[var(--surface-1)] p-5 md:rounded-2xl md:p-6"
+            className="flex max-h-[92svh] w-full max-w-lg flex-col gap-4 overflow-y-auto overscroll-contain rounded-t-2xl border border-[var(--hairline)] bg-[var(--surface-1)] p-5 md:rounded-2xl md:p-6"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-labelledby="points-detail-title"

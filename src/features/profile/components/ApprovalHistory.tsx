@@ -3,6 +3,7 @@ import { CameraIcon, CloseIcon, StatusBadge } from '@/components'
 import { useSubmissions } from '@/context/SubmissionsContext'
 import { formatPoints, isTextOnlyEvidence } from '@/utils/format'
 import { parseViDate } from '@/utils/ranking'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 import type { AdminSubmission, SubmissionStatus } from '@/types/dtr'
 import { profileFieldStyles } from './profileStyles'
 
@@ -61,6 +62,7 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
   const canAppeal = selectedLive?.status === 'rejected' && !selectedLive.appealedAt
   const canUpdatePending = Boolean(selectedLive?.status === 'pending' && !textOnly)
   const pendingPreview = textOnly ? undefined : pendingImage || selectedLive?.imageDataUrl
+  useLockBodyScroll(selectedLive !== null)
 
   function openEntry(entry: AdminSubmission) {
     setSelected(entry)
@@ -188,7 +190,7 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
 
       {selectedLive ? (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-[var(--scrim)] p-0 md:items-center md:p-4"
+          className="fixed inset-0 z-[80] flex items-end justify-center overflow-hidden overscroll-none bg-[var(--scrim)] p-0 md:items-center md:p-4"
           onClick={closeDetail}
         >
           <div

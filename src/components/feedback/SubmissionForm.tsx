@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from 'react'
 import type { Category } from '@/types/dtr'
 import { formatPoints } from '@/utils/format'
 import DateField from '@/components/common/DateField'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 
 type SubmissionFormProps = {
   category: Category
@@ -41,6 +42,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
   const [file, setFile] = useState<File | null>(null)
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined)
   const [errors, setErrors] = useState<FormErrors>({})
+  useLockBodyScroll(true)
 
   const selectedOption = category.pointOptions.find((o) => o.label === optionLabel) ?? category.pointOptions[0]
   const hasMultipleOptions = category.pointOptions.length > 1
@@ -96,7 +98,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] p-4"
+      className="fixed inset-0 z-[80] flex items-center justify-center overflow-hidden overscroll-none bg-[var(--scrim)] p-4"
       onClick={onCancel}
     >
       <form

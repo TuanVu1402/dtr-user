@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import jsQR from 'jsqr'
 import { readLocation, startCameraStream, type GeoPoint } from '@/utils/qrCheckin'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 
 export type { GeoPoint }
 
@@ -35,6 +36,7 @@ export default function QrScannerModal({
   const [geo, setGeo] = useState<GeoPoint | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
   const [geoLoading, setGeoLoading] = useState(requireLocation)
+  useLockBodyScroll(true)
 
   function stopScanLoop() {
     if (rafRef.current) {
@@ -177,7 +179,7 @@ export default function QrScannerModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] p-4"
+      className="fixed inset-0 z-[80] flex items-center justify-center overflow-hidden overscroll-none bg-[var(--scrim)] p-4"
       onClick={onCancel}
     >
       <div
