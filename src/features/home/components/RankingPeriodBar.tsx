@@ -49,8 +49,13 @@ function ChevronIcon({ open }: { open: boolean }) {
 
 function YearArrow({ direction }: { direction: 'prev' | 'next' }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
-      {direction === 'prev' ? <path d="m15 18-6-6 6-6" /> : <path d="m9 18 6-6-6-6" />}
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="9" fill="currentColor" fillOpacity="0.1" />
+      {direction === 'prev' ? (
+        <path d="M13.5 7.8 9.2 12l4.3 4.2" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      ) : (
+        <path d="M10.5 7.8 14.8 12l-4.3 4.2" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      )}
     </svg>
   )
 }

@@ -21,6 +21,8 @@ export type Category = {
   /** Danh sách tên dự án/VPBH cụ thể, mỗi cái hiện thành 1 nhãn nhỏ riêng bên dưới tiêu đề —
    * bấm vào bất kỳ nhãn nào cũng mở form nộp minh chứng cho hạng mục này. */
   locationLabels?: string[]
+  /** Danh sách dự án hiện trong form nộp minh chứng (select), không hiện chip trên thẻ. */
+  projectLabels?: string[]
   /** Nộp bằng quét mã QR thay vì form minh chứng. */
   qrCheckin?: boolean
   /** Khi quét QR phải bật GPS / vị trí thiết bị. */

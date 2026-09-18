@@ -136,6 +136,7 @@ export default function UserHomePage() {
     points: number
     description: string
     date: string
+    project?: string
     link?: string
     imageDataUrl?: string
   }) {
@@ -147,11 +148,12 @@ export default function UserHomePage() {
     const fullCategoryTitle = openCategory.locationLabels?.length
       ? `${openCategory.title} ${openCategory.locationLabels.join(', ')}`
       : openCategory.title
+    const description = [data.project, data.description].filter(Boolean).join(' — ') || '—'
 
     addSubmission({
       userName: CURRENT_USER_NAME,
       categoryLabel: data.optionLabel === 'Điểm' ? fullCategoryTitle : data.optionLabel,
-      description: data.description || '—',
+      description,
       date: formattedDate,
       points: data.points,
       status: 'pending',

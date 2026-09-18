@@ -10,6 +10,7 @@ type SubmissionFormProps = {
     points: number
     description: string
     date: string
+    project?: string
     link?: string
     imageDataUrl?: string
   }) => void
@@ -17,6 +18,7 @@ type SubmissionFormProps = {
 
 type FormErrors = {
   date?: string
+  project?: string
   link?: string
   file?: string
 }
@@ -32,6 +34,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
   const [optionLabel, setOptionLabel] = useState(category.pointOptions[0].label)
   const [description, setDescription] = useState('')
   const [date, setDate] = useState(todayIsoDate)
+  const [project, setProject] = useState('')
   const [link, setLink] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined)
@@ -40,12 +43,15 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
   const selectedOption = category.pointOptions.find((o) => o.label === optionLabel) ?? category.pointOptions[0]
   const hasMultipleOptions = category.pointOptions.length > 1
   const isLinkEvidence = category.evidenceType === 'link'
+  const projectOptions = category.projectLabels ?? []
+  const needsProject = projectOptions.length > 0
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
     const nextErrors: FormErrors = {}
     if (!date.trim()) nextErrors.date = 'Vui lòng chọn ngày thực hiện'
+    if (needsProject && !project) nextErrors.project = 'Vui lòng chọn dự án'
     if (isLinkEvidence) {
       if (!link.trim()) nextErrors.link = 'Vui lòng dán link clip minh chứng'
     } else if (!file) {
@@ -63,6 +69,7 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
       points: selectedOption.points,
       description,
       date,
+      project: needsProject ? project : undefined,
       link: isLinkEvidence ? link : undefined,
       imageDataUrl,
     })
@@ -158,6 +165,33 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
           />
           {errors.date && <div className="text-xs text-[var(--negative)]">{errors.date}</div>}
         </div>
+
+        {needsProject ? (
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-project">
+              Chọn dự án <span className="text-[var(--negative)]">*</span>
+            </label>
+            <select
+              id="submission-project"
+              className={`rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none ${
+                errors.project ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
+              } ${project ? '' : 'text-[var(--text-muted)]'}`}
+              value={project}
+              onChange={(e) => {
+                setProject(e.target.value)
+                if (errors.project) setErrors((prev) => ({ ...prev, project: undefined }))
+              }}
+            >
+              <option value="">Chọn dự án</option>
+              {projectOptions.map((name) => (
+                <option key={name} value={name} className="text-[var(--text-primary)]">
+                  {name}
+                </option>
+              ))}
+            </select>
+            {errors.project && <div className="text-xs text-[var(--negative)]">{errors.project}</div>}
+          </div>
+        ) : null}
 
         {/* Description */}
         <div className="flex flex-col gap-2">

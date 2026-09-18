@@ -179,7 +179,7 @@ export function LeaderboardList({ entries, startRank = 4 }: LeaderboardListProps
                 )}
               </div>
               {typeof entry.accuracy === 'number' && (
-                <p className="text-[11px] text-[var(--text-muted)]">Chính xác: {entry.accuracy.toFixed(2)}%</p>
+                <p className="text-[11px] text-[var(--text-muted)]">Độ uy tín: {entry.accuracy.toFixed(2)}%</p>
               )}
             </div>
             <div className="flex items-center gap-1">

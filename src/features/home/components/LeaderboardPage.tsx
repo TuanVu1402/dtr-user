@@ -113,7 +113,7 @@ export default function LeaderboardPage() {
               <p className="mt-0.5 text-xs text-[var(--text-muted)]">
                 Xếp hạng hiện tại: #{myIndex + 1}
                 <span className="mx-1.5">·</span>
-                Chính xác: {(myEntry.accuracy ?? 0).toFixed(2)}%
+                Độ uy tín: {(myEntry.accuracy ?? 0).toFixed(2)}%
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-1 text-[var(--gold-bright)]">
@@ -131,7 +131,7 @@ export default function LeaderboardPage() {
             <span className="animate-crown-blink inline-flex">
               <CrownIcon size={16} color="#f5c542" filled />
             </span>
-            Bảng vàng vinh danh
+            Bẳng vàng vinh danh
           </span>
         </div>
       </div>

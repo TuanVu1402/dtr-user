@@ -283,7 +283,7 @@ export default function LeaderboardSlideshow({ ranking, monthKey }: LeaderboardS
             <div className="flex items-center justify-center gap-1 md:gap-3 xl:gap-4">
               <HonorCrest className="h-7 w-7 md:h-16 md:w-16 xl:h-[5.25rem] xl:w-[5.25rem]" />
               <p
-                className="bg-[linear-gradient(180deg,#fff8d6_0%,#f5c542_48%,#c49212_100%)] bg-clip-text text-center text-[11px] leading-none font-extrabold tracking-[0.06em] text-transparent uppercase md:text-[1.85rem] md:tracking-[0.1em] xl:text-[2.55rem] xl:tracking-[0.12em]"
+                className="overflow-visible bg-[linear-gradient(180deg,#fff8d6_0%,#f5c542_48%,#c49212_100%)] bg-clip-text py-0.5 text-center text-[11px] leading-[1.25] font-extrabold tracking-[0.04em] text-transparent md:text-[1.85rem] md:tracking-[0.06em] xl:text-[2.55rem] xl:tracking-[0.08em]"
                 style={{ filter: 'drop-shadow(0 0 14px rgba(245,197,66,0.35))' }}
               >
                 {t('board.title')}

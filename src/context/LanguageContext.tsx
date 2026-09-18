@@ -22,8 +22,11 @@ const copy = {
     'lang.en': 'English',
     'board.title': 'BẢNG VÀNG VINH DANH',
     'notif.title': 'Thông báo',
+    'notif.unread': 'Chưa đọc',
     'notif.markAll': 'Đánh dấu đã đọc tất cả',
     'notif.empty': 'Không có thông báo nào.',
+    'notif.emptyUnread': 'Không có thông báo chưa đọc.',
+    'notif.sent': 'đã gửi cho bạn một thông báo',
   },
   en: {
     'nav.dark': 'Switch to dark mode',
@@ -42,8 +45,11 @@ const copy = {
     'lang.en': 'English',
     'board.title': 'GOLD HONOR BOARD',
     'notif.title': 'Notifications',
+    'notif.unread': 'Unread',
     'notif.markAll': 'Mark all as read',
     'notif.empty': 'No notifications.',
+    'notif.emptyUnread': 'No unread notifications.',
+    'notif.sent': 'sent you a notification',
   },
 } as const
 
