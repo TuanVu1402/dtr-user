@@ -12,7 +12,7 @@ const RANK_PALETTE = [
   { bg: '#fde68a', text: '#a16207' },
   { bg: '#bbf7d0', text: '#15803d' },
   { bg: '#bfdbfe', text: '#1d4ed8' },
-  { bg: '#c7d2fe', text: '#3730a3' },
+  { bg: '#f9a8d4', text: '#9d174d' },
   { bg: '#e9d5ff', text: '#6d28d9' },
   { bg: '#f3d19a', text: '#92400e' },
 ] as const
