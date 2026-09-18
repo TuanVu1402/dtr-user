@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import type { Category } from '@/types/dtr'
 import { formatPoints } from '@/utils/format'
+import DateField from '@/components/common/DateField'
 
 type SubmissionFormProps = {
   category: Category
@@ -155,15 +156,12 @@ export default function SubmissionForm({ category, onCancel, onSubmit }: Submiss
           <label className="text-xs font-medium text-[var(--text-secondary)]" htmlFor="submission-date">
             Ngày thực hiện <span className="text-[var(--negative)]">*</span>
           </label>
-          <input
+          <DateField
             id="submission-date"
-            className={`rounded-lg border bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--gold)] focus:outline-none ${
-              errors.date ? 'border-[var(--negative)]' : 'border-[var(--hairline)]'
-            }`}
-            type="date"
             value={date}
-            onChange={(e) => {
-              setDate(e.target.value)
+            invalid={Boolean(errors.date)}
+            onChange={(next) => {
+              setDate(next)
               if (errors.date) setErrors((prev) => ({ ...prev, date: undefined }))
             }}
           />

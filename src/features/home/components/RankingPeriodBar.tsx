@@ -102,7 +102,7 @@ export default function RankingPeriodBar({
   }, [open])
 
   const pillClass = (active: boolean) =>
-    `flex cursor-pointer items-center justify-center rounded-2xl border px-2.5 py-2 text-[13px] leading-5 font-semibold transition-colors md:px-3 md:py-2.5 md:text-sm md:leading-normal ${
+    `flex h-10 cursor-pointer items-center justify-center rounded-2xl border px-2.5 text-[13px] leading-none font-semibold transition-colors md:h-11 md:px-3 md:text-sm ${
       active
         ? 'border-[var(--gold)] bg-[var(--gold)] text-[var(--on-gold)] shadow-[0_8px_18px_rgba(37,99,235,0.22)]'
         : 'border-[var(--hairline)] bg-[var(--surface-1)] text-[var(--text-secondary)] hover:border-[var(--gold)]/40'

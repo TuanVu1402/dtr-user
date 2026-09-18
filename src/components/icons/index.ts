@@ -1,5 +1,5 @@
 // UI Icons
-export { SunIcon, MoonIcon, BellIcon, ChatIcon, ArrowUpIcon } from './ui'
+export { SunIcon, MoonIcon, BellIcon, ChatIcon, ArrowUpIcon, CalendarIcon } from './ui'
 
 // Navigation Icons
 export { MenuIcon, CloseIcon } from './navigation'
