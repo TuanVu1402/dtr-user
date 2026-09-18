@@ -32,6 +32,7 @@ const copy = {
     'notif.sent': 'đã gửi cho bạn một thông báo',
     'notif.back': 'Danh sách thông báo',
     'notif.viewEvidence': 'Xem minh chứng',
+    'notif.seeMore': 'Xem thêm',
   },
   en: {
     'nav.dark': 'Switch to dark mode',
@@ -60,6 +61,7 @@ const copy = {
     'notif.sent': 'sent you a notification',
     'notif.back': 'Notification list',
     'notif.viewEvidence': 'View evidence',
+    'notif.seeMore': 'See more',
   },
 } as const
 

@@ -1,52 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { BellIcon, CloseIcon } from '../icons'
-import {
-  initialNotifications,
-  notificationAvatarClass,
-  type AppNotification,
-} from '@/data/notificationsData'
 import { useLanguage } from '@/context/LanguageContext'
+import { useNotifications } from '@/context/NotificationsContext'
+import { MailBadge, NotificationAvatar, senderInitials } from '@/features/notifications/notificationUi'
+import { notificationAvatarClass } from '@/data/notificationsData'
 
-function senderInitials(name: string) {
-  return name
-    .split(' ')
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase()
-}
-
-function MailBadge({ unread }: { unread: boolean }) {
-  return (
-    <span
-      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-        unread ? 'bg-[#dbeafe] text-[#2563eb]' : 'bg-[#e8edf2] text-[#9aa4b2]'
-      }`}
-    >
-      {unread ? (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z" />
-        </svg>
-      ) : (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
-          <path d="M3 7 12 2l9 5-9 5-9-5Z" />
-        </svg>
-      )}
-    </span>
-  )
-}
+const PREVIEW_COUNT = 5
 
 export default function NotificationsMenu() {
   const { t } = useLanguage()
-  const [items, setItems] = useState<AppNotification[]>(initialNotifications)
+  const { items, unreadCount, markRead, toggleReadStatus } = useNotifications()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [showRead, setShowRead] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
 
-  const unreadCount = items.filter((n) => !n.read).length
   const visible = showRead ? items.filter((item) => item.read) : items
+  const preview = visible.slice(0, PREVIEW_COUNT)
   const selected = items.find((item) => item.id === selectedId) ?? null
   const filterLabel = showRead ? t('notif.read') : t('notif.all')
 
@@ -65,12 +37,13 @@ export default function NotificationsMenu() {
   }, [open])
 
   function openItem(id: string) {
-    setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
+    markRead(id)
     setSelectedId(id)
   }
 
-  function toggleReadStatus(id: string) {
-    setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n)))
+  function goToAll() {
+    setOpen(false)
+    navigate('/notifications')
   }
 
   return (
@@ -168,12 +141,12 @@ export default function NotificationsMenu() {
                   </a>
                 ) : null}
               </div>
-            ) : visible.length === 0 ? (
+            ) : preview.length === 0 ? (
               <div className="px-4 py-8 text-center text-[13px] text-[var(--text-tertiary)]">
                 {showRead ? t('notif.emptyRead') : t('notif.empty')}
               </div>
             ) : (
-              visible.map((item) => (
+              preview.map((item) => (
                 <div
                   key={item.id}
                   className={`flex w-full items-start gap-3 border-b border-[var(--hairline)] px-3 py-3 last:border-b-0 ${
@@ -185,10 +158,8 @@ export default function NotificationsMenu() {
                     className="flex min-w-0 flex-1 cursor-pointer gap-3 border-none bg-transparent p-0 text-left"
                     onClick={() => openItem(item.id)}
                   >
-                    <span
-                      className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${notificationAvatarClass(item.kind)}`}
-                    >
-                      {senderInitials(item.sender)}
+                    <span className="mt-0.5">
+                      <NotificationAvatar item={item} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-[13px] leading-snug text-[var(--text-primary)]">
@@ -212,6 +183,16 @@ export default function NotificationsMenu() {
               ))
             )}
           </div>
+
+          {!selected ? (
+            <button
+              type="button"
+              className="border-t border-[var(--hairline)] bg-[var(--surface-1)] px-3 py-2.5 text-center text-[13px] font-semibold text-[var(--gold-bright)] hover:bg-[var(--bg-2)]"
+              onClick={goToAll}
+            >
+              {t('notif.seeMore')}
+            </button>
+          ) : null}
         </div>
       )}
     </div>

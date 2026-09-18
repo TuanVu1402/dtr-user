@@ -9,6 +9,7 @@ import {
 import UserHomePage from "@/pages/UserHomePage";
 import ProfilePage from "@/pages/ProfilePage";
 import LeaderboardPage from "@/pages/LeaderboardPage";
+import NotificationsPage from "@/pages/NotificationsPage";
 import AuthPage from "@/pages/AuthPage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
@@ -16,6 +17,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { TrainingSessionsProvider } from "@/context/TrainingSessionsContext";
 import { FeedbackProvider } from "@/context/FeedbackContext";
 import { SubmissionsProvider } from "@/context/SubmissionsContext";
+import { NotificationsProvider } from "@/context/NotificationsContext";
 import { FloatingActions, ScrollToTop } from "@/components";
 import type { Role } from "@/types/dtr";
 
@@ -59,8 +61,10 @@ function ProtectedLayout() {
     <SubmissionsProvider>
       <TrainingSessionsProvider>
         <FeedbackProvider>
-          <Outlet />
-          <FloatingActions />
+          <NotificationsProvider>
+            <Outlet />
+            <FloatingActions />
+          </NotificationsProvider>
         </FeedbackProvider>
       </TrainingSessionsProvider>
     </SubmissionsProvider>
@@ -109,6 +113,7 @@ function AppShell() {
         <Route path="/" element={<UserHomePage />} />
         <Route path="/ranking" element={<LeaderboardPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
