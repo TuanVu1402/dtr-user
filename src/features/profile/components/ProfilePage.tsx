@@ -65,7 +65,7 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-4 pt-5 md:pt-6 lg:gap-6">
             <ProfileForm
               initialName={CURRENT_USER_NAME}
-              initialEmail="an.nguyen@dtr.vn"
+              initialEmail="an.nguyen@dongtayland.com"
               initialPhone="0909 123 456"
               initialRoom={currentUser?.room ?? 'Phòng Kinh doanh 1'}
               avatarUrl={avatarUrl}

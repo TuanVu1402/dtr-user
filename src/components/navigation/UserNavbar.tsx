@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { MoonIcon, SunIcon } from '../icons'
 import { BrandLogo } from '../layout'
 import NotificationsMenu from './NotificationsMenu'
-import MessagesMenu from './MessagesMenu'
 import LanguageMenu from './LanguageMenu'
 import UserMenu from './UserMenu'
 import { useAuth } from '@/context/AuthContext'
@@ -46,7 +45,6 @@ export default function UserNavbar({ active }: UserNavbarProps) {
         >
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
-        <MessagesMenu />
         <NotificationsMenu />
         <LanguageMenu />
         <UserMenu

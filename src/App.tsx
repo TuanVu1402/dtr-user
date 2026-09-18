@@ -21,7 +21,7 @@ import type { Role } from "@/types/dtr";
 
 // Mock user for demo mode
 const MOCK_USERS: Record<Role, { id: string; email: string; name: string; role: Role }> = {
-  user: { id: 'u1', email: 'an.nguyen@dtr.vn', name: 'Lai Ngọc Tuyền', role: 'user' },
+  user: { id: 'u1', email: 'an.nguyen@dongtayland.com', name: 'Lai Ngọc Tuyền', role: 'user' },
 };
 
 // Auth route - accessible when NOT authenticated

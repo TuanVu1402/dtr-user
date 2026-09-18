@@ -7,6 +7,10 @@ export type AppNotification = {
   title: string
   description: string
   snippet?: string
+  /** Ảnh minh chứng demo đã có trong /public/demo */
+  imageUrl?: string
+  /** Link clip / minh chứng (nếu có) */
+  link?: string
   time: string
   read: boolean
 }
@@ -30,6 +34,7 @@ export const initialNotifications: AppNotification[] = [
     title: 'Minh chứng đã được duyệt',
     description: 'Booking #BK-3391 — Dự án Lumi Hà Nội vừa được duyệt, +4 điểm DTR.',
     snippet: 'Booking #BK-3391',
+    imageUrl: '/demo/checkin4.jpg',
     time: '15:55',
     read: false,
   },
@@ -40,6 +45,7 @@ export const initialNotifications: AppNotification[] = [
     title: 'Chúc mừng thăng hạng!',
     description: 'Bạn vừa đạt Hạng Kim Cương. Cố thêm 32 điểm nữa để lên Hạng Vương Miện.',
     snippet: 'Hạng Kim Cương',
+    imageUrl: '/filetinhdiem.jpg',
     time: '10:20',
     read: false,
   },
@@ -50,6 +56,7 @@ export const initialNotifications: AppNotification[] = [
     title: 'Minh chứng bị từ chối',
     description: 'Clip DTLO "Clip review dự án Sun Grand City" bị từ chối — vui lòng nộp lại minh chứng rõ hơn.',
     snippet: 'Clip Sun Grand City',
+    link: 'https://youtube.com/watch?v=example',
     time: 'Hôm qua',
     read: false,
   },
@@ -60,6 +67,7 @@ export const initialNotifications: AppNotification[] = [
     title: 'Sắp diễn ra: Training Quý 3',
     description: 'Buổi Training / Kick off Quý 3 diễn ra 20/09 — nhớ điểm danh QR để nhận điểm.',
     snippet: 'Training Quý 3',
+    imageUrl: '/demo/checkin3.jpg',
     time: '20/09',
     read: true,
   },
@@ -70,6 +78,7 @@ export const initialNotifications: AppNotification[] = [
     title: 'Minh chứng đã được duyệt',
     description: 'Check-in sự kiện Vinhomes Ocean Park vừa được duyệt, +1 điểm DTR.',
     snippet: 'Vinhomes Ocean Park',
+    imageUrl: '/demo/checkin2.jpg',
     time: '3 ngày trước',
     read: true,
   },
