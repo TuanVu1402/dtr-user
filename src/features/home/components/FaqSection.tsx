@@ -170,7 +170,7 @@ export default function FaqSection() {
 
   return (
     <section id="faq" className="scroll-mt-24 pt-6 pb-4 md:pt-8 md:pb-6">
-      <h2 className="mb-4 text-right text-lg font-semibold text-[var(--text-primary)] lg:text-xl">
+      <h2 className="mb-4 text-left text-lg font-semibold text-[var(--text-primary)] lg:text-xl">
         Câu hỏi thường gặp
       </h2>
 

@@ -495,13 +495,11 @@ function RankRow({ entry, rank }: { entry: LeaderboardEntry; rank: number }) {
             className="absolute"
             style={{ inset: '0.22cqw', clipPath: SCORE_CLIP, background: NAVY_FILL }}
           />
-          <span className="absolute flex items-center justify-center" style={{ inset: '0.22cqw' }}>
-            <span
-              className="lb-optical-center font-black tabular-nums text-[#f7d977]"
-              style={{ fontSize: 'max(8px, 2.15cqw)', lineHeight: 1 }}
-            >
-              {formatPoints(entry.points)}
-            </span>
+          <span
+            className="lb-optical-center relative font-black tabular-nums text-[#f7d977]"
+            style={{ fontSize: 'max(8px, 2.15cqw)', lineHeight: 1 }}
+          >
+            {formatPoints(entry.points)}
           </span>
         </span>
       ) : (
