@@ -4,7 +4,7 @@ export const categories: Category[] = [
   {
     id: 'training-kickoff',
     number: '01',
-    title: 'Tham dự buổi Training, Kick off:',
+    title: 'Tham dự buổi Training,\nKick off:',
     description: 'Tham dự đầy đủ đến cuối buổi Training hoặc Kick off do công ty tổ chức.',
     icon: 'training',
     pointOptions: [{ label: 'Điểm', points: 1 }],
@@ -108,5 +108,5 @@ export const pointBreakdown: PointBreakdown[] = [
   { label: 'Clip chất lượng', count: 1 },
   { label: 'Clip GĐKD', count: 1 },
   { label: 'VPBH đặc biệt', count: 2 },
-  { label: 'VPBH khác 0,5 điểm', count: 2 },
+  { label: 'VPBH khác', count: 2 },
 ]

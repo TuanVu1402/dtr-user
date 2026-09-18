@@ -11,5 +11,5 @@ export const profileFieldStyles = {
     'cursor-pointer rounded-lg bg-[var(--gold)] px-4 py-2 text-sm font-medium text-[var(--on-gold)] transition-colors hover:bg-[var(--gold-deep)] md:px-6 md:py-2.5 md:text-base',
 
   statCardClass:
-    'flex flex-col items-center rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] text-center md:p-5 lg:p-6',
+    'flex min-h-[5.75rem] flex-col items-center justify-center rounded-xl border border-[var(--hairline)] bg-[var(--surface-1)] px-2 py-3 text-center md:min-h-0 md:p-5 lg:p-6',
 }

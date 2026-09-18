@@ -119,7 +119,7 @@ export default function CategoryCard({ category, onOpen }: CategoryCardProps) {
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h3
-            className={`text-sm font-semibold leading-snug text-[var(--text-primary)] md:text-base ${hasLocations ? 'min-h-[3lh]' : ''}`}
+            className={`whitespace-pre-line text-sm font-semibold leading-snug text-[var(--text-primary)] md:text-base ${hasLocations ? 'min-h-[3lh]' : ''}`}
           >
             {category.title}
           </h3>

@@ -1,11 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { CameraIcon, CheckCircleIcon } from '@/components'
-import { adminUsers } from '@/data/adminData'
 import { profileFieldStyles } from './profileStyles'
 
 const { fieldInputClass, fieldLabelClass, btnPrimaryClass } = profileFieldStyles
-
-const roomOptions = [...new Set(adminUsers.map((user) => user.room).filter(Boolean))] as string[]
 
 type ProfileFormProps = {
   initialName: string
@@ -131,22 +128,16 @@ export default function ProfileForm({
           <label className={fieldLabelClass} htmlFor="profile-room">
             Phòng
           </label>
-          <select
+          <input
             id="profile-room"
-            className={`cursor-pointer ${fieldInputClass}`}
+            className={`${fieldInputClass} cursor-not-allowed opacity-70`}
+            type="text"
             value={form.room}
-            onChange={(e) => setForm((f) => ({ ...f, room: e.target.value }))}
-            required
-          >
-            <option value="" disabled>
-              Chọn phòng
-            </option>
-            {roomOptions.map((room) => (
-              <option key={room} value={room} className="bg-[#fdf8ec] text-[#0d1f3d]">
-                {room}
-              </option>
-            ))}
-          </select>
+            readOnly
+            disabled
+            aria-readonly="true"
+            title="Phòng do quản trị viên gán, bạn không thể tự đổi"
+          />
         </div>
       </div>
 
