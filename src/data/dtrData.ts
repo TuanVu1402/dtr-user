@@ -53,7 +53,7 @@ export const categories: Category[] = [
     number: '06',
     title: 'Sản xuất clip chất lượng (GĐDA duyệt):',
     description: 'Sản xuất một video/clip chất lượng do Giám đốc dự án quản lý.',
-    icon: 'megaphone',
+    icon: 'clip',
     pointOptions: [{ label: 'Điểm', points: 1 }],
     evidenceType: 'link',
     projectLabels: [

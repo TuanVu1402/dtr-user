@@ -128,8 +128,8 @@ a {
     filter: brightness(1);
   }
   50% {
-    transform: scale(1.12);
-    filter: brightness(1.18);
+    transform: scale(1.14);
+    filter: brightness(1.28);
   }
 }
 

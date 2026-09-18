@@ -25,7 +25,7 @@ export const adminUsers: AdminUser[] = [
   {
     id: 'u1',
     name: 'Lai Ngọc Tuyền',
-    email: 'an.nguyen@dongtayland.com',
+    email: 'an.nguyen@dongtayland.vn',
     role: 'user',
     room: 'Phòng Kinh doanh 1',
     avatarUrl: laiNgocTuyenAvatar,

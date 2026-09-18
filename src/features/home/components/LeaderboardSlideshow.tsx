@@ -279,7 +279,7 @@ export default function LeaderboardSlideshow({ ranking, monthKey }: LeaderboardS
         <CityGlow />
 
         <div className="relative flex h-full min-h-0 flex-col gap-1 md:gap-3 xl:gap-4">
-          <div className="flex shrink-0 flex-col items-center pt-0 md:pt-1">
+          <div className="flex shrink-0 flex-col items-center -mt-1 pt-0 md:mt-0 md:pt-1">
             <div className="flex items-center justify-center gap-1 md:gap-3 xl:gap-4">
               <HonorCrest className="h-7 w-7 md:h-16 md:w-16 xl:h-[5.25rem] xl:w-[5.25rem]" />
               <p
@@ -290,7 +290,7 @@ export default function LeaderboardSlideshow({ ranking, monthKey }: LeaderboardS
               </p>
             </div>
             <div
-              className="mt-1 bg-[linear-gradient(180deg,#ffe9a0,#f5c542_42%,#c49212)] px-3 py-px text-[7px] font-extrabold tracking-[0.16em] text-[#5b3b00] uppercase shadow-[0_3px_10px_rgba(245,197,66,0.4)] md:mt-2.5 md:px-8 md:py-1 md:text-xs xl:mt-3 xl:px-9 xl:text-sm"
+              className="mt-px -translate-y-0.5 bg-[linear-gradient(180deg,#ffe9a0,#f5c542_42%,#c49212)] px-3 py-px text-[7px] font-extrabold tracking-[0.16em] text-[#5b3b00] uppercase shadow-[0_3px_10px_rgba(245,197,66,0.4)] md:mt-2.5 md:translate-y-0 md:px-8 md:py-1 md:text-xs xl:mt-3 xl:px-9 xl:text-sm"
               style={{ clipPath: 'polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%)' }}
             >
               {monthText}

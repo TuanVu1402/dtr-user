@@ -23,19 +23,21 @@ export default function FloatingActions() {
     <div className="fixed right-5 bottom-5 z-[60] flex flex-col items-center gap-3">
       {/* Zalo Button */}
       <a
-        className="relative flex h-12 w-12 items-center justify-center rounded-full border-none bg-white no-underline shadow-[0_8px_20px_rgba(0,104,255,0.28)]"
+        className="relative flex h-12 w-12 items-center justify-center rounded-[13px] border-none bg-transparent no-underline shadow-[0_8px_20px_rgba(0,104,255,0.28)] animate-zalo-pulse"
         href="#"
         onClick={(e) => e.preventDefault()}
         aria-label="Chat với chúng tôi qua Zalo"
         title="Chat qua Zalo"
       >
-        <span className="pointer-events-none absolute inset-0 rounded-full bg-[#0068ff]/35 animate-zalo-ring" />
-        <span className="pointer-events-none absolute inset-0 rounded-full bg-[#0068ff]/25 animate-zalo-ring [animation-delay:0.7s]" />
-        <img
-          src={zaloLogo}
-          alt="Zalo"
-          className="relative z-10 h-11 w-11 object-contain animate-zalo-blink"
-        />
+        <span className="pointer-events-none absolute inset-0 rounded-[13px] bg-[#0068ff]/35 animate-zalo-ring" />
+        <span className="pointer-events-none absolute inset-0 rounded-[13px] bg-[#0068ff]/25 animate-zalo-ring [animation-delay:0.7s]" />
+        <span className="relative z-10 block h-full w-full origin-center overflow-hidden rounded-[13px] animate-zalo-blink">
+          <img
+            src={zaloLogo}
+            alt="Zalo"
+            className="h-full w-full object-cover"
+          />
+        </span>
       </a>
 
       {/* Scroll to Top */}

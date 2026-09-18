@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CloseIcon, HandshakeIcon, StatusBadge } from '@/components'
+import { CloseIcon, HandshakeIcon, ClipIcon, StatusBadge } from '@/components'
 import { formatPoints } from '@/utils/format'
 import type { AdminSubmission, Category } from '@/types/dtr'
 
@@ -29,16 +29,7 @@ const categoryIcons: Record<Category['icon'], React.ComponentType<{ size?: numbe
       <path d="M8 13h3" />
     </svg>
   ),
-  clip: ({ size, color }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3.6 9.2 5.2 4.8h13.6l1.6 4.4" />
-      <rect x="3.2" y="9.2" width="17.6" height="11.2" rx="1.6" />
-      <path d="m7 4.9 1.5 4.3" />
-      <path d="m11 4.9 1.5 4.3" />
-      <path d="m15 4.9 1.5 4.3" />
-      <path d="m10 13.2 5 2.8-5 2.8Z" />
-    </svg>
-  ),
+  clip: ClipIcon,
   megaphone: ({ size, color }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
       <path d="M4.5 10h3.4L16 6v12l-8.1-4H4.5a1.5 1.5 0 0 1-1.5-1.5v-1A1.5 1.5 0 0 1 4.5 10Z" />

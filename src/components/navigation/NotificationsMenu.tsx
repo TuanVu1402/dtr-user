@@ -70,6 +70,10 @@ export default function NotificationsMenu() {
     setMenuOpen(false)
   }
 
+  function toggleReadStatus(id: string) {
+    setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: !n.read } : n)))
+  }
+
   return (
     <div className="relative" ref={rootRef}>
       <button
@@ -101,11 +105,12 @@ export default function NotificationsMenu() {
               <>
                 <p className="min-w-0 flex-1 text-[15px] font-bold text-[var(--text-primary)]">{t('notif.title')}</p>
                 <label className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-[var(--text-secondary)]">
-                  {t('notif.read')}
+                  {showRead ? t('notif.read') : t('notif.unread')}
                   <button
                     type="button"
                     role="switch"
                     aria-checked={showRead}
+                    aria-label={showRead ? t('notif.read') : t('notif.unread')}
                     className={`relative h-5 w-9 cursor-pointer rounded-full transition-colors ${
                       showRead ? 'bg-[#2563eb]' : 'bg-[var(--hairline)]'
                     }`}
@@ -193,29 +198,41 @@ export default function NotificationsMenu() {
               </div>
             ) : (
               visible.map((item) => (
-                <button
+                <div
                   key={item.id}
-                  type="button"
-                  className={`flex w-full cursor-pointer gap-3 border-b border-[var(--hairline)] px-3 py-3 text-left last:border-b-0 ${
+                  className={`flex w-full items-start gap-3 border-b border-[var(--hairline)] px-3 py-3 last:border-b-0 ${
                     item.read ? 'bg-transparent' : 'bg-[#2563eb]/[0.06]'
                   }`}
-                  onClick={() => openItem(item.id)}
                 >
-                  <span
-                    className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${notificationAvatarClass(item.kind)}`}
+                  <button
+                    type="button"
+                    className="flex min-w-0 flex-1 cursor-pointer gap-3 border-none bg-transparent p-0 text-left"
+                    onClick={() => openItem(item.id)}
                   >
-                    {senderInitials(item.sender)}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[13px] leading-snug text-[var(--text-primary)]">
-                      <span className="font-bold">{item.sender}</span>{' '}
-                      <span className="font-normal text-[var(--text-secondary)]">{t('notif.sent')}</span>
+                    <span
+                      className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${notificationAvatarClass(item.kind)}`}
+                    >
+                      {senderInitials(item.sender)}
                     </span>
-                    <span className="mt-0.5 block truncate text-[13px] text-[var(--text-secondary)]">{item.title}</span>
-                    <span className="mt-1.5 block text-[11px] text-[var(--text-muted)]">{item.time}</span>
-                  </span>
-                  <MailBadge unread={!item.read} />
-                </button>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[13px] leading-snug text-[var(--text-primary)]">
+                        <span className="font-bold">{item.sender}</span>{' '}
+                        <span className="font-normal text-[var(--text-secondary)]">{t('notif.sent')}</span>
+                      </span>
+                      <span className="mt-0.5 block truncate text-[13px] text-[var(--text-secondary)]">{item.title}</span>
+                      <span className="mt-1.5 block text-[11px] text-[var(--text-muted)]">{item.time}</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-0.5 shrink-0 cursor-pointer border-none bg-transparent p-0"
+                    aria-label={item.read ? 'Đánh dấu chưa đọc' : 'Đánh dấu đã đọc'}
+                    title={item.read ? 'Đánh dấu chưa đọc' : 'Đánh dấu đã đọc'}
+                    onClick={() => toggleReadStatus(item.id)}
+                  >
+                    <MailBadge unread={!item.read} />
+                  </button>
+                </div>
               ))
             )}
           </div>
