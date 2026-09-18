@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { BellIcon, CloseIcon } from '../icons'
 import { useLanguage } from '@/context/LanguageContext'
 import { useNotifications } from '@/context/NotificationsContext'
-import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 import { MailBadge, NotificationAvatar, senderInitials } from '@/features/notifications/notificationUi'
 import { notificationAvatarClass } from '@/data/notificationsData'
 
@@ -12,9 +11,9 @@ const PREVIEW_COUNT = 5
 
 type PanelPos = {
   top: number
-  left?: number
-  right?: number
-  width?: number
+  overlayTop: number
+  left: number
+  width: number
 }
 
 export default function NotificationsMenu() {
@@ -32,7 +31,6 @@ export default function NotificationsMenu() {
   const preview = visible.slice(0, PREVIEW_COUNT)
   const selected = items.find((item) => item.id === selectedId) ?? null
   const filterLabel = showRead ? t('notif.read') : t('notif.all')
-  useLockBodyScroll(open)
 
   useLayoutEffect(() => {
     if (!open || !buttonRef.current) {
@@ -44,20 +42,41 @@ export default function NotificationsMenu() {
       const button = buttonRef.current
       if (!button) return
       const rect = button.getBoundingClientRect()
+      const header = button.closest('header')
+      const overlayTop = header?.getBoundingClientRect().bottom ?? rect.bottom
       const gap = 10
-      const compact = window.innerWidth < 640
-      if (compact) {
-        setPanelPos({ top: rect.bottom + gap, left: 12, right: 12 })
+      const viewWidth = window.visualViewport?.width ?? document.documentElement.clientWidth
+      const viewLeft = window.visualViewport?.offsetLeft ?? 0
+      if (viewWidth < 640) {
+        setPanelPos({
+          top: rect.bottom + gap,
+          overlayTop,
+          left: viewLeft + 12,
+          width: viewWidth - 24,
+        })
         return
       }
-      const width = Math.min(360, window.innerWidth - 24)
-      const right = Math.max(12, window.innerWidth - rect.right)
-      setPanelPos({ top: rect.bottom + gap, right, width })
+      const width = Math.min(360, viewWidth - 24)
+      const minLeft = viewLeft + 12
+      const maxLeft = viewLeft + viewWidth - width - 12
+      const left = Math.min(Math.max(rect.right - width, minLeft), maxLeft)
+      setPanelPos({ top: rect.bottom + gap, overlayTop, left, width })
     }
 
     place()
     window.addEventListener('resize', place)
     return () => window.removeEventListener('resize', place)
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    function blockScroll(event: TouchEvent) {
+      const target = event.target as Node | null
+      if (target && panelRef.current?.contains(target)) return
+      event.preventDefault()
+    }
+    document.addEventListener('touchmove', blockScroll, { passive: false })
+    return () => document.removeEventListener('touchmove', blockScroll)
   }, [open])
 
   useEffect(() => {
@@ -95,7 +114,8 @@ export default function NotificationsMenu() {
           <>
             <button
               type="button"
-              className="fixed inset-0 z-[80] cursor-default overscroll-none bg-black/25"
+              className="fixed inset-x-0 bottom-0 z-[80] cursor-default overscroll-none bg-black/20"
+              style={{ top: panelPos.overlayTop, touchAction: 'none' }}
               aria-label="Đóng thông báo"
               onClick={() => setOpen(false)}
             />
@@ -105,9 +125,7 @@ export default function NotificationsMenu() {
               style={{
                 top: panelPos.top,
                 left: panelPos.left,
-                right: panelPos.right,
                 width: panelPos.width,
-                maxWidth: 'calc(100vw - 24px)',
               }}
             >
               <div className="flex items-center gap-2 border-b border-[var(--hairline)] px-3 py-2.5">
