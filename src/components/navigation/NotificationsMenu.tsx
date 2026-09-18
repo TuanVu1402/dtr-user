@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { BellIcon, CloseIcon } from '../icons'
 import { useLanguage } from '@/context/LanguageContext'
 import { useNotifications } from '@/context/NotificationsContext'
+import { useLockBodyScroll } from '@/hooks/useLockBodyScroll'
 import { MailBadge, NotificationAvatar, senderInitials } from '@/features/notifications/notificationUi'
 import { notificationAvatarClass } from '@/data/notificationsData'
 
@@ -21,6 +22,7 @@ export default function NotificationsMenu() {
   const preview = visible.slice(0, PREVIEW_COUNT)
   const selected = items.find((item) => item.id === selectedId) ?? null
   const filterLabel = showRead ? t('notif.read') : t('notif.all')
+  useLockBodyScroll(open)
 
   useEffect(() => {
     if (!open) {
@@ -63,7 +65,14 @@ export default function NotificationsMenu() {
       </button>
 
       {open && (
-        <div className="absolute top-[calc(100%+12px)] right-0 z-[70] flex max-h-[min(560px,calc(100svh-88px))] w-[360px] max-w-[calc(100vw-32px)] flex-col overflow-hidden rounded-2xl border border-[var(--hairline)] bg-[var(--surface-1)] shadow-[0_24px_48px_var(--shadow-strong)] max-[480px]:fixed max-[480px]:top-[72px] max-[480px]:right-3 max-[480px]:left-3 max-[480px]:w-auto max-[480px]:max-w-none">
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-[65] cursor-default overscroll-none bg-black/20 max-[480px]:block md:hidden"
+            aria-label="Đóng thông báo"
+            onClick={() => setOpen(false)}
+          />
+          <div className="absolute top-[calc(100%+12px)] right-0 z-[70] flex max-h-[min(560px,calc(100svh-88px))] w-[360px] max-w-[calc(100vw-32px)] flex-col overflow-hidden overscroll-none rounded-2xl border border-[var(--hairline)] bg-[var(--surface-1)] shadow-[0_24px_48px_var(--shadow-strong)] max-[480px]:fixed max-[480px]:top-[72px] max-[480px]:right-3 max-[480px]:left-3 max-[480px]:w-auto max-[480px]:max-w-none">
           <div className="flex items-center gap-2 border-b border-[var(--hairline)] px-3 py-2.5">
             {selected ? (
               <button
@@ -107,7 +116,7 @@ export default function NotificationsMenu() {
             </button>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
             {selected ? (
               <div className="flex flex-col gap-3 px-4 py-4">
                 <div className="flex items-start gap-3">
@@ -194,6 +203,7 @@ export default function NotificationsMenu() {
             </button>
           ) : null}
         </div>
+        </>
       )}
     </div>
   )
