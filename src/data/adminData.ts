@@ -1,4 +1,5 @@
 import type { AdminSubmission, AdminUser } from '../types/dtr'
+import { isTextOnlyEvidence } from '../utils/format'
 import laiNgocTuyenAvatar from '../assets/avatars/Lai-Ngoc-Tuyen.png'
 import nguyenCongThienAvatar from '../assets/avatars/Nguyễn Công Thiện.png'
 import nguyenHoangLongAvatar from '../assets/avatars/Nguyễn Hoàng Long.png'
@@ -197,7 +198,6 @@ const rawAdminSubmissions: AdminSubmission[] = [
     date: '12/09/2026',
     points: 5,
     status: 'approved',
-    imageDataUrl: '/demo/checkin1.webp',
   },
   {
     id: 'CK-0891',
@@ -238,7 +238,6 @@ const rawAdminSubmissions: AdminSubmission[] = [
     date: '28/08/2026',
     points: 4,
     status: 'approved',
-    imageDataUrl: '/demo/checkin4.jpg',
   },
   {
     id: 'VP-1188',
@@ -530,5 +529,7 @@ function buildPlaceholderImage(label: string): string {
 }
 
 export const adminSubmissions: AdminSubmission[] = rawAdminSubmissions.map((s) =>
-  s.imageDataUrl || s.link ? s : { ...s, imageDataUrl: buildPlaceholderImage(s.categoryLabel) },
+  s.imageDataUrl || s.link || isTextOnlyEvidence(s.categoryLabel)
+    ? s
+    : { ...s, imageDataUrl: buildPlaceholderImage(s.categoryLabel) },
 )

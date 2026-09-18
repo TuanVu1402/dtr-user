@@ -34,7 +34,6 @@ export const initialNotifications: AppNotification[] = [
     title: 'Minh chứng đã được duyệt',
     description: 'Booking #BK-3391 — Dự án Lumi Hà Nội vừa được duyệt, +4 điểm DTR.',
     snippet: 'Booking #BK-3391',
-    imageUrl: '/demo/checkin4.jpg',
     time: '15:55',
     read: false,
   },

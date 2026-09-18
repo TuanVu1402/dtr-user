@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { CameraIcon, CloseIcon, StatusBadge } from '@/components'
 import { useSubmissions } from '@/context/SubmissionsContext'
-import { formatPoints } from '@/utils/format'
+import { formatPoints, isTextOnlyEvidence } from '@/utils/format'
 import { parseViDate } from '@/utils/ranking'
 import type { AdminSubmission, SubmissionStatus } from '@/types/dtr'
 import { profileFieldStyles } from './profileStyles'
@@ -57,9 +57,10 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
   const canShowMore = filtered.length > PREVIEW_COUNT
 
   const selectedLive = selected ? sorted.find((entry) => entry.id === selected.id) ?? selected : null
+  const textOnly = selectedLive ? isTextOnlyEvidence(selectedLive.categoryLabel) : false
   const canAppeal = selectedLive?.status === 'rejected' && !selectedLive.appealedAt
-  const canUpdatePending = selectedLive?.status === 'pending'
-  const pendingPreview = pendingImage || selectedLive?.imageDataUrl
+  const canUpdatePending = Boolean(selectedLive?.status === 'pending' && !textOnly)
+  const pendingPreview = textOnly ? undefined : pendingImage || selectedLive?.imageDataUrl
 
   function openEntry(entry: AdminSubmission) {
     setSelected(entry)
@@ -218,7 +219,19 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
               <StatusBadge status={selectedLive.status} />
             </div>
 
-            <p className="m-0 text-sm text-[var(--text-primary)]">{selectedLive.description}</p>
+            {textOnly ? (
+              <div className="flex flex-col gap-1.5">
+                <p className="m-0 text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                  Mô tả minh chứng
+                </p>
+                <p className="m-0 text-sm text-[var(--text-primary)]">{selectedLive.description}</p>
+                <p className="m-0 text-sm text-[var(--text-secondary)]">
+                  Hạng mục này ghi nhận bằng mô tả, không kèm ảnh minh chứng.
+                </p>
+              </div>
+            ) : (
+              <p className="m-0 text-sm text-[var(--text-primary)]">{selectedLive.description}</p>
+            )}
 
             {selectedLive.link ? (
               <a
@@ -309,7 +322,7 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
                   Đã gửi kháng cáo · {selectedLive.appealedAt}
                 </p>
                 <p className="mt-1 m-0 text-sm text-[var(--text-primary)]">{selectedLive.appealNote}</p>
-                {selectedLive.appealImageDataUrl ? (
+                {!textOnly && selectedLive.appealImageDataUrl ? (
                   <img
                     src={selectedLive.appealImageDataUrl}
                     alt="Ảnh kháng cáo"
@@ -332,7 +345,7 @@ export default function ApprovalHistory({ entries }: ApprovalHistoryProps) {
                   onChange={(event) => setAppealNote(event.target.value)}
                   required
                 />
-                {appealImage ? (
+                {textOnly ? null : appealImage ? (
                   <div className="flex items-start gap-3">
                     <img src={appealImage} alt="" className="h-16 w-16 rounded-lg object-cover" />
                     <button

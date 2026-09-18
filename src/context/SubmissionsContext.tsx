@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { adminSubmissions, adminUsers } from '@/data/adminData'
 import type { AdminSubmission, AdminUser, SubmissionStatus } from '@/types/dtr'
+import { stripTextOnlyPhotos, isTextOnlyEvidence } from '@/utils/format'
 
 export type NewSubmissionInput = {
   userName: string
@@ -37,7 +38,7 @@ const USERS_KEY = 'dtr-users'
 // Tăng số này mỗi khi sửa dữ liệu mẫu (adminData.ts) — dữ liệu cũ trong localStorage của
 // trình duyệt sẽ tự bị bỏ qua và nạp lại dữ liệu mẫu mới nhất, khỏi cần người dùng tự xóa
 // localStorage thủ công mỗi lần demo có cập nhật.
-const DATA_VERSION = '14'
+const DATA_VERSION = '16'
 const VERSION_KEY = 'dtr-data-version'
 
 function loadFromStorage<T>(key: string, fallback: T): T {
@@ -69,7 +70,7 @@ function generateUserId() {
 
 export function SubmissionsProvider({ children }: { children: ReactNode }) {
   const [submissions, setSubmissions] = useState<AdminSubmission[]>(() =>
-    loadFromStorage(SUBMISSIONS_KEY, adminSubmissions),
+    loadFromStorage(SUBMISSIONS_KEY, adminSubmissions).map(stripTextOnlyPhotos),
   )
   const [users, setUsers] = useState<AdminUser[]>(() => loadFromStorage(USERS_KEY, adminUsers))
 
@@ -78,7 +79,9 @@ export function SubmissionsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     function handleStorage(e: StorageEvent) {
-      if (e.key === SUBMISSIONS_KEY) setSubmissions(loadFromStorage(SUBMISSIONS_KEY, adminSubmissions))
+      if (e.key === SUBMISSIONS_KEY) {
+        setSubmissions(loadFromStorage(SUBMISSIONS_KEY, adminSubmissions).map(stripTextOnlyPhotos))
+      }
       if (e.key === USERS_KEY) setUsers(loadFromStorage(USERS_KEY, adminUsers))
     }
     window.addEventListener('storage', handleStorage)
@@ -90,7 +93,7 @@ export function SubmissionsProvider({ children }: { children: ReactNode }) {
   }
 
   function addSubmission(input: NewSubmissionInput): AdminSubmission {
-    const submission: AdminSubmission = { id: generateSubmissionId(), ...input }
+    const submission = stripTextOnlyPhotos({ id: generateSubmissionId(), ...input })
     setSubmissions((prev) => [submission, ...prev])
     return submission
   }
@@ -105,13 +108,13 @@ export function SubmissionsProvider({ children }: { children: ReactNode }) {
     setSubmissions((prev) =>
       prev.map((s) =>
         s.id === id
-          ? {
+          ? stripTextOnlyPhotos({
               ...s,
               status: 'pending' as const,
               appealNote: note,
               appealImageDataUrl: imageDataUrl,
               appealedAt: new Date().toLocaleString('vi-VN'),
-            }
+            })
           : s,
       ),
     )
@@ -119,7 +122,10 @@ export function SubmissionsProvider({ children }: { children: ReactNode }) {
 
   function updatePendingEvidence(id: string, imageDataUrl: string) {
     setSubmissions((prev) =>
-      prev.map((s) => (s.id === id && s.status === 'pending' ? { ...s, imageDataUrl } : s)),
+      prev.map((s) => {
+        if (s.id !== id || s.status !== 'pending' || isTextOnlyEvidence(s.categoryLabel)) return s
+        return { ...s, imageDataUrl }
+      }),
     )
   }
 

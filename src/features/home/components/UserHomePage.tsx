@@ -158,7 +158,7 @@ export default function UserHomePage() {
       points: data.points,
       status: 'pending',
       link: data.link || undefined,
-      imageDataUrl: data.imageDataUrl,
+      imageDataUrl: openCategory.evidenceType === 'none' ? undefined : data.imageDataUrl,
     })
     setOpenCategory(null)
   }
