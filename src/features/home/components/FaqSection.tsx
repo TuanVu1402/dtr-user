@@ -86,6 +86,54 @@ const FAQ_ITEMS: FaqItem[] = [
 
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const midpoint = Math.ceil(FAQ_ITEMS.length / 2)
+  const columns = [FAQ_ITEMS.slice(0, midpoint), FAQ_ITEMS.slice(midpoint)]
+
+  function renderItem(item: FaqItem, index: number) {
+    const open = openIndex === index
+    return (
+      <div
+        key={item.question}
+        className="min-w-0 rounded-2xl border border-[var(--hairline)] bg-[var(--surface-1)] px-4 py-3 shadow-[0_1px_2px_var(--shadow)] md:px-5"
+      >
+        <button
+          type="button"
+          className="flex w-full min-w-0 cursor-pointer items-start gap-3 text-left"
+          aria-expanded={open}
+          onClick={() => setOpenIndex(open ? null : index)}
+        >
+          <span className="min-w-0 flex-1 text-sm font-medium leading-snug text-[var(--text-primary)] md:text-[15px]">
+            {item.question}
+          </span>
+          <span
+            className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-lg leading-none font-medium text-[var(--text-muted)]"
+            aria-hidden
+          >
+            {open ? '−' : '+'}
+          </span>
+        </button>
+
+        {open ? (
+          <div className="mt-3 min-w-0 overflow-hidden border-t border-[var(--hairline)] pt-3 text-sm leading-relaxed break-words text-[var(--text-secondary)]">
+            {item.paragraphs.map((text) => (
+              <p key={text} className="mb-2 last:mb-0">
+                {text}
+              </p>
+            ))}
+            {item.bullets ? (
+              <ul className="mt-1 flex list-disc flex-col gap-1.5 pl-4">
+                {item.bullets.map((line) => (
+                  <li key={line} className="break-words">
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    )
+  }
 
   return (
     <section id="faq" className="scroll-mt-24 pt-6 pb-4 md:pt-8 md:pb-6">
@@ -96,50 +144,12 @@ export default function FaqSection() {
         Mọi thắc mắc khác về DTR Point, vui lòng liên hệ hotline để được giải đáp đầy đủ
       </p>
 
-      <div className="mt-5 columns-1 gap-2.5 md:columns-2 md:gap-4">
-        {FAQ_ITEMS.map((item, index) => {
-          const open = openIndex === index
-          return (
-            <div
-              key={item.question}
-              className="mb-2.5 break-inside-avoid rounded-2xl border border-[var(--hairline)] bg-[var(--surface-1)] px-4 py-3 shadow-[0_1px_2px_var(--shadow)] md:mb-3 md:px-5"
-            >
-              <button
-                type="button"
-                className="flex w-full cursor-pointer items-start gap-3 text-left"
-                aria-expanded={open}
-                onClick={() => setOpenIndex(open ? null : index)}
-              >
-                <span className="min-w-0 flex-1 text-sm font-medium leading-snug text-[var(--text-primary)] md:text-[15px]">
-                  {item.question}
-                </span>
-                <span
-                  className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-lg leading-none font-medium text-[var(--text-muted)]"
-                  aria-hidden
-                >
-                  {open ? '−' : '+'}
-                </span>
-              </button>
-
-              {open ? (
-                <div className="mt-3 border-t border-[var(--hairline)] pt-3 text-sm leading-relaxed text-[var(--text-secondary)]">
-                  {item.paragraphs.map((text) => (
-                    <p key={text} className="mb-2 last:mb-0">
-                      {text}
-                    </p>
-                  ))}
-                  {item.bullets ? (
-                    <ul className="mt-1 flex list-disc flex-col gap-1.5 pl-4">
-                      {item.bullets.map((line) => (
-                        <li key={line}>{line}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          )
-        })}
+      <div className="mt-5 grid grid-cols-1 gap-2.5 md:grid-cols-2 md:items-start md:gap-x-4 md:gap-y-0">
+        {columns.map((column, columnIndex) => (
+          <div key={columnIndex} className="flex min-w-0 flex-col gap-2.5">
+            {column.map((item, offset) => renderItem(item, columnIndex === 0 ? offset : midpoint + offset))}
+          </div>
+        ))}
       </div>
     </section>
   )
