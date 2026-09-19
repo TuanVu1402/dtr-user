@@ -54,58 +54,16 @@ function StageBackdrop() {
         }}
       />
 
-      {/* vệt sáng vàng hắt lên từ chân bảng — vẽ trước để dãy nhà in bóng lên nó */}
+      {/* quầng sáng ấm rất nhẹ sát mép dưới — chỉ đủ tách chân bảng khỏi nền */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0"
         style={{
-          height: '22cqw',
+          height: '6cqw',
           background:
-            'radial-gradient(72% 112% at 52% 102%, rgba(255,208,110,1) 0%, rgba(255,184,72,0.56) 26%, rgba(255,166,52,0.2) 48%, rgba(6,16,40,0) 76%)',
+            'radial-gradient(48% 100% at 50% 116%, rgba(255,198,96,0.34) 0%, rgba(255,176,64,0.1) 46%, rgba(6,16,40,0) 76%)',
         }}
       />
 
-      {/* dãy nhà: silhouette xanh, có ô cửa sáng */}
-      <svg
-        className="pointer-events-none absolute inset-x-0 bottom-0 w-full"
-        style={{ height: '8.5cqw' }}
-        viewBox="0 0 800 110"
-        preserveAspectRatio="none"
-        aria-hidden
-      >
-        <defs>
-          <linearGradient id="lb-city" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#4c84bd" stopOpacity="0.85" />
-            <stop offset="45%" stopColor="#24548a" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#153a6b" stopOpacity="0.95" />
-          </linearGradient>
-          <pattern id="lb-windows" width="10" height="13" patternUnits="userSpaceOnUse">
-            <rect x="1.6" y="2" width="1.5" height="2.4" fill="#cfe4fb" opacity="0.34" />
-            <rect x="6.2" y="7.5" width="1.5" height="2.4" fill="#cfe4fb" opacity="0.22" />
-          </pattern>
-          <linearGradient id="lb-window-fade" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-            <stop offset="70%" stopColor="#ffffff" stopOpacity="0.45" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0.1" />
-          </linearGradient>
-          <mask id="lb-window-mask">
-            <rect width="800" height="110" fill="url(#lb-window-fade)" />
-          </mask>
-        </defs>
-        <path fill="url(#lb-city)" d="M0 110V78h22V66h14V86h18V52h26V70h12V44h16V74h20V60h24V38h14V68h18V50h28V82h16V34h22V62h14V72h20V46h26V66h12V30h18V58h24V76h16V42h20V64h28V54h14V70h18V36h22V60h16V48h24V74h12V56h20V68h18V40h26V72h14V62h22V50h16V66h24V44h20V76h18V58h26V54h22V68h18V46h22V110Z" />
-        <g mask="url(#lb-window-mask)">
-          <path fill="url(#lb-windows)" d="M0 110V78h22V66h14V86h18V52h26V70h12V44h16V74h20V60h24V38h14V68h18V50h28V82h16V34h22V62h14V72h20V46h26V66h12V30h18V58h24V76h16V42h20V64h28V54h14V70h18V36h22V60h16V48h24V74h12V56h20V68h18V40h26V72h14V62h22V50h16V66h24V44h20V76h18V58h26V54h22V68h18V46h22V110Z" />
-        </g>
-      </svg>
-
-      {/* lớp vàng mỏng phủ lên chân dãy nhà cho ăn ánh sáng */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0"
-        style={{
-          height: '8cqw',
-          background:
-            'radial-gradient(56% 125% at 52% 114%, rgba(255,198,96,0.34) 0%, rgba(255,176,64,0.12) 44%, rgba(6,16,40,0) 74%)',
-        }}
-      />
     </>
   )
 }
